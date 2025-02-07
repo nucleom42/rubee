@@ -1,0 +1,45 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.8	//
+Application	mini_rails.rb	/^  class Application$/;"	c	class:MiniRails
+ApplicationController	app/controllers/application_controller.rb	/^class ApplicationController$/;"	c
+ApplicationRecord	app/models/application_record.rb	/^class ApplicationRecord$/;"	c
+Autoload	mini_rails.rb	/^  class Autoload$/;"	c
+CreateItems	db/create_items.rb	/^class CreateItems$/;"	c
+HelloController	app/controllers/hello_controller.rb	/^class HelloController < ApplicationController$/;"	c
+Item	app/models/item.rb	/^class Item < ApplicationRecord$/;"	c
+MiniRails	mini_rails.rb	/^module MiniRails$/;"	m
+Router	mini_rails.rb	/^class Router$/;"	c	class:MiniRails
+all	app/models/application_record.rb	/^    def all$/;"	f	class:ApplicationRecord
+call	db/create_items.rb	/^  def call$/;"	f	class:CreateItems
+call	mini_rails.rb	/^      def call$/;"	f	class:Autoload
+call	mini_rails.rb	/^    def call(env)$/;"	f	class:MiniRails.Application
+connection	app/models/application_record.rb	/^    def connection$/;"	f	class:ApplicationRecord
+create	app/controllers/hello_controller.rb	/^  def create$/;"	f	class:HelloController
+create	app/models/application_record.rb	/^    def create(attrs)$/;"	f	class:ApplicationRecord
+delete	app/controllers/hello_controller.rb	/^  def delete$/;"	f	class:HelloController
+destroy	app/models/application_record.rb	/^  def destroy$/;"	f	class:ApplicationRecord
+draw	mini_rails.rb	/^    def draw$/;"	f	class:MiniRails.Router
+extract_params	app/controllers/application_controller.rb	/^  def extract_params(path, pattern)$/;"	f	class:ApplicationController
+find	app/models/application_record.rb	/^    def find(id)$/;"	f	class:ApplicationRecord
+index	app/controllers/hello_controller.rb	/^  def index$/;"	f	class:HelloController
+initialize	app/controllers/application_controller.rb	/^  def initialize(request, route)$/;"	f	class:ApplicationController
+initialize	app/models/application_record.rb	/^  def initialize(attrs)$/;"	f	class:ApplicationRecord
+last	app/models/application_record.rb	/^    def last$/;"	f	class:ApplicationRecord
+params	app/controllers/application_controller.rb	/^  def params$/;"	f	class:ApplicationController
+pluralize_class_name	app/models/application_record.rb	/^    def pluralize_class_name$/;"	f	class:ApplicationRecord
+reload	app/models/application_record.rb	/^  def reload$/;"	f	class:ApplicationRecord
+reload	console.rb	/^def reload$/;"	f
+response_with	app/controllers/application_controller.rb	/^  def response_with type: nil, object:, status: 200$/;"	f	class:ApplicationController
+route_for	mini_rails.rb	/^    def route_for(request)$/;"	f	class:MiniRails.Router
+save	app/models/application_record.rb	/^  def save$/;"	f	class:ApplicationRecord
+set_route	mini_rails.rb	/^    def set_route(path, to:, method: __method__)$/;"	f	class:MiniRails.Router
+show	app/controllers/hello_controller.rb	/^  def show$/;"	f	class:HelloController
+to_h	app/models/application_record.rb	/^  def to_h$/;"	f	class:ApplicationRecord
+to_json	app/models/application_record.rb	/^  def to_json$/;"	f	class:ApplicationRecord
+update	app/controllers/hello_controller.rb	/^  def update$/;"	f	class:HelloController
+update	app/models/application_record.rb	/^  def update(args = {})$/;"	f	class:ApplicationRecord
+where	app/models/application_record.rb	/^    def where(args)$/;"	f	class:ApplicationRecord
