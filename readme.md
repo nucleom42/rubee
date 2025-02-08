@@ -1,1 +1,1 @@
-Bee like fast and light-weight Ruby web server!
+Bee like fast and light-weight Ruby application server!
