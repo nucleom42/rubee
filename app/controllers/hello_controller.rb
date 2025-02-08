@@ -1,4 +1,4 @@
-class HelloController < ApplicationController
+class HelloController < BaseController
   def show
     if item = Item.find(params[:id])
       response_with object: item, type: :json

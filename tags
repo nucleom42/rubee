@@ -5,41 +5,77 @@
 !_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
 !_TAG_PROGRAM_VERSION	5.8	//
 Application	rubee.rb	/^  class Application$/;"	c	class:Rubee
-ApplicationController	app/controllers/application_controller.rb	/^class ApplicationController$/;"	c
 ApplicationRecord	app/models/application_record.rb	/^class ApplicationRecord$/;"	c
 Autoload	rubee.rb	/^  class Autoload$/;"	c
+BaseController	app/controllers/base_controller.rb	/^class BaseController$/;"	c
 CreateItems	db/create_items.rb	/^class CreateItems$/;"	c
-HelloController	app/controllers/hello_controller.rb	/^class HelloController < ApplicationController$/;"	c
-Item	app/models/item.rb	/^class Item < ApplicationRecord$/;"	c
+DatabaseObject	app/models/database_object.rb	/^class DatabaseObject$/;"	c
+DatabaseObject	app/models/database_record.rb	/^class DatabaseObject$/;"	c
+HelloController	app/controllers/hello_controller.rb	/^class HelloController < BaseController$/;"	c
+Item	app/models/item.rb	/^class Item < DatabaseObject$/;"	c
+RootController	app/controllers/application_controller.rb	/^class RootController$/;"	c
 Router	rubee.rb	/^  class Router$/;"	c	class:Rubee
 Rubee	rubee.rb	/^module Rubee$/;"	m
 all	app/models/application_record.rb	/^    def all$/;"	f	class:ApplicationRecord
+all	app/models/database_object.rb	/^    def all$/;"	f	class:DatabaseObject
+all	app/models/database_record.rb	/^    def all$/;"	f	class:DatabaseObject
 call	db/create_items.rb	/^  def call$/;"	f	class:CreateItems
 call	rubee.rb	/^      def call$/;"	f	class:Autoload
 call	rubee.rb	/^    def call(env)$/;"	f	class:Rubee.Application
 connection	app/models/application_record.rb	/^    def connection$/;"	f	class:ApplicationRecord
+connection	app/models/database_object.rb	/^    def connection$/;"	f	class:DatabaseObject
+connection	app/models/database_record.rb	/^    def connection$/;"	f	class:DatabaseObject
 create	app/controllers/hello_controller.rb	/^  def create$/;"	f	class:HelloController
 create	app/models/application_record.rb	/^    def create(attrs)$/;"	f	class:ApplicationRecord
+create	app/models/database_object.rb	/^    def create(attrs)$/;"	f	class:DatabaseObject
+create	app/models/database_record.rb	/^    def create(attrs)$/;"	f	class:DatabaseObject
 delete	app/controllers/hello_controller.rb	/^  def delete$/;"	f	class:HelloController
 destroy	app/models/application_record.rb	/^  def destroy$/;"	f	class:ApplicationRecord
+destroy	app/models/database_object.rb	/^  def destroy$/;"	f	class:DatabaseObject
+destroy	app/models/database_record.rb	/^  def destroy$/;"	f	class:DatabaseObject
 draw	rubee.rb	/^      def draw$/;"	f	class:Rubee.Router
-extract_params	app/controllers/application_controller.rb	/^  def extract_params(path, pattern)$/;"	f	class:ApplicationController
+extract_params	app/controllers/application_controller.rb	/^  def extract_params(path, pattern)$/;"	f	class:RootController
+extract_params	app/controllers/base_controller.rb	/^  def extract_params(path, pattern)$/;"	f	class:BaseController
 find	app/models/application_record.rb	/^    def find(id)$/;"	f	class:ApplicationRecord
+find	app/models/database_object.rb	/^    def find(id)$/;"	f	class:DatabaseObject
+find	app/models/database_record.rb	/^    def find(id)$/;"	f	class:DatabaseObject
 index	app/controllers/hello_controller.rb	/^  def index$/;"	f	class:HelloController
-initialize	app/controllers/application_controller.rb	/^  def initialize(request, route)$/;"	f	class:ApplicationController
+initialize	app/controllers/application_controller.rb	/^  def initialize(request, route)$/;"	f	class:RootController
+initialize	app/controllers/base_controller.rb	/^  def initialize(request, route)$/;"	f	class:BaseController
 initialize	app/models/application_record.rb	/^  def initialize(attrs)$/;"	f	class:ApplicationRecord
+initialize	app/models/database_object.rb	/^  def initialize(attrs)$/;"	f	class:DatabaseObject
+initialize	app/models/database_record.rb	/^  def initialize(attrs)$/;"	f	class:DatabaseObject
 last	app/models/application_record.rb	/^    def last$/;"	f	class:ApplicationRecord
-params	app/controllers/application_controller.rb	/^  def params$/;"	f	class:ApplicationController
+last	app/models/database_object.rb	/^    def last$/;"	f	class:DatabaseObject
+last	app/models/database_record.rb	/^    def last$/;"	f	class:DatabaseObject
+params	app/controllers/application_controller.rb	/^  def params$/;"	f	class:RootController
+params	app/controllers/base_controller.rb	/^  def params$/;"	f	class:BaseController
 pluralize_class_name	app/models/application_record.rb	/^    def pluralize_class_name$/;"	f	class:ApplicationRecord
+pluralize_class_name	app/models/database_object.rb	/^    def pluralize_class_name$/;"	f	class:DatabaseObject
+pluralize_class_name	app/models/database_record.rb	/^    def pluralize_class_name$/;"	f	class:DatabaseObject
 reload	app/models/application_record.rb	/^  def reload$/;"	f	class:ApplicationRecord
+reload	app/models/database_object.rb	/^  def reload$/;"	f	class:DatabaseObject
+reload	app/models/database_record.rb	/^  def reload$/;"	f	class:DatabaseObject
+reload	com/console	/^def reload$/;"	f
 reload	console.rb	/^def reload$/;"	f
-response_with	app/controllers/application_controller.rb	/^  def response_with type: nil, object:, status: 200$/;"	f	class:ApplicationController
+response_with	app/controllers/application_controller.rb	/^  def response_with type: nil, object:, status: 200$/;"	f	class:RootController
+response_with	app/controllers/base_controller.rb	/^  def response_with type: nil, object:, status: 200$/;"	f	class:BaseController
 route_for	rubee.rb	/^      def route_for(request)$/;"	f	class:Rubee.Router
 save	app/models/application_record.rb	/^  def save$/;"	f	class:ApplicationRecord
+save	app/models/database_object.rb	/^  def save$/;"	f	class:DatabaseObject
+save	app/models/database_record.rb	/^  def save$/;"	f	class:DatabaseObject
 set_route	rubee.rb	/^      def set_route(path, to:, method: __method__)$/;"	f	class:Rubee.Router
 show	app/controllers/hello_controller.rb	/^  def show$/;"	f	class:HelloController
 to_h	app/models/application_record.rb	/^  def to_h$/;"	f	class:ApplicationRecord
+to_h	app/models/database_object.rb	/^  def to_h$/;"	f	class:DatabaseObject
+to_h	app/models/database_record.rb	/^  def to_h$/;"	f	class:DatabaseObject
 to_json	app/models/application_record.rb	/^  def to_json$/;"	f	class:ApplicationRecord
+to_json	app/models/database_object.rb	/^  def to_json$/;"	f	class:DatabaseObject
+to_json	app/models/database_record.rb	/^  def to_json$/;"	f	class:DatabaseObject
 update	app/controllers/hello_controller.rb	/^  def update$/;"	f	class:HelloController
 update	app/models/application_record.rb	/^  def update(args = {})$/;"	f	class:ApplicationRecord
+update	app/models/database_object.rb	/^  def update(args = {})$/;"	f	class:DatabaseObject
+update	app/models/database_record.rb	/^  def update(args = {})$/;"	f	class:DatabaseObject
 where	app/models/application_record.rb	/^    def where(args)$/;"	f	class:ApplicationRecord
+where	app/models/database_object.rb	/^    def where(args)$/;"	f	class:DatabaseObject
+where	app/models/database_record.rb	/^    def where(args)$/;"	f	class:DatabaseObject

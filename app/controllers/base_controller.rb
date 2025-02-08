@@ -1,4 +1,4 @@
-class ApplicationController
+class BaseController
   def initialize(request, route)
     @request = request
     @route = route

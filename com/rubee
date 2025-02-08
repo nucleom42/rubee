@@ -1,0 +1,18 @@
+#!/usr/bin/env ruby
+
+require 'rack'
+
+APP_ROOT = File.expand_path('..', File.dirname(__FILE__))
+ENV['RACKUP_FILE'] = File.join(APP_ROOT, 'config.ru')
+
+command, port = ARGV.first&.split(':')
+
+if command == "start"
+  port ||= "7000"
+
+  puts "Starting takeoff of RuBee server on port #{port}..."
+
+  exec("rackup #{ENV['RACKUP_FILE']} -p #{port}")
+else
+  puts "Unknown command: #{command}"
+end

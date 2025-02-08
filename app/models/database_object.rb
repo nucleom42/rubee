@@ -2,7 +2,7 @@ require 'sequel'
 
 DB = Sequel.sqlite("db/development.sqlite3")
 
-class ApplicationRecord
+class DatabaseObject
   def initialize(attrs)
     attrs.each do |attr, value|
       self.send("#{attr}=", value)
