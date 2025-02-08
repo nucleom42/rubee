@@ -3,12 +3,14 @@ require 'sequel'
 class CreateItems
   DB = Sequel.sqlite('db/development.sqlite3')
   def call
-    return puts DB[:items] if DB[:items]
+    # return puts DB[:items] if DB[:items]
 
-    DB.create_table :items do
-      primary_key :id
-      String :name
-      Float :price
+    unless DB.tables.include?(:items)
+      DB.create_table :items do
+        primary_key :id
+        String :name
+        Float :price
+      end
     end
 
     items = DB[:items] # Create a dataset
@@ -22,4 +24,3 @@ class CreateItems
   end
 end
 
-CreateItems.new.call

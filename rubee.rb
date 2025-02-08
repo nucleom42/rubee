@@ -2,6 +2,8 @@ require 'rack'
 require 'json'
 require 'pry'
 
+APP_ROOT = File.expand_path(File.dirname(__FILE__))
+
 module Rubee
   class Application
     def call(env)
@@ -27,6 +29,8 @@ module Rubee
 
   class Router
     HTTP_METHODS = [:get, :post, :put, :patch, :delete, :head, :connect, :options, :trace].freeze
+
+    attr_reader :request
 
     @routes = []
 

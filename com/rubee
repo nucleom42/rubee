@@ -13,6 +13,15 @@ if command == "start"
   puts "Starting takeoff of RuBee server on port #{port}..."
 
   exec("rackup #{ENV['RACKUP_FILE']} -p #{port}")
+elsif command == "stop"
+  exec("pkill -f rackup")
+elsif command == "restart"
+  exec("pkill -f rackup")
+  exec("rackup #{ENV['RACKUP_FILE']} -p #{port}")
+elsif command == "status"
+  exec("ps aux | grep rackup")
+elsif command == "log"
+  exec("tail -f log/development.log")
 else
   puts "Unknown command: #{command}"
 end

@@ -16,6 +16,8 @@ Item	app/models/item.rb	/^class Item < DatabaseObject$/;"	c
 RootController	app/controllers/application_controller.rb	/^class RootController$/;"	c
 Router	rubee.rb	/^  class Router$/;"	c	class:Rubee
 Rubee	rubee.rb	/^module Rubee$/;"	m
+WellcomeController	app/controllers/wellcome.rb	/^class WellcomeController < BaseController$/;"	c
+WellcomeController	app/controllers/wellcome_controller.rb	/^class WellcomeController < BaseController$/;"	c
 all	app/models/application_record.rb	/^    def all$/;"	f	class:ApplicationRecord
 all	app/models/database_object.rb	/^    def all$/;"	f	class:DatabaseObject
 all	app/models/database_record.rb	/^    def all$/;"	f	class:DatabaseObject
@@ -66,6 +68,8 @@ save	app/models/database_object.rb	/^  def save$/;"	f	class:DatabaseObject
 save	app/models/database_record.rb	/^  def save$/;"	f	class:DatabaseObject
 set_route	rubee.rb	/^      def set_route(path, to:, method: __method__)$/;"	f	class:Rubee.Router
 show	app/controllers/hello_controller.rb	/^  def show$/;"	f	class:HelloController
+show	app/controllers/wellcome.rb	/^  def show$/;"	f	class:WellcomeController
+show	app/controllers/wellcome_controller.rb	/^  def show$/;"	f	class:WellcomeController
 to_h	app/models/application_record.rb	/^  def to_h$/;"	f	class:ApplicationRecord
 to_h	app/models/database_object.rb	/^  def to_h$/;"	f	class:DatabaseObject
 to_h	app/models/database_record.rb	/^  def to_h$/;"	f	class:DatabaseObject

@@ -34,11 +34,15 @@ gh repo clone nucleom42/rubee .
 bundle install
 ```
 
-4. Run rubee
+4. Run rubee server. Default port is 7000
 ```bash
 ./com/rubee start
 ```
 
+5. Run db file
+```bash
+./com/db run file_name
+```
 
 
 
