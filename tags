@@ -4,25 +4,25 @@
 !_TAG_PROGRAM_NAME	Exuberant Ctags	//
 !_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
 !_TAG_PROGRAM_VERSION	5.8	//
-Application	mini_rails.rb	/^  class Application$/;"	c	class:MiniRails
+Application	rubee.rb	/^  class Application$/;"	c	class:Rubee
 ApplicationController	app/controllers/application_controller.rb	/^class ApplicationController$/;"	c
 ApplicationRecord	app/models/application_record.rb	/^class ApplicationRecord$/;"	c
-Autoload	mini_rails.rb	/^  class Autoload$/;"	c
+Autoload	rubee.rb	/^  class Autoload$/;"	c
 CreateItems	db/create_items.rb	/^class CreateItems$/;"	c
 HelloController	app/controllers/hello_controller.rb	/^class HelloController < ApplicationController$/;"	c
 Item	app/models/item.rb	/^class Item < ApplicationRecord$/;"	c
-MiniRails	mini_rails.rb	/^module MiniRails$/;"	m
-Router	mini_rails.rb	/^class Router$/;"	c	class:MiniRails
+Router	rubee.rb	/^  class Router$/;"	c	class:Rubee
+Rubee	rubee.rb	/^module Rubee$/;"	m
 all	app/models/application_record.rb	/^    def all$/;"	f	class:ApplicationRecord
 call	db/create_items.rb	/^  def call$/;"	f	class:CreateItems
-call	mini_rails.rb	/^      def call$/;"	f	class:Autoload
-call	mini_rails.rb	/^    def call(env)$/;"	f	class:MiniRails.Application
+call	rubee.rb	/^      def call$/;"	f	class:Autoload
+call	rubee.rb	/^    def call(env)$/;"	f	class:Rubee.Application
 connection	app/models/application_record.rb	/^    def connection$/;"	f	class:ApplicationRecord
 create	app/controllers/hello_controller.rb	/^  def create$/;"	f	class:HelloController
 create	app/models/application_record.rb	/^    def create(attrs)$/;"	f	class:ApplicationRecord
 delete	app/controllers/hello_controller.rb	/^  def delete$/;"	f	class:HelloController
 destroy	app/models/application_record.rb	/^  def destroy$/;"	f	class:ApplicationRecord
-draw	mini_rails.rb	/^    def draw$/;"	f	class:MiniRails.Router
+draw	rubee.rb	/^      def draw$/;"	f	class:Rubee.Router
 extract_params	app/controllers/application_controller.rb	/^  def extract_params(path, pattern)$/;"	f	class:ApplicationController
 find	app/models/application_record.rb	/^    def find(id)$/;"	f	class:ApplicationRecord
 index	app/controllers/hello_controller.rb	/^  def index$/;"	f	class:HelloController
@@ -34,9 +34,9 @@ pluralize_class_name	app/models/application_record.rb	/^    def pluralize_class_
 reload	app/models/application_record.rb	/^  def reload$/;"	f	class:ApplicationRecord
 reload	console.rb	/^def reload$/;"	f
 response_with	app/controllers/application_controller.rb	/^  def response_with type: nil, object:, status: 200$/;"	f	class:ApplicationController
-route_for	mini_rails.rb	/^    def route_for(request)$/;"	f	class:MiniRails.Router
+route_for	rubee.rb	/^      def route_for(request)$/;"	f	class:Rubee.Router
 save	app/models/application_record.rb	/^  def save$/;"	f	class:ApplicationRecord
-set_route	mini_rails.rb	/^    def set_route(path, to:, method: __method__)$/;"	f	class:MiniRails.Router
+set_route	rubee.rb	/^      def set_route(path, to:, method: __method__)$/;"	f	class:Rubee.Router
 show	app/controllers/hello_controller.rb	/^  def show$/;"	f	class:HelloController
 to_h	app/models/application_record.rb	/^  def to_h$/;"	f	class:ApplicationRecord
 to_json	app/models/application_record.rb	/^  def to_json$/;"	f	class:ApplicationRecord

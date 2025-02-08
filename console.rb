@@ -1,7 +1,7 @@
 require 'irb'
-require_relative 'mini_rails.rb'
+require_relative 'rubee.rb'
 
-MiniRails::Autoload.call
+Rubee::Autoload.call
 
 def reload
   app_files = Dir["./app/**/*.rb"]

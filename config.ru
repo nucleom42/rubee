@@ -1,3 +1,3 @@
-require_relative './mini_rails'
+require_relative './rubee'
 
-run MiniRails::Application.new
+run Rubee::Application.new

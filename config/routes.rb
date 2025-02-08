@@ -1,4 +1,4 @@
-MiniRails::Router.draw do |router|
+Rubee::Router.draw do |router|
   router.get "/hello", to: "hello#index"
   router.get "/hello/{id}", to: "hello#show"
   router.post "/hello", to: "hello#create"
