@@ -4,7 +4,7 @@ Rubee is a fast and lightweight Ruby application server designed for minimalism 
 
 The main pholosophy of Rubee is to focus on Ruby language representation of in he MVC web applications. There are no hidden implementation details, you can adjust it for your needs.
 
-
+![1-4cd49a16](https://github.com/user-attachments/assets/58ff8a67-8091-4d20-9b04-91383b7bf657)
 
 ## Features
 
