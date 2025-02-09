@@ -4,14 +4,14 @@ class BaseController
     @route = route
   end
 
-  def response_with type: nil, object:, status: 200
+  def response_with type: nil, object: nil, status: 200
     case type&.to_sym
     in :json
       rendered_json = object.is_a?(Array) ? object&.map(&:to_h).to_json : object.to_json
       return [status, { "content-type" => "application/json" }, [rendered_json]]
     else
       view_file_name = self.class.name.split("Controller").first.downcase
-      rendered_erb = ERB.new(File.open("app/views/#{view_file_name}_#{@request.action}.erb").read).result
+      rendered_erb = ERB.new(File.open("app/views/#{view_file_name}_#{@route[:action]}.erb").read).result
       return [status, { "content-type" => "text/html" }, [rendered_erb]]
     end
   end
