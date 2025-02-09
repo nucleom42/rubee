@@ -12,8 +12,8 @@ module Rubee
       Autoload.call
       # register images paths
       request = Rack::Request.new(env)
-      # alow images loading
-      return load_image(request) if request.path.include?("/images")
+      # Add default path for images
+      Router.draw { |route| route.get "/images/{path}", to: "base#image" }
       # define route
       route = Router.route_for(request)
       # init controller class

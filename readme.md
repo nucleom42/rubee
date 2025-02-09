@@ -1,7 +1,7 @@
 # Rubee
 
-<p align="center">
-  <img src="images/rubee.svg" alt="Rubee" height="100">
+<p align="left">
+  <img src="images/rubee.svg" alt="Rubee" height="50">
 </p>
 
 Rubee is a fast and lightweight Ruby application server designed for minimalism and high performance.

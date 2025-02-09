@@ -9,8 +9,8 @@ Autoload	rubee.rb	/^  class Autoload$/;"	c
 BaseController	app/controllers/base_controller.rb	/^class BaseController$/;"	c
 CreateItems	db/create_items.rb	/^class CreateItems$/;"	c
 DatabaseObject	app/models/database_object.rb	/^class DatabaseObject$/;"	c
-HelloController	app/controllers/hello_controller.rb	/^class HelloController < BaseController$/;"	c
 Item	app/models/item.rb	/^class Item < DatabaseObject$/;"	c
+ItemsController	app/controllers/hello_controller.rb	/^class ItemsController < BaseController$/;"	c
 Router	rubee.rb	/^  class Router$/;"	c	class:Rubee
 Rubee	rubee.rb	/^module Rubee$/;"	m
 WellcomeController	app/controllers/wellcome_controller.rb	/^class WellcomeController < BaseController$/;"	c
@@ -19,14 +19,15 @@ call	db/create_items.rb	/^  def call$/;"	f	class:CreateItems
 call	rubee.rb	/^      def call$/;"	f	class:Autoload
 call	rubee.rb	/^    def call(env)$/;"	f	class:Rubee.Application
 connection	app/models/database_object.rb	/^    def connection$/;"	f	class:DatabaseObject
-create	app/controllers/hello_controller.rb	/^  def create$/;"	f	class:HelloController
+create	app/controllers/hello_controller.rb	/^  def create$/;"	f	class:ItemsController
 create	app/models/database_object.rb	/^    def create(attrs)$/;"	f	class:DatabaseObject
-delete	app/controllers/hello_controller.rb	/^  def delete$/;"	f	class:HelloController
+delete	app/controllers/hello_controller.rb	/^  def delete$/;"	f	class:ItemsController
 destroy	app/models/database_object.rb	/^  def destroy$/;"	f	class:DatabaseObject
 draw	rubee.rb	/^      def draw$/;"	f	class:Rubee.Router
 extract_params	app/controllers/base_controller.rb	/^  def extract_params(path, pattern)$/;"	f	class:BaseController
 find	app/models/database_object.rb	/^    def find(id)$/;"	f	class:DatabaseObject
-index	app/controllers/hello_controller.rb	/^  def index$/;"	f	class:HelloController
+image	app/controllers/base_controller.rb	/^  def image$/;"	f	class:BaseController
+index	app/controllers/hello_controller.rb	/^  def index$/;"	f	class:ItemsController
 initialize	app/controllers/base_controller.rb	/^  def initialize(request, route)$/;"	f	class:BaseController
 initialize	app/models/database_object.rb	/^  def initialize(attrs)$/;"	f	class:DatabaseObject
 last	app/models/database_object.rb	/^    def last$/;"	f	class:DatabaseObject
@@ -35,14 +36,14 @@ params	app/controllers/base_controller.rb	/^  def params$/;"	f	class:BaseControl
 pluralize_class_name	app/models/database_object.rb	/^    def pluralize_class_name$/;"	f	class:DatabaseObject
 reload	app/models/database_object.rb	/^  def reload$/;"	f	class:DatabaseObject
 reload	com/console	/^def reload$/;"	f
-response_with	app/controllers/base_controller.rb	/^  def response_with type: nil, object: nil, status: 200$/;"	f	class:BaseController
+response_with	app/controllers/base_controller.rb	/^  def response_with type: nil, object: nil, status: 200, mime_type: nil$/;"	f	class:BaseController
 route_for	rubee.rb	/^      def route_for(request)$/;"	f	class:Rubee.Router
 save	app/models/database_object.rb	/^  def save$/;"	f	class:DatabaseObject
 set_route	rubee.rb	/^      def set_route(path, to:, method: __method__)$/;"	f	class:Rubee.Router
-show	app/controllers/hello_controller.rb	/^  def show$/;"	f	class:HelloController
+show	app/controllers/hello_controller.rb	/^  def show$/;"	f	class:ItemsController
 show	app/controllers/wellcome_controller.rb	/^  def show$/;"	f	class:WellcomeController
 to_h	app/models/database_object.rb	/^  def to_h$/;"	f	class:DatabaseObject
 to_json	app/models/database_object.rb	/^  def to_json$/;"	f	class:DatabaseObject
-update	app/controllers/hello_controller.rb	/^  def update$/;"	f	class:HelloController
+update	app/controllers/hello_controller.rb	/^  def update$/;"	f	class:ItemsController
 update	app/models/database_object.rb	/^  def update(args = {})$/;"	f	class:DatabaseObject
 where	app/models/database_object.rb	/^    def where(args)$/;"	f	class:DatabaseObject
