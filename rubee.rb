@@ -27,24 +27,12 @@ module Rubee
       # fire the action
       controller.send(action)
     end
-
-    def load_image(req)
-      image_path = File.join(IMAGE_DIR, req.path.sub('/images/', ''))
-
-      if File.exist?(image_path) && File.file?(image_path)
-        mime_type = Rack::Mime.mime_type(File.extname(image_path))
-        return [200, { "content-type" => mime_type }, [File.read(image_path)]]
-      else
-        return [404, { "content-type" => "text/plain" }, ["Image not found"]]
-      end
-    end
   end
-
 
   class Router
     HTTP_METHODS = [:get, :post, :put, :patch, :delete, :head, :connect, :options, :trace].freeze
 
-    attr_reader :request
+    attr_reader :request, :routes
 
     @routes = []
 
@@ -64,14 +52,15 @@ module Rubee
         end
       end
 
-      def set_route(path, to:, method: __method__)
+      def set_route(path, to:, method: __method__, **args)
         controller, action = to.split("#")
-        @routes << { path:, controller:, action:, method: }
+        @routes.delete_if { |route| route[:path] == path && route[:method]  == method }
+        @routes << { path:, controller:, action:, method:, **args }
       end
 
       HTTP_METHODS.each do |method|
-        define_method method do |path, to:|
-          set_route(path, to:, method: method)
+        define_method method do |path, to:, **args|
+          set_route(path, to:, method: method, **args)
         end
       end
     end
@@ -83,10 +72,95 @@ module Rubee
       def call
         # autoload all rbs
         root_directory = File.dirname(__FILE__)
+        # all base classes should be loaded first
+        require_relative "app/controllers/base_controller"
+        require_relative "app/models/database_object"
         Dir[File.join(root_directory, '**', '*.rb')].each do |file|
-          require_relative file unless ['console.rb', 'rubee.rb'].include?(File.basename(file))
+          require_relative file unless ['rubee.rb'].include?(File.basename(file))
         end
       end
+    end
+  end
+
+  class Generator
+    def initialize(model_name, attributes, controller_name, action_name)
+      @model_name = model_name
+      @attributes = attributes
+      @plural_name = "#{controller_name.to_s.gsub("Controller", "").downcase}"
+      @action_name = action_name
+      @controller_name = controller_name
+    end
+
+    def call
+      generate_model if @model_name
+      generate_db_file if @model_name
+      generate_controller if @controller_name && @action_name
+      generate_view if @controller_name
+    end
+
+    private
+
+    def generate_model
+      if model_file = File.exist?("#{APP_ROOT}/app/models/#{@model_name}.rb")
+        puts "Model #{@model_name} already exists. Remove it if you want to regenerate"
+        return
+      end
+
+      content = <<~RUBY
+        class #{@model_name.capitalize} < DatabaseObject
+          attr_accessor #{@attributes.map { |hash| ":#{hash[:name]}"  }.join(", ")}
+        end
+      RUBY
+
+      File.open("#{APP_ROOT}/app/models/#{@model_name}.rb", 'w') { |file| file.write(content) }
+    end
+
+    def generate_controller
+      if controller_file = File.exist?("#{APP_ROOT}/app/controllers/#{@plural_name}_controller.rb")
+        puts "Controller #{@plural_name} already exists. Remove it if you want to regenerate"
+        return
+      end
+
+      content = <<~RUBY
+        class #{@plural_name.capitalize}Controller < BaseController
+          def #{@action_name}
+            response_with
+          end
+        end
+      RUBY
+
+      File.open("#{APP_ROOT}/app/controllers/#{@plural_name}_controller.rb", 'w') { |file| file.write(content) }
+    end
+
+    def generate_view
+      if view_file = File.exist?("#{APP_ROOT}/app/views/#{@plural_name}_#{@action_name}.erb")
+        puts "View #{@plural_name}_#{@action_name} already exists. Remove it if you want to regenerate"
+        return
+      end
+
+      content = <<~ERB
+        <h1>#{@plural_name}_#{@action_name} View</h1>
+      ERB
+
+      File.open("#{APP_ROOT}/app/views/#{@plural_name}_#{@action_name}.erb", 'w') { |file| file.write(content) }
+    end
+
+    def generate_db_file
+      if db_file = File.exist?("#{APP_ROOT}/db/create_#{@plural_name}.rb")
+        puts "DB file for #{@plural_name} already exists. Remove it if you want to regenerate"
+        return
+      end
+
+      content = <<~RUBY
+        require 'sequel'
+
+        class Create#{@plural_name}
+          def call
+          end
+        end
+      RUBY
+
+      File.open("#{APP_ROOT}/db/create_#{@plural_name}.rb", 'w') { |file| file.write(content) }
     end
   end
 end
