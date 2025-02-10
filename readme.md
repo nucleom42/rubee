@@ -6,7 +6,8 @@
 
 Rubee is a fast and lightweight Ruby application server designed for minimalism and high performance.
 
-The main pholosophy of Rubee is to focus on Ruby language representation of in he MVC web applications. There are no hidden implementation details, you can adjust it for your needs.
+The main pholosophy of Rubee is to focus on Ruby language explicit implementation of  the MVC web applications.
+There are no hidden details, you can adjust it for your needs.
 
 All greaet features are yet to come!
 
@@ -15,10 +16,9 @@ All greaet features are yet to come!
 - **Lightweight**: A minimal footprint that focuses on serving Ruby applications efficiently.
 - **Fast**: Optimized for speed, providing a quick response to requests.
 - **Rack**: Rrack backed
-- **Minimal**: A minimal footprint
-- **Router**: Router driven WIP
+- **Router**: Router driven
 - **Databases**: sqlite3
-- **Views**: Json, Erb
+- **Views**: Json, ERB
 
 ## Installation
 
@@ -43,10 +43,29 @@ bundle install
 ./com/rubee start
 ```
 
-5. Run db file
+## Generating files from the routes
+1. Add the routes to the routes.rb
 ```bash
-./com/db run file_name
+Rubee::Router.draw do |router|
+  ...
+  # draw the contract
+  router.get "/apples", to: "apples#index",
+    model: {
+      name: "apple",
+      attributes: [ { name: 'colour', type: :string }, { name: 'weight', type: :integer } ]
+    }
+end
 ```
-
-
+2. genrate the files
+```bash
+./com/generate get /apples
+```
+3. This will generate the following files
+```bash
+./app/controllers/apples_controller.rb # controller
+./app/models/apple.rb # model
+./app/views/apples_index.erb # view that is rendered by the controller right away
+.db/create_items.rb # database migration
+```
+4. Fill those file with the logic you need and run the server again!
 
