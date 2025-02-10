@@ -67,5 +67,5 @@ end
 ./app/views/apples_index.erb # view that is rendered by the controller right away
 .db/create_items.rb # database migration
 ```
-4. Fill those file with the logic you need and run the server again!
+4. Fill those files with the logic you need and run the server again!
 
