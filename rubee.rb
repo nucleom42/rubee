@@ -1,12 +1,15 @@
 require 'rack'
 require 'json'
 require 'pry'
+require 'singleton'
 
 APP_ROOT = File.expand_path(File.dirname(__FILE__))
 IMAGE_DIR = File.join(APP_ROOT, 'images')
 
 module Rubee
   class Application
+    include Singleton
+
     def call(env)
       # autoload rb files
       Autoload.call
@@ -27,6 +30,10 @@ module Rubee
       # fire the action
       controller.send(action)
     end
+  end
+
+  def Configuration
+    @config ||= {}
   end
 
   class Router
