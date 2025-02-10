@@ -33,10 +33,29 @@ module Rubee
   end
 
   def Configuration
-    @config ||= {}
+    include Singleton
+
+    @configuraiton = {
+      development: {
+        database_url: "",
+        port: 7000
+      }
+    }
+
+    class << self
+      def setup(env)
+        yield(self)
+      end
+
+      def database_url=(url, env)
+        @configuraiton[env.to_sym][:database_url] = url
+      end
+    end
   end
 
   class Router
+    include Singleton
+
     HTTP_METHODS = [:get, :post, :put, :patch, :delete, :head, :connect, :options, :trace].freeze
 
     attr_reader :request, :routes
