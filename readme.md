@@ -62,10 +62,10 @@ end
 ```
 3. This will generate the following files
 ```bash
-./app/controllers/apples_controller.rb # controller
-./app/models/apple.rb # model
-./app/views/apples_index.erb # view that is rendered by the controller right away
-.db/create_items.rb # database migration
+./app/controllers/apples_controller.rb # Controller with respective action
+./app/models/apple.rb # Model that acts as ORM
+./app/views/apples_index.erb # ERB view that is rendered by the controller right away
+./db/create_items.rb # Database migration file needed for creating repsective table
 ```
 4. Fill those files with the logic you need and run the server again!
 
