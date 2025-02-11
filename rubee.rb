@@ -32,14 +32,16 @@ module Rubee
     end
   end
 
-  def Configuration
+  class Configuration
     include Singleton
 
     @configuraiton = {
       development: {
         database_url: "",
         port: 7000
-      }
+      },
+      production: {},
+      test: {}
     }
 
     class << self
@@ -47,8 +49,8 @@ module Rubee
         yield(self)
       end
 
-      def database_url=(url, env)
-        @configuraiton[env.to_sym][:database_url] = url
+      def database_url=(args)
+        @configuraiton[args[:env].to_sym][:database_url] = args[:url]
       end
     end
   end
@@ -99,6 +101,8 @@ module Rubee
         # autoload all rbs
         root_directory = File.dirname(__FILE__)
         # all base classes should be loaded first
+        require_relative "config/base_configuration"
+        require_relative "config/routes"
         require_relative "app/controllers/base_controller"
         require_relative "app/models/database_object"
         Dir[File.join(root_directory, '**', '*.rb')].each do |file|
