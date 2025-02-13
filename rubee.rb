@@ -2,6 +2,7 @@ require 'rack'
 require 'json'
 require 'pry'
 require 'singleton'
+require 'sequel'
 
 APP_ROOT = File.expand_path(File.dirname(__FILE__))
 IMAGE_DIR = File.join(APP_ROOT, 'images')
@@ -36,6 +37,7 @@ module Rubee
     include Singleton
 
     @configuraiton = {
+      env: ENV['RACK_ENV'],
       development: {
         database_url: "",
         port: 7000
@@ -51,6 +53,12 @@ module Rubee
 
       def database_url=(args)
         @configuraiton[args[:env].to_sym][:database_url] = args[:url]
+      end
+
+      def method_missing(method_name, *args, &block)
+        if method_name.to_s.start_with?("get_")
+          @configuraiton[ENV['RACK_ENV'].to_sym]&.[](method_name.to_s.delete_prefix("get_").to_sym)
+        end
       end
     end
   end
@@ -100,11 +108,12 @@ module Rubee
       def call
         # autoload all rbs
         root_directory = File.dirname(__FILE__)
-        # all base classes should be loaded first
+        # all the base classes should be loaded first
         require_relative "config/base_configuration"
         require_relative "config/routes"
         require_relative "app/controllers/base_controller"
         require_relative "app/models/database_object"
+
         Dir[File.join(root_directory, '**', '*.rb')].each do |file|
           require_relative file unless ['rubee.rb'].include?(File.basename(file))
         end

@@ -1,7 +1,4 @@
-require 'sequel'
-
 class CreateItems
-  DB = Sequel.sqlite('db/development.sqlite3')
   def call
     # return puts DB[:items] if DB[:items]
 

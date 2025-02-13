@@ -1,6 +1,4 @@
-require 'sequel'
-
-DB = Sequel.sqlite("db/development.sqlite3")
+DB = Sequel.sqlite(Rubee::Configuration.get_database_url)
 
 class DatabaseObject
   def initialize(attrs)
