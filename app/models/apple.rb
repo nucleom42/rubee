@@ -1,3 +1,3 @@
-class Apple < DatabaseObject
+class Apple < SqliteObject
   attr_accessor :colour, :weight
 end

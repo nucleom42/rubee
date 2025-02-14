@@ -57,7 +57,7 @@ module Rubee
 
       def method_missing(method_name, *args, &block)
         if method_name.to_s.start_with?("get_")
-          @configuraiton[ENV['RACK_ENV'].to_sym]&.[](method_name.to_s.delete_prefix("get_").to_sym)
+          @configuraiton[ENV['RACK_ENV']&.to_sym || :development]&.[](method_name.to_s.delete_prefix("get_").to_sym)
         end
       end
     end
@@ -112,8 +112,11 @@ module Rubee
         require_relative "config/base_configuration"
         require_relative "config/routes"
         require_relative "app/controllers/base_controller"
+        Dir[File.join(root_directory, 'app/models/extensions/**', '*.rb')].each do |file|
+          require_relative file
+        end
         require_relative "app/models/database_object"
-
+        require_relative "app/models/sqlite_object"
         Dir[File.join(root_directory, '**', '*.rb')].each do |file|
           require_relative file unless ['rubee.rb'].include?(File.basename(file))
         end
