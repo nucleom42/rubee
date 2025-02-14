@@ -14,14 +14,9 @@ if command == "start"
 
   exec("rackup #{ENV['RACKUP_FILE']} -p #{port}")
 elsif command == "stop"
-  exec("pkill -f rackup")
-elsif command == "restart"
-  exec("pkill -f rackup")
-  exec("rackup #{ENV['RACKUP_FILE']} -p #{port}")
+  exec("pkill -f rubee")
 elsif command == "status"
-  exec("ps aux | grep rackup")
-elsif command == "log"
-  exec("tail -f log/development.log")
+  exec("ps aux | grep rubee")
 else
   puts "Unknown command: #{command}"
 end
