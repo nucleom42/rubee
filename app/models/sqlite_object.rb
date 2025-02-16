@@ -60,6 +60,5 @@ class SqliteObject < DatabaseObject
       out_id = connection.insert(**attrs)
       self.new(**(attrs.merge(id: out_id)))
     end
-
   end
 end

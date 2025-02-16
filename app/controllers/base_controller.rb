@@ -1,4 +1,6 @@
 class BaseController
+  include Hookable
+
   def initialize(request, route)
     @request = request
     @route = route

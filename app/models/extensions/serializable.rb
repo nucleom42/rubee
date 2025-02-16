@@ -1,6 +1,5 @@
 module Serializable
   def self.included(base)
-    base.send(:extend, ClassMethods)
     base.send(:include, InstanceMethods)
     base.prepend(Initializer)
   end
@@ -11,9 +10,6 @@ module Serializable
         self.send("#{attr}=", value)
       end
     end
-  end
-
-  module ClassMethods
   end
 
   module InstanceMethods

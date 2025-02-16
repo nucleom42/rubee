@@ -111,10 +111,10 @@ module Rubee
         # all the base classes should be loaded first
         require_relative "config/base_configuration"
         require_relative "config/routes"
-        require_relative "app/controllers/base_controller"
         Dir[File.join(root_directory, 'app/models/extensions/**', '*.rb')].each do |file|
           require_relative file
         end
+        require_relative "app/controllers/base_controller"
         require_relative "app/models/database_object"
         require_relative "app/models/sqlite_object"
         Dir[File.join(root_directory, '**', '*.rb')].each do |file|
@@ -149,7 +149,7 @@ module Rubee
       end
 
       content = <<~RUBY
-        class #{@model_name.capitalize} < DatabaseObject
+        class #{@model_name.capitalize} < SqlliteObject
           attr_accessor #{@attributes.map { |hash| ":#{hash[:name]}"  }.join(", ")}
         end
       RUBY
@@ -194,8 +194,6 @@ module Rubee
       end
 
       content = <<~RUBY
-        require 'sequel'
-
         class Create#{@plural_name}
           def call
           end
