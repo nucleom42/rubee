@@ -26,7 +26,9 @@ class BaseController
       return [status, { "content-type" => mime_type }, [object]]
     in :text
       return [status, { "content-type" => "text/plain" }, [object.to_s]]
-    else
+    in :unauthorized
+      return [401, { "content-type" => "text/plain" }, ["Unauthorized"]]
+    else # rendering erb view is a default behavior
       view_file_name = self.class.name.split("Controller").first.downcase
       rendered_erb = ERB.new(File.open("app/views/#{view_file_name}_#{@route[:action]}.erb").read).result
       return [status, { "content-type" => "text/html" }, [rendered_erb]]
@@ -38,6 +40,11 @@ class BaseController
     extract_params(@request.path, @route[:path])
       .merge(body)
       .merge(@request.params)
+  end
+
+  def headers
+    @request.env.select {|k,v| k.start_with? 'HTTP_'}
+      .collect {|key, val| [key.sub(/^HTTP_/, ''), val]}
   end
 
   def extract_params(path, pattern)

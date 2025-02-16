@@ -1,5 +1,6 @@
 require 'rack'
 require 'json'
+require 'base64'
 require 'pry'
 require 'singleton'
 require 'sequel'
@@ -108,18 +109,28 @@ module Rubee
       def call
         # autoload all rbs
         root_directory = File.dirname(__FILE__)
+        priority_order_require(root_directory)
+        Dir[File.join(root_directory, '**', '*.rb')].each do |file|
+          require_relative file unless ['rubee.rb'].include?(File.basename(file))
+        end
+      end
+
+      def priority_order_require(root_directory)
         # all the base classes should be loaded first
         require_relative "config/base_configuration"
         require_relative "config/routes"
         Dir[File.join(root_directory, 'app/models/extensions/**', '*.rb')].each do |file|
           require_relative file
         end
+        Dir[File.join(root_directory, 'app/middlewares/**', '*.rb')].each do |file|
+          require_relative file
+        end
+        Dir[File.join(root_directory, 'app/controllers/extensions/**', '*.rb')].each do |file|
+          require_relative file
+        end
         require_relative "app/controllers/base_controller"
         require_relative "app/models/database_object"
         require_relative "app/models/sqlite_object"
-        Dir[File.join(root_directory, '**', '*.rb')].each do |file|
-          require_relative file unless ['rubee.rb'].include?(File.basename(file))
-        end
       end
     end
   end
