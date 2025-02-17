@@ -60,7 +60,11 @@ Rubee::Router.draw do |router|
   router.get "/apples", to: "apples#index",
     model: {
       name: "apple",
-      attributes: [ { name: 'colour', type: :string }, { name: 'weight', type: :integer } ]
+      attributes: [
+        { name: 'id', type: :integer },
+        { name: 'colour', type: :string },
+        { name: 'weight', type: :integer }
+      ]
     }
 end
 ```
