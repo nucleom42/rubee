@@ -4,12 +4,12 @@
   <img src="images/rubee.svg" alt="Rubee" height="50">
 </p>
 
-Rubee is a fast and lightweight Ruby application server designed for minimalism and high performance.
+RuBer is a fast and lightweight Ruby application server designed for minimalism and high performance.
 
-The main pholosophy of Rubee is to focus on Ruby language explicit implementation of the MVC web applications.
+The main pholosophy of RuBee is to focus on Ruby language explicit implementation of the MVC web applications.
 There are no hidden details, you can adjust it for your needs.
 
-Want to get a quick API server up and runing? You can do it less then 7 min!
+Want to get a quick API server up and runing? You can do it for less than 7 min!
 [![Demo Video](http://img.youtube.com/vi/Udz476rI0gs/0.jpg)](http://www.youtube.com/watch?v=Udz476rI0gs "RuBee API demo")
 
 All greaet features are yet to come!
@@ -18,7 +18,7 @@ All greaet features are yet to come!
 
 - **Lightweight**: A minimal footprint that focuses on serving Ruby applications efficiently.
 - **Fast**: Optimized for speed, providing a quick response to requests.
-- **Rack**: Rack backed
+- **Rack**: Rack backed. All Rack api is available for integration.
 - **Router**: Router driven - generates all required files from the routes.
 - **Databases**: Sqlite3
 - **Views**: Json, ERB
@@ -49,7 +49,7 @@ Aside that, make sure:
 bundle install
 ```
 
-4. Run rubee server. Default port is 7000
+4. Run RuBee server. Default port is 7000
 ```bash
 ./com/rubee start
 ```
