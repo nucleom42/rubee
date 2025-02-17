@@ -5,45 +5,92 @@
 !_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
 !_TAG_PROGRAM_VERSION	5.8	//
 Application	rubee.rb	/^  class Application$/;"	c	class:Rubee
+AuthTokenMiddleware	app/middlewares/auth_token_middleware.rb	/^class AuthTokenMiddleware$/;"	c
+Authable	app/controllers/extensions/authable.rb	/^module Authable$/;"	m
 Autoload	rubee.rb	/^  class Autoload$/;"	c
 BaseController	app/controllers/base_controller.rb	/^class BaseController$/;"	c
-CreateItems	db/create_items.rb	/^class CreateItems$/;"	c
+ClassMethods	app/controllers/extensions/authable.rb	/^  module ClassMethods$/;"	m	class:Authable
+ClassMethods	app/controllers/extensions/middlewarable.rb	/^  module ClassMethods$/;"	m	class:Middlewarable
+ClassMethods	app/models/extensions/hookable.rb	/^  module ClassMethods$/;"	m	class:Hookable
+Configuration	rubee.rb	/^  class Configuration$/;"	c	class:Rubee
+Create	rubee.rb	/^        class Create#{@plural_name}$/;"	c	class:generate_db_file
 DatabaseObject	app/models/database_object.rb	/^class DatabaseObject$/;"	c
-Item	app/models/item.rb	/^class Item < DatabaseObject$/;"	c
-ItemsController	app/controllers/hello_controller.rb	/^class ItemsController < BaseController$/;"	c
-Router	rubee.rb	/^  class Router$/;"	c	class:Rubee
+Generator	rubee.rb	/^  class Generator$/;"	c
+Hookable	app/models/extensions/hookable.rb	/^module Hookable$/;"	m
+Initializer	app/controllers/extensions/middlewarable.rb	/^  module Initializer$/;"	m	class:Middlewarable
+Initializer	app/models/extensions/serializable.rb	/^  module Initializer$/;"	m	class:Serializable
+InstanceMethods	app/controllers/extensions/authable.rb	/^  module InstanceMethods$/;"	m	class:Authable
+InstanceMethods	app/models/extensions/hookable.rb	/^  module InstanceMethods$/;"	m	class:Hookable
+InstanceMethods	app/models/extensions/serializable.rb	/^  module InstanceMethods$/;"	m	class:Serializable
+Middlewarable	app/controllers/extensions/middlewarable.rb	/^module Middlewarable$/;"	m
+Router	rubee.rb	/^  class Router$/;"	c
 Rubee	rubee.rb	/^module Rubee$/;"	m
+Serializable	app/models/extensions/serializable.rb	/^module Serializable$/;"	m
+SqliteObject	app/models/sqlite_object.rb	/^class SqliteObject < DatabaseObject$/;"	c
 WellcomeController	app/controllers/wellcome_controller.rb	/^class WellcomeController < BaseController$/;"	c
+_auth_methods	app/controllers/extensions/authable.rb	/^    def _auth_methods$/;"	f	class:Authable.ClassMethods
+after	app/models/extensions/hookable.rb	/^    def after(method, handler, **options)$/;"	f	class:Hookable.ClassMethods
 all	app/models/database_object.rb	/^    def all$/;"	f	class:DatabaseObject
-call	db/create_items.rb	/^  def call$/;"	f	class:CreateItems
+all	app/models/sqlite_object.rb	/^    def all$/;"	f	class:SqliteObject
+around	app/models/extensions/hookable.rb	/^    def around(method, handler, **options)$/;"	f	class:Hookable.ClassMethods
+attach	app/controllers/extensions/middlewarable.rb	/^    def attach(*args)$/;"	f	class:Middlewarable.ClassMethods
+auth_methods	app/controllers/extensions/authable.rb	/^    def auth_methods(*args)$/;"	f	class:Authable.ClassMethods
+authenticated?	app/controllers/extensions/authable.rb	/^    def authenticated?$/;"	f	class:Authable.InstanceMethods
+before	app/models/extensions/hookable.rb	/^    def before(method, handler, **options)$/;"	f	class:Hookable.ClassMethods
+call	app/middlewares/auth_token_middleware.rb	/^  def call(env)$/;"	f	class:AuthTokenMiddleware
+call	rubee.rb	/^          def call$/;"	f	class:generate_db_file.Create
 call	rubee.rb	/^      def call$/;"	f	class:Autoload
+call	rubee.rb	/^    def call$/;"	f	class:Generator
 call	rubee.rb	/^    def call(env)$/;"	f	class:Rubee.Application
+conditions_met?	app/models/extensions/hookable.rb	/^    def conditions_met?(if_condition = nil, unless_condition = nil)$/;"	f	class:Hookable.InstanceMethods
 connection	app/models/database_object.rb	/^    def connection$/;"	f	class:DatabaseObject
-create	app/controllers/hello_controller.rb	/^  def create$/;"	f	class:ItemsController
+connection	app/models/sqlite_object.rb	/^    def connection$/;"	f	class:SqliteObject
 create	app/models/database_object.rb	/^    def create(attrs)$/;"	f	class:DatabaseObject
-delete	app/controllers/hello_controller.rb	/^  def delete$/;"	f	class:ItemsController
+create	app/models/sqlite_object.rb	/^    def create(attrs)$/;"	f	class:SqliteObject
+database_url=	rubee.rb	/^      def database_url=(args)$/;"	f	class:Rubee.Configuration
 destroy	app/models/database_object.rb	/^  def destroy$/;"	f	class:DatabaseObject
-draw	rubee.rb	/^      def draw$/;"	f	class:Rubee.Router
+destroy	app/models/sqlite_object.rb	/^  def destroy$/;"	f	class:SqliteObject
+draw	rubee.rb	/^      def draw$/;"	f	class:Router
 extract_params	app/controllers/base_controller.rb	/^  def extract_params(path, pattern)$/;"	f	class:BaseController
 find	app/models/database_object.rb	/^    def find(id)$/;"	f	class:DatabaseObject
+find	app/models/sqlite_object.rb	/^    def find(id)$/;"	f	class:SqliteObject
+generate_controller	rubee.rb	/^    def generate_controller$/;"	f
+generate_db_file	rubee.rb	/^    def generate_db_file$/;"	f
+generate_model	rubee.rb	/^    def generate_model$/;"	f	class:Generator
+generate_view	rubee.rb	/^    def generate_view$/;"	f
+headers	app/controllers/base_controller.rb	/^  def headers$/;"	f	class:BaseController
+headers	app/middlewares/auth_token_middleware.rb	/^  def headers(env)$/;"	f	class:AuthTokenMiddleware
 image	app/controllers/base_controller.rb	/^  def image$/;"	f	class:BaseController
-index	app/controllers/hello_controller.rb	/^  def index$/;"	f	class:ItemsController
+included	app/controllers/extensions/authable.rb	/^  def self.included(base)$/;"	F	class:Authable
+included	app/controllers/extensions/middlewarable.rb	/^  def self.included(base)$/;"	F	class:Middlewarable
+included	app/models/extensions/hookable.rb	/^  def self.included(base)$/;"	F	class:Hookable
+included	app/models/extensions/serializable.rb	/^  def self.included(base)$/;"	F	class:Serializable
 initialize	app/controllers/base_controller.rb	/^  def initialize(request, route)$/;"	f	class:BaseController
-initialize	app/models/database_object.rb	/^  def initialize(attrs)$/;"	f	class:DatabaseObject
+initialize	app/controllers/extensions/middlewarable.rb	/^    def initialize(req, route)$/;"	f	class:Middlewarable.Initializer
+initialize	app/middlewares/auth_token_middleware.rb	/^  def initialize(app, req)$/;"	f	class:AuthTokenMiddleware
+initialize	app/models/extensions/serializable.rb	/^    def initialize(attrs)$/;"	f	class:Serializable.Initializer
+initialize	rubee.rb	/^    def initialize(model_name, attributes, controller_name, action_name)$/;"	f	class:Generator
 last	app/models/database_object.rb	/^    def last$/;"	f	class:DatabaseObject
-load_image	rubee.rb	/^    def load_image(req)$/;"	f	class:Rubee.Application
+last	app/models/sqlite_object.rb	/^    def last$/;"	f	class:SqliteObject
+method_missing	rubee.rb	/^      def method_missing(method_name, *args, &block)$/;"	f	class:Rubee.Configuration
+middlewares	app/controllers/extensions/middlewarable.rb	/^    def middlewares$/;"	f	class:Middlewarable.ClassMethods
 params	app/controllers/base_controller.rb	/^  def params$/;"	f	class:BaseController
 pluralize_class_name	app/models/database_object.rb	/^    def pluralize_class_name$/;"	f	class:DatabaseObject
+priority_order_require	rubee.rb	/^      def priority_order_require(root_directory)$/;"	f	class:Autoload
 reload	app/models/database_object.rb	/^  def reload$/;"	f	class:DatabaseObject
+reload	app/models/sqlite_object.rb	/^  def reload$/;"	f	class:SqliteObject
 reload	com/console	/^def reload$/;"	f
 response_with	app/controllers/base_controller.rb	/^  def response_with type: nil, object: nil, status: 200, mime_type: nil$/;"	f	class:BaseController
-route_for	rubee.rb	/^      def route_for(request)$/;"	f	class:Rubee.Router
+route_for	rubee.rb	/^      def route_for(request)$/;"	f	class:Router
 save	app/models/database_object.rb	/^  def save$/;"	f	class:DatabaseObject
-set_route	rubee.rb	/^      def set_route(path, to:, method: __method__)$/;"	f	class:Rubee.Router
-show	app/controllers/hello_controller.rb	/^  def show$/;"	f	class:ItemsController
+save	app/models/sqlite_object.rb	/^  def save$/;"	f	class:SqliteObject
+set_route	rubee.rb	/^      def set_route(path, to:, method: __method__, **args)$/;"	f	class:Router
+setup	rubee.rb	/^      def setup(env)$/;"	f	class:Rubee.Configuration
 show	app/controllers/wellcome_controller.rb	/^  def show$/;"	f	class:WellcomeController
-to_h	app/models/database_object.rb	/^  def to_h$/;"	f	class:DatabaseObject
-to_json	app/models/database_object.rb	/^  def to_json$/;"	f	class:DatabaseObject
-update	app/controllers/hello_controller.rb	/^  def update$/;"	f	class:ItemsController
+to_h	app/models/extensions/serializable.rb	/^    def to_h$/;"	f	class:Serializable.InstanceMethods
+to_json	app/models/extensions/serializable.rb	/^    def to_json$/;"	f	class:Serializable.InstanceMethods
 update	app/models/database_object.rb	/^  def update(args = {})$/;"	f	class:DatabaseObject
+update	app/models/sqlite_object.rb	/^  def update(args = {})$/;"	f	class:SqliteObject
+valid_token?	app/middlewares/auth_token_middleware.rb	/^  def valid_token?(header)$/;"	f	class:AuthTokenMiddleware
 where	app/models/database_object.rb	/^    def where(args)$/;"	f	class:DatabaseObject
+where	app/models/sqlite_object.rb	/^    def where(args)$/;"	f	class:SqliteObject

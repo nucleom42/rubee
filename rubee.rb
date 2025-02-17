@@ -137,7 +137,7 @@ module Rubee
 
   class Generator
     def initialize(model_name, attributes, controller_name, action_name)
-      @model_name = model_name
+      @model_name = model_name.downcase
       @attributes = attributes
       @plural_name = "#{controller_name.to_s.gsub("Controller", "").downcase}"
       @action_name = action_name
@@ -160,7 +160,7 @@ module Rubee
       end
 
       content = <<~RUBY
-        class #{@model_name.capitalize} < SqlliteObject
+        class #{@model_name.capitalize} < SqliteObject
           attr_accessor #{@attributes.map { |hash| ":#{hash[:name]}"  }.join(", ")}
         end
       RUBY
