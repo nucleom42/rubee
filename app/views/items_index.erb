@@ -1,0 +1,5 @@
+<ul>
+  <% Item.all.each do |item| %>
+    <li><%= item.to_json %></li>
+  <% end %>
+</ul>
