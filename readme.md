@@ -75,7 +75,7 @@ in the way it required (ie json).
 
 Here below is a simple example on how it can be used by rendering json from in memory object
 
-```Ruby
+```ruby
   #ApplesController
 
   def show
@@ -88,13 +88,13 @@ Here below is a simple example on how it can be used by rendering json from in m
 ```
 
 Just make sure Serializable module included in the target class.
-```Ruby
+```ruby
   class Apple
     include Serializable
     attr_accessor :colour, :weight
   end
 ```
-However this you can simply turn it to ORM object by extending database class.
+However, you can simply turn it to ORM object by extending database class.
 
 ```Ruby
   class Apple < SqliteObject
@@ -104,7 +104,7 @@ However this you can simply turn it to ORM object by extending database class.
 
 So in the controller you would need to query your target object
 
-```Ruby
+```ruby
   #ApplesController
 
   def show
@@ -116,4 +116,46 @@ So in the controller you would need to query your target object
       response_with object: { error: "apple with colour #{params[:colour]} not found" }, status: 422, type: :json
     end
   end
+```
+
+## Object hooks
+
+In RuBee by extending Hookable module any Ruby objcet can be charged with hooks (logic),
+that can be executed before, after and around a specific method execution.
+
+Here below a controller example. However it can be used in any Ruby object, like Model etc.
+```ruby
+# base conrteoller is hopokable by Default
+class ApplesController < BaseController
+  before :index, :print_hello # you can useinstance method as a handler
+  after :index, -> { puts "after index" }, if: -> { true } # or you can use lambda
+  after :index, -> { puts "after index2" }, unless: -> { false } # if, unless guards may accept method or lambda
+  around :index, :log
+
+  def index
+    response_with object: { test: "hooks" }
+  end
+
+  def print_hello
+    puts "hello!"
+  end
+
+  def log
+    puts "before log aroud"
+    res = yield
+    puts "after log around"
+    res
+  end
+  ...
+end
+```
+Then, in the server logs we could see next execution stack
+
+```bash
+before log aroud
+hello!
+after index
+after index2
+after log around
+127.0.0.1 - - [17/Feb/2025:11:42:14 -0500] "GET /apples HTTP/1.1" 401 - 0.0359
 ```

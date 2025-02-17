@@ -3,12 +3,17 @@ class ApplesController < BaseController
   auth_methods :index
 
   before :index, :handle_unauthentificated, unless: :authenticated?
-  after :index, -> { puts "after index" }, if: -> { true }
-  after :index, -> { puts "after index2" }, if: -> { true }
-  around :index, :log, if: -> { true }
+  before :index, :print_hello # you can useinstance method as a handler
+  after :index, -> { puts "after index" }, if: -> { true } # or you can use lambda
+  after :index, -> { puts "after index2" }, unless: -> { false } # if, unless guards may accept method or lambda
+  around :index, :log
 
   def index
     response_with(**(@type_options || {}))
+  end
+
+  def print_hello
+    puts "hello!"
   end
 
   def show
