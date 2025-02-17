@@ -69,3 +69,51 @@ end
 ```
 4. Fill those files with the logic you need and run the server again!
 
+## Model
+Model in RuBee is just simple ruby object that can be serilalized in the view
+in the way it required (ie json).
+
+Here below is a simple example on how it can be used by rendering json from in memory object
+
+```Ruby
+  #ApplesController
+
+  def show
+    # in memory example
+    apples = [Apple.new(colour: 'red', weight: '1lb'), Apple.new(colour: 'green', weight: '1lb')]
+    apple = apples.find { |apple| apple.colour = params[:colour] }
+
+    response_with object: apple, type: :json
+  end
+```
+
+Just make sure Serializable module included in the target class.
+```Ruby
+  class Apple
+    include Serializable
+    attr_accessor :colour, :weight
+  end
+```
+However this you can simply turn it to ORM object by extending database class.
+
+```Ruby
+  class Apple < SqliteObject
+    attr_accessor :colour, :weight
+  end
+```
+
+So in the controller you would need to query your target object
+
+```Ruby
+  #ApplesController
+
+  def show
+    apple = Apple.where(colour: params[:colour])&.last
+
+    if apple
+      response_with object: apple, type: :json
+    else
+      response_with object: { error: "apple with colour #{params[:colour]} not found" }, status: 422, type: :json
+    end
+  end
+```

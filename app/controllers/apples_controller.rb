@@ -2,20 +2,30 @@ class ApplesController < BaseController
   include Authable
   auth_methods :index
 
-  before :index, -> { puts "before index" }, if: -> { true }
+  before :index, :handle_unauthentificated, unless: :authenticated?
   after :index, -> { puts "after index" }, if: -> { true }
   after :index, -> { puts "after index2" }, if: -> { true }
   around :index, :log, if: -> { true }
 
   def index
-    if authenticated?
-      response_with
-    else
-      response_with type: :unauthorized
-    end
+    response_with(**(@type_options || {}))
+  end
+
+  def show
+    # in memory example
+    apples = [Apple.new(colour: 'red', weight: '1lb'), Apple.new(colour: 'green', weight: '1lb')]
+    apple = apples.find { |apple| apple.colour = params[:colour] }
+
+    response_with object: apple, type: :json
   end
 
   private
+
+  def handle_unauthentificated
+    # Ititiate type unauthorized, so it will be rendered properly in the
+    # response_with method
+    @type_options = { type: :unauthorized }
+  end
 
   def log
     puts "before log aroud"

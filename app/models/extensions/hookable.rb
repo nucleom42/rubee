@@ -71,7 +71,7 @@ module Hookable
       unless_condition_result =
         if unless_condition.nil?
           false
-        elsif unless_conditions.respond_to?(:call)
+        elsif unless_condition.respond_to?(:call)
           unless_condition.call
         elsif respond_to?(unless_condition)
           send(unless_condition)

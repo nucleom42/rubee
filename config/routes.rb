@@ -13,4 +13,5 @@ Rubee::Router.draw do |router|
       name: "apple",
       attributes: [ { name: 'colour', type: :string }, { name: 'weight', type: :integer } ]
     }
+  router.get "/apples/{colour}", to: "apples#show"
 end
