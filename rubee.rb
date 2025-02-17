@@ -205,7 +205,7 @@ module Rubee
       end
 
       content = <<~RUBY
-        class Create#{@plural_name}
+        class Create#{@plural_name.capitalize}
           def call
           end
         end
