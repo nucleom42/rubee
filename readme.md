@@ -31,13 +31,13 @@ cd my_project
 
 2. Clone the rubee repository
 ```bash
-gh repo clone nucleom42/rubee .
+git clone https://github.com/nucleom42/rubee .
 ```
 
 3. Install dependencies
 
 - Prerequisites
-RuBee is using **Sqlite** as a default database. Please make sure you get it installed.
+**RuBee** is using **Sqlite** as a default database. Please make sure you get it installed.
 Aside that, make sure:
 **Ruby** language (3+) is installed
 **Bundler** is installed
