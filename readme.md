@@ -4,7 +4,7 @@
   <img src="images/rubee.svg" alt="Rubee" height="50">
 </p>
 
-RuBer is a fast and lightweight Ruby application server designed for minimalism and high performance.
+RuBee is a fast and lightweight Ruby application server designed for minimalism and high performance.
 
 The main pholosophy of RuBee is to focus on Ruby language explicit implementation of the MVC web applications.
 There are no hidden details, you can adjust it for your needs.
