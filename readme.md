@@ -1,4 +1,4 @@
-# Rubee
+# RuBee
 
 <p align="left">
   <img src="images/rubee.svg" alt="Rubee" height="50">
