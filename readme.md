@@ -19,7 +19,6 @@ All greaet features are yet to come!
 - **Router**: Router driven - generates all required files from the routes.
 - **Databases**: Sqlite3
 - **Views**: Json, ERB
-- **Bundlable** Charge your RuBee with any gem you need and update your project with bundle
 
 ## Installation
 
@@ -31,17 +30,10 @@ cd my_project
 
 2. Clone the rubee repository
 ```bash
-git clone https://github.com/nucleom42/rubee .
+gh repo clone nucleom42/rubee .
 ```
 
 3. Install dependencies
-
-***Prerequisites***<br />
-**RuBee** is using **Sqlite** as a default database. Please make sure you get it installed.
-Aside that, make sure:
-**Ruby** language (3+) is installed
-**Bundler** is installed
-
 ```bash
 bundle install
 ```
