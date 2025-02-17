@@ -36,7 +36,7 @@ git clone https://github.com/nucleom42/rubee .
 
 3. Install dependencies
 
-- Prerequisites
+***Prerequisites***<br />
 **RuBee** is using **Sqlite** as a default database. Please make sure you get it installed.
 Aside that, make sure:
 **Ruby** language (3+) is installed
