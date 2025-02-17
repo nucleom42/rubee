@@ -11,11 +11,21 @@ module Authable
 
   module InstanceMethods
     def authenticated?
+      methods = self.class._auth_methods
+      return true if methods && !methods.include?(@route[:action].to_sym)
+
       @request.env["rack.session"]&.[]("authenticated")
     end
   end
 
   module ClassMethods
+    def auth_methods(*args)
+      @auth_methods ||= []
+      @auth_methods.concat(args.map(&:to_sym)).uniq!
+    end
 
+    def _auth_methods
+      @auth_methods || []
+    end
   end
 end

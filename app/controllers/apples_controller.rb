@@ -1,5 +1,6 @@
 class ApplesController < BaseController
   include Authable
+  auth_methods :index
 
   before :index, -> { puts "before index" }, if: -> { true }
   after :index, -> { puts "after index" }, if: -> { true }

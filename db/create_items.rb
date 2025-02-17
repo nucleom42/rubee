@@ -1,7 +1,5 @@
 class CreateItems
   def call
-    # return puts DB[:items] if DB[:items]
-
     unless DB.tables.include?(:items)
       DB.create_table :items do
         primary_key :id
