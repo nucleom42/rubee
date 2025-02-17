@@ -1,9 +1,9 @@
 #!/usr/bin/env ruby
 
 command, file_name = ARGV.first&.split(':')
-
+require_relative '../rubee.rb'
+Rubee::Autoload.call
 if command == 'run'
-  require "./db/#{file_name}.rb"
   Object.const_get(file_name.split("_").map(&:capitalize).join).new.call
 else
   puts "Unknown command: #{command}"
