@@ -9,8 +9,9 @@ RuBee is a fast and lightweight Ruby application server designed for minimalism 
 The main philosophy of RuBee is to focus on Ruby language explicit implementation of the MVC web application.
 There are no hidden details, you can adjust it for your needs.
 
-Want to get a quick API server up and runing? You can do it for less than 7 min! My typing is bad, I probably could do it in 5 min.
+Want to get a quick API server up and runing? You can do it for less than 7 min!
 [![Demo Video](http://img.youtube.com/vi/Udz476rI0gs/0.jpg)](http://www.youtube.com/watch?v=Udz476rI0gs "RuBee API demo")
+My typing is bad, I probably could do it in 5 min.
 
 All greaet features are yet to come!
 
