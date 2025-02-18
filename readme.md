@@ -4,12 +4,12 @@
   <img src="images/rubee.svg" alt="Rubee" height="50">
 </p>
 
-RuBee is a fast and lightweight Ruby application server designed for minimalism and high performance.
+RuBee is a fast and lightweight Ruby application server designed for minimalism and flexibility .
 
-The main philosophy of RuBee is to focus on Ruby language explicit implementation of the MVC web applications.
+The main philosophy of RuBee is to focus on Ruby language explicit implementation of the MVC web application.
 There are no hidden details, you can adjust it for your needs.
 
-Want to get a quick API server up and runing? You can do it for less than 7 min!
+Want to get a quick API server up and runing? You can do it for less than 7 min! My typing is bad, I probably could do it in 5 min.
 [![Demo Video](http://img.youtube.com/vi/Udz476rI0gs/0.jpg)](http://www.youtube.com/watch?v=Udz476rI0gs "RuBee API demo")
 
 All greaet features are yet to come!
@@ -17,7 +17,8 @@ All greaet features are yet to come!
 ## Features
 
 - **Lightweight**: A minimal footprint that focuses on serving Ruby applications efficiently.
-- **Fast**: Optimized for speed, providing a quick response to requests.
+- **Contract driven**: Define your API contracts in a simple, declarative manner. And generate the files for you.
+- **Fast**: Optimized for speed, providing a quick response to requests. Everything is relative, I know!
 - **Rack**: Rack backed. All Rack api is available for integration.
 - **Router**: Router driven - generates all required files from the routes.
 - **Databases**: Sqlite3
@@ -174,3 +175,7 @@ after index2
 after log around
 127.0.0.1 - - [17/Feb/2025:11:42:14 -0500] "GET /apples HTTP/1.1" 401 - 0.0359
 ```
+## TODOs
+- [ ] Token authorization API
+- [ ] Add test coverage
+- [ ] Fix bugs
