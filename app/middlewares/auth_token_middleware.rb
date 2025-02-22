@@ -1,13 +1,13 @@
 class AuthTokenMiddleware
   def initialize(app, req)
     @app = app
-    @token = Base64.encode64('secret').gsub(/\n/, '')
   end
 
   def call(env)
     auth_header = headers(env)["HTTP_AUTHORIZATION"]
+    token = auth_header&.gsub("Bearer ", "")
 
-    if valid_token?(auth_header)
+    if valid_token?(token)
       env["rack.session"] ||= {}
       env["rack.session"]["authenticated"] = true
     end
@@ -21,9 +21,17 @@ class AuthTokenMiddleware
     env.each_with_object({}) { |(k, v), h| h[k] = v if k.start_with?("HTTP_") }
   end
 
-  def valid_token?(header)
-    return false unless header
+  def valid_token?(token)
+    return false unless token
 
-    header == "Bearer #{@token}"
+    hash = decode_jwt(token)
+    email = hash[:username]
+
+    User.where(email:)&.any?
+  end
+
+  def decode_jwt(token)
+    decoded_array = JWT.decode(token, AuthTokenable::KEY, true, { algorithm: 'HS256' })
+    decoded_array&.first  # Extract payload
   end
 end
