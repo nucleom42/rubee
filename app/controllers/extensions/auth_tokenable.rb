@@ -16,6 +16,13 @@ module Authable
 
       @request.env["rack.session"]&.[]("authenticated")
     end
+
+    def authehticated_user
+      @authehticated_user ||= User.where(email: @request.params[:email], password: @request.params[:password]).first
+    end
+
+    def authenticate!
+    end
   end
 
   module ClassMethods
