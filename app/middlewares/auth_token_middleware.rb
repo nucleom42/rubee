@@ -1,14 +1,20 @@
 class AuthTokenMiddleware
   def initialize(app, req)
+    @req = req
     @app = app
   end
 
   def call(env)
+    # get token from header
     auth_header = headers(env)["HTTP_AUTHORIZATION"]
     token = auth_header ? auth_header[/^Bearer (.*)$/]&.gsub("Bearer ", "") : nil
+    # get token from cookies
+    unless token
+      token = @req.cookies["jwt"]
+    end
     if valid_token?(token)
       env["rack.session"] ||= {}
-      env["rack.session"]["authenticated"] = true
+      env["rack.session"]["authentificated"] = true
     end
 
     @app.call(env)

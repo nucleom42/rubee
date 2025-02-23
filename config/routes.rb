@@ -1,5 +1,5 @@
 Rubee::Router.draw do |router|
-  router.get "/", to: "wellcome#show" # override it for your app
+  router.get "/", to: "welcome#show" # override it for your app
 
   router.get "/users/login", to: "users#edit",
     model: {

@@ -13,11 +13,11 @@ module AuthTokenable
   end
 
   module InstanceMethods
-    def authenticated?
+    def authentificated?
       methods = self.class._auth_methods
       return true if methods && !methods.include?(@route[:action].to_sym)
       # This is suppose to be set in the middleware, otherwise it will return false
-      @request.env["rack.session"]&.[]("authenticated")
+      @request.env["rack.session"]&.[]("authentificated")
     end
 
     def authehticated_user
@@ -35,11 +35,15 @@ module AuthTokenable
       true
     end
 
+    def log_out!
+      #TODO implement
+    end
+
     def handle_auth
-      if authenticated?
+      if authentificated?
         yield
       else
-        response_with type: :unauthenticated
+        response_with type: :unauthentificated
       end
     end
   end
