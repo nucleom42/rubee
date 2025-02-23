@@ -1,10 +1,6 @@
-require 'rack'
-require 'json'
-require 'base64'
-require 'pry'
-require 'singleton'
-require 'sequel'
-require 'jwt'
+require "bundler/setup"
+Bundler.require(:default)
+require "singleton"
 
 APP_ROOT = File.expand_path(File.dirname(__FILE__))
 IMAGE_DIR = File.join(APP_ROOT, 'images')
