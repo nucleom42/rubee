@@ -19,7 +19,7 @@ module Rubee
       # define route
       route = Router.route_for(request)
       # init controller class
-      raise "There is no path #{request.path} registered" unless route
+      return [404, { "content-type" => "text/plain" }, ["Route not found"]] unless route
 
       controller_class = "#{route[:controller].capitalize}Controller"
       # instantiate controller
