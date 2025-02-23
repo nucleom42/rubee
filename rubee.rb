@@ -4,6 +4,7 @@ require 'base64'
 require 'pry'
 require 'singleton'
 require 'sequel'
+require 'jwt'
 
 APP_ROOT = File.expand_path(File.dirname(__FILE__))
 IMAGE_DIR = File.join(APP_ROOT, 'images')

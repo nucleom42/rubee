@@ -17,27 +17,32 @@ class BaseController
     end
   end
 
-  def response_with type: nil, object: nil, status: 200, mime_type: nil
+  def response_with type: nil, object: nil, status: 200, mime_type: nil, render_view: nil, headers: {}, to: nil
     case type&.to_sym
     in :json
       rendered_json = object.is_a?(Array) ? object&.map(&:to_h).to_json : object.to_json
-      return [status, { "content-type" => "application/json" }, [rendered_json]]
+      return [status, headers.merge("content-type" => "application/json"), [rendered_json]]
     in :image
-      return [status, { "content-type" => mime_type }, [object]]
+      return [status, headers.merge("content-type" => mime_type), [object]]
     in :text
-      return [status, { "content-type" => "text/plain" }, [object.to_s]]
-    in :unauthorized
-      return [401, { "content-type" => "text/plain" }, ["Unauthorized"]]
+      return [status, headers.merge("content-type" => "text/plain"), [object.to_s]]
+    in :unauthentificated
+      return [401, headers.merge("content-type" => "text/plain"), ["Unauthentificated"]]
+    in :redirect
+      return [302, headers.merge("location" => "#{to}"), ["Unauthentificated"]]
     else # rendering erb view is a default behavior
       view_file_name = self.class.name.split("Controller").first.downcase
-      rendered_erb = ERB.new(File.open("app/views/#{view_file_name}_#{@route[:action]}.erb").read).result
-      return [status, { "content-type" => "text/html" }, [rendered_erb]]
+      erb_file = render_view ? "#{render_view}.erb" : "#{view_file_name}_#{@route[:action]}.erb"
+      rendered_erb = ERB.new(File.open("app/views/#{erb_file}").read).result(binding)
+      return [status, headers.merge("content-type" => "text/html"), [rendered_erb]]
     end
   end
 
   def params
+    inputs = @request.env['rack.input'].read
     body = JSON.parse(@request.body.read.strip) rescue body = {}
-    extract_params(@request.path, @route[:path])
+    body.merge!(URI.decode_www_form(inputs).to_h.transform_keys(&:to_sym)) rescue nil
+    @params ||= extract_params(@request.path, @route[:path])
       .merge(body)
       .merge(@request.params)
   end

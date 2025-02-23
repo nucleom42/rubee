@@ -22,9 +22,11 @@ All greaet features are yet to come!
 - **Fast**: Optimized for speed, providing a quick response to requests. Everything is relative, I know!
 - **Rack**: Rack backed. All Rack api is available for integration.
 - **Router**: Router driven - generates all required files from the routes.
-- **Databases**: Sqlite3
-- **Views**: Json, ERB
-- **Bundlable** Charge your RuBee with any gem you need and update your project with bundle
+- **Databases**: Sqlite3.
+- **Views**: Json, ERB.
+- **Bundlable** Charge your RuBee with any gem you need and update your project with bundle.
+- **ORM** All models are natively ORM objects, however you can use it as a blueurpint for any datasources.
+- **Authentificatable** Add JWT authentification easily to any controller action.
 
 ## Installation
 
@@ -176,7 +178,57 @@ after index2
 after log around
 127.0.0.1 - - [17/Feb/2025:11:42:14 -0500] "GET /apples HTTP/1.1" 401 - 0.0359
 ```
+
+## JWT based authentification
+Charge you rpoject with token based authentification system and customize it for your needs.
+include AuthTokenable module to your controller and authentificate any action you need.
+
+Make sure you have initiated User model which is a part of the logic.
+```bash
+./com/db run:create_users
+```
+This will create table users and initiate first user with demo credentials.
+email: "ok@ok.com", password: "password"
+Feel free to customize it in the /db/create_users.rb file before running migration.
+
+Then in the controller you can include the AuthTokenable module and use its methods:
+```ruby
+class UsersController < BaseController
+  include AuthTokenable
+  # List methods you want to restrict
+  auth_methods :index # unless the user is authentificated it will return unauthentificated
+
+  # GET /users/login (login form page)
+  def edit
+    response_with
+  end
+
+  # POST /users/login (login logic)
+  def login
+    if authentificate! # AuthTokenable method that init @token_header
+      # Redirect to restricted area, make sure headers: @token_header is passed
+      response_with type: :redirect, to: "/users", headers: @token_header
+    else
+      @error = "Wrong email or password"
+      response_with render_view: "users_edit"
+    end
+  end
+
+  # POST /usres/logout (logout logic)
+  def logout
+    unauthentificate! # AuthTokenable method aimed to handle logout action.
+    # Make sure @zeroed_token_header is passed within headers options
+    response_with type: :redirect, to: "/users/login", headers: @zeroed_token_header
+  end
+
+  # GET /users (restricted endpoint)
+  def index
+    response_with object: User.all, type: :json
+  end
+end
+```
 ## TODOs
-- [ ] Token authorization API
+- [x] Token authorization API
+- [ ] Document authorization API
 - [ ] Add test coverage
 - [ ] Fix bugs
