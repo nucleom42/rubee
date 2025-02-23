@@ -1,7 +1,7 @@
 require_relative File.join(__dir__, 'middlewarable')
 
 module AuthTokenable
-  KEY = "secret".freeze # Feel free to cusomtize it
+  KEY = "secret#{Date.today}".freeze # Feel free to cusomtize it
   EXPIRE = 3600 # 1 hour
 
   def self.included(base)
@@ -17,26 +17,39 @@ module AuthTokenable
       methods = self.class._auth_methods
       return true if methods && !methods.include?(@route[:action].to_sym)
       # This is suppose to be set in the middleware, otherwise it will return false
+      valid_token?
+    end
+
+    def valid_token?
       @request.env["rack.session"]&.[]("authentificated")
     end
 
-    def authehticated_user
+    def authentificated_user
       # User model must be created with email and password properties at least
-      @authehticated_user ||= User.where(email: params[:email], password: params[:password]).first
+      @authehtificated_user ||= User.where(email: params[:email], password: params[:password]).first
     end
 
-    def log_in!
-      return false unless authehticated_user
-
+    def authentificate!
+      return false unless authentificated_user
       # Generate token
       payload = { username: params[:email], exp: Time.now.to_i + EXPIRE }
       @token = JWT.encode(payload, KEY, 'HS256')
+      # Set jwt token to the browser within cookie, so next browser request will include it.
+      # make sure it passed to response_with headers options
+      @token_header = { "set-cookie" => "jwt=#{@token}; path=/; httponly; secure" }
 
       true
     end
 
-    def log_out!
-      #TODO implement
+    def unauthentificate!
+      @request.env["rack.session"]["authentificated"] = nil if @request.env["rack.session"]&.[]("authentificated")
+      @authehtificated_user = nil if @authehtificated_user
+      @zeroed_token_header = {
+        "set-cookie" => "jwt=; path=/; httponly; secure; expires=thu, 01 jan 1970 00:00:00 gmt",
+        "content-type" => "application/json"
+      }
+
+      true
     end
 
     def handle_auth

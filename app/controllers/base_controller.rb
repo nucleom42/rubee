@@ -17,7 +17,7 @@ class BaseController
     end
   end
 
-  def response_with type: nil, object: nil, status: 200, mime_type: nil, render_view: nil, headers: {}
+  def response_with type: nil, object: nil, status: 200, mime_type: nil, render_view: nil, headers: {}, to: nil
     case type&.to_sym
     in :json
       rendered_json = object.is_a?(Array) ? object&.map(&:to_h).to_json : object.to_json
@@ -28,6 +28,8 @@ class BaseController
       return [status, headers.merge("content-type" => "text/plain"), [object.to_s]]
     in :unauthentificated
       return [401, headers.merge("content-type" => "text/plain"), ["Unauthentificated"]]
+    in :redirect
+      return [302, headers.merge("location" => "#{to}"), ["Unauthentificated"]]
     else # rendering erb view is a default behavior
       view_file_name = self.class.name.split("Controller").first.downcase
       erb_file = render_view ? "#{render_view}.erb" : "#{view_file_name}_#{@route[:action]}.erb"
