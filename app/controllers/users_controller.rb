@@ -10,9 +10,10 @@ class UsersController < BaseController
   # POST
   def login
     if log_in!
-      response_with object: { message: "Login successful", token: @token }, status: 200
+      response_with object: { message: "Login successful", token: @token }, status: 200, type: :json
     else
-      response_with object: { error: "Invalid credentials" }, status: 401
+      @error = "Wrong email or password"
+      response_with render_view: "users_edit"
     end
   end
 

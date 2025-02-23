@@ -17,7 +17,7 @@ class BaseController
     end
   end
 
-  def response_with type: nil, object: nil, status: 200, mime_type: nil
+  def response_with type: nil, object: nil, status: 200, mime_type: nil, render_view: nil
     case type&.to_sym
     in :json
       rendered_json = object.is_a?(Array) ? object&.map(&:to_h).to_json : object.to_json
@@ -26,18 +26,21 @@ class BaseController
       return [status, { "content-type" => mime_type }, [object]]
     in :text
       return [status, { "content-type" => "text/plain" }, [object.to_s]]
-    in :unauthorized
-      return [401, { "content-type" => "text/plain" }, ["Unauthorized"]]
+    in :unauthenticated
+      return [401, { "content-type" => "text/plain" }, ["Unauthenticated"]]
     else # rendering erb view is a default behavior
       view_file_name = self.class.name.split("Controller").first.downcase
-      rendered_erb = ERB.new(File.open("app/views/#{view_file_name}_#{@route[:action]}.erb").read).result
+      erb_file = render_view ? "#{render_view}.erb" : "#{view_file_name}_#{@route[:action]}.erb"
+      rendered_erb = ERB.new(File.open("app/views/#{erb_file}").read).result(binding)
       return [status, { "content-type" => "text/html" }, [rendered_erb]]
     end
   end
 
   def params
+    inputs = @request.env['rack.input'].read
     body = JSON.parse(@request.body.read.strip) rescue body = {}
-    extract_params(@request.path, @route[:path])
+    body.merge!(URI.decode_www_form(inputs).to_h.transform_keys(&:to_sym)) rescue nil
+    @params ||= extract_params(@request.path, @route[:path])
       .merge(body)
       .merge(@request.params)
   end

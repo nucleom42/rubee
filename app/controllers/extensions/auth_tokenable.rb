@@ -1,7 +1,7 @@
 require_relative File.join(__dir__, 'middlewarable')
 
 module AuthTokenable
-  KEY = "#{Date.today}-#{rand(1..100)}".freeze # Feel free to cusomtize it
+  KEY = "secret".freeze # Feel free to cusomtize it
   EXPIRE = 3600 # 1 hour
 
   def self.included(base)
@@ -34,12 +34,24 @@ module AuthTokenable
 
       true
     end
+
+    def handle_auth
+      if authenticated?
+        yield
+      else
+        response_with type: :unauthenticated
+      end
+    end
   end
 
   module ClassMethods
     def auth_methods(*args)
       @auth_methods ||= []
       @auth_methods.concat(args.map(&:to_sym)).uniq!
+
+      @auth_methods.each do |method|
+        around method, :handle_auth
+      end
     end
 
     def _auth_methods

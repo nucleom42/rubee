@@ -40,13 +40,17 @@
         button:hover {
             background: #0056b3;
         }
+        .red {
+            color: red;
+        }
     </style>
 </head>
 <body>
 
     <div class="container">
         <h2>Login</h2>
-        <form action="/login" method="POST">
+        <h6 class="red"><%= @error %></h6>
+        <form action="/users/login" method="POST">
             <input type="email" name="email" placeholder="Enter your email" required>
             <input type="password" name="password" placeholder="Enter your password" required>
             <button type="submit">Login</button>

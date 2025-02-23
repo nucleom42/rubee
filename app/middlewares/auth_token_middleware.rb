@@ -5,8 +5,7 @@ class AuthTokenMiddleware
 
   def call(env)
     auth_header = headers(env)["HTTP_AUTHORIZATION"]
-    token = auth_header&.gsub("Bearer ", "")
-
+    token = auth_header ? auth_header[/^Bearer (.*)$/]&.gsub("Bearer ", "") : nil
     if valid_token?(token)
       env["rack.session"] ||= {}
       env["rack.session"]["authenticated"] = true
@@ -32,6 +31,6 @@ class AuthTokenMiddleware
 
   def decode_jwt(token)
     decoded_array = JWT.decode(token, AuthTokenable::KEY, true, { algorithm: 'HS256' })
-    decoded_array&.first  # Extract payload
+    decoded_array&.first&.transform_keys(&:to_sym)  # Extract payload
   end
 end
