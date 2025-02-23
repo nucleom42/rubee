@@ -15,4 +15,4 @@ gem 'jwt'
 # test
 gem "minitest"
 gem "rack-test"
-gem "RedCloth"
+gem "RedCloth", require: false
