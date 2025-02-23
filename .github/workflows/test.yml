@@ -1,0 +1,21 @@
+name: Run Minitests
+
+on: [push, pull_request]  # Runs on every push and PR
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 3.4  # Adjust to your Ruby version
+          bundler-cache: true  # Caches gems to speed up runs
+
+      - name: Run Minitests
+        run: ruby -Itests -e 'Dir.glob("./tests/**/*_test.rb") { |file| require file }'
+
