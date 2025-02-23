@@ -1,6 +1,6 @@
 name: Run Minitests
 
-on: [push, pull_request]  # Runs on every push and PR
+on: [push, pull_request]  # Run on every push and PR
 
 jobs:
   test:
@@ -16,6 +16,8 @@ jobs:
           ruby-version: 3.4  # Adjust to your Ruby version
           bundler-cache: true  # Caches gems to speed up runs
 
-      - name: Run Minitests
-        run: ruby -Itests -e 'Dir.glob("./tests/**/*_test.rb") { |file| require file }'
+      - name: Install dependencies
+        run: bundle install  # 🔹 Ensure gems like rack-test are installed
 
+      - name: Run Minitests
+        run: bundle exec ruby -Itests -e 'Dir.glob("./tests/**/*_test.rb") { |file| require file }'
