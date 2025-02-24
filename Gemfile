@@ -16,4 +16,5 @@ gem 'jwt'
 group :test do
   gem "minitest"
   gem "rack-test"
+  gem "RedCloth"
 end
