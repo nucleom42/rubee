@@ -12,7 +12,8 @@ gem 'json'
 gem 'rubocop'
 # auth
 gem 'jwt'
-# test
-gem "minitest"
-gem "rack-test"
-# gem "RedCloth", require: false
+
+group :test do
+  gem "minitest"
+  gem "rack-test"
+end
