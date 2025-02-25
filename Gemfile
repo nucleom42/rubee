@@ -9,12 +9,16 @@ gem 'sequel'
 # debugging
 gem 'pry'
 gem 'json'
-# linting
-gem 'rubocop'
 # auth
 gem 'jwt'
 
 group :test do
   gem "minitest"
   gem "rack-test"
+end
+
+group :development do
+  gem "rerun"
+  # linting
+  gem 'rubocop', require: false
 end

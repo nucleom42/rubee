@@ -3,7 +3,7 @@ require "rack/test"
 require_relative File.join(__dir__, '..', 'rubee')
 
 class RubeeAppTest < Minitest::Test
-  include Rack::Test::Methods  # Adds helper methods
+  include Rack::Test::Methods
 
   def app
     Rubee::Application.instance
