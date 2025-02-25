@@ -11,8 +11,13 @@ if command == "start"
   port ||= "7000"
 
   puts "Starting takeoff of RuBee server on port #{port}..."
-
   exec("rackup #{ENV['RACKUP_FILE']} -p #{port}")
+elsif command == "start_dev"
+  port ||= "7000"
+
+  puts "Starting takeoff of RuBee server on port #{port} in dev mode..."
+
+  exec("rerun -- rackup --port #{port} config.ru")
 elsif command == "stop"
   exec("pkill -f rubee")
 elsif command == "status"
