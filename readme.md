@@ -58,6 +58,8 @@ bundle install
 ./com/rubee start
 ```
 
+5. Open your browser and go to http://localhost:7000
+
 ## Generating files from the routes
 1. Add the routes to the routes.rb
 ```bash
@@ -227,6 +229,30 @@ class UsersController < BaseController
   end
 end
 ```
+
+## Rubee commands
+```bash
+./com/rubee start # start the server
+./com/rubee start_dev # start the server in dev mode, which restart server on changes
+./com/rubee stop # stop the server
+./com/rubee restart # restart the server
+```
+
+## Generate commands
+```bash
+./com/generate get /apples # generate controller view, model and migration if set in the routes
+```
+
+## Migraiton commands
+```bash
+./com/db run:create_apples # where create_apples is the name of the migration file, located in /db folder
+```
+
+## Rubee console
+```bash
+./com/console # start the console
+```
+
 ## TODOs
 - [x] Token authorization API
 - [ ] Document authorization API
