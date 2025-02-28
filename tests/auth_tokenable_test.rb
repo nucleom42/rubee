@@ -1,6 +1,4 @@
-require "minitest/autorun"
-require "rack/test"
-require_relative File.join(__dir__, '..', 'rubee')
+require_relative File.join(__dir__, 'helper')
 
 class RubeeAppTest < Minitest::Test
   include Rack::Test::Methods
@@ -17,9 +15,8 @@ class RubeeAppTest < Minitest::Test
     WelcomeController.include(AuthTokenable)
     WelcomeController.auth_methods :show
 
-    get "/"
+    get '/'
 
     assert_equal last_response.status, 401
   end
 end
-
