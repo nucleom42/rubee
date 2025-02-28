@@ -27,6 +27,8 @@ All greaet features are yet to come!
 - **Bundlable** Charge your RuBee with any gem you need and update your project with bundle.
 - **ORM** All models are natively ORM objects, however you can use it as a blueurpint for any datasources.
 - **Authentificatable** Add JWT authentification easily to any controller action.
+- **Hooks** Add logic before, after and around any action.
+- **Test** Run all or selected tests witin minitest.
 
 ## Installation
 
@@ -251,6 +253,12 @@ end
 ## Rubee console
 ```bash
 ./com/console # start the console
+```
+
+## Testing
+```bash
+./com/test # run all tests
+./com/test auth_tokenable_test.rb # run specific tests
 ```
 
 ## TODOs
