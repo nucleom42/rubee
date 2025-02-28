@@ -127,7 +127,7 @@ module Rubee
         end
         require_relative "app/controllers/base_controller"
         require_relative "app/models/database_object"
-        require_relative "app/models/sqlite_object"
+        require_relative "app/models/sequel_object"
       end
     end
   end
@@ -157,7 +157,7 @@ module Rubee
       end
 
       content = <<~RUBY
-        class #{@model_name.capitalize} < SqliteObject
+        class #{@model_name.capitalize} < SequelObject
           attr_accessor #{@attributes.map { |hash| ":#{hash[:name]}"  }.join(", ")}
         end
       RUBY

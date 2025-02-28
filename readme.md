@@ -22,8 +22,8 @@ All greaet features are yet to come!
 - **Fast**: Optimized for speed, providing a quick response to requests. Everything is relative, I know!
 - **Rack**: Rack backed. All Rack api is available for integration.
 - **Router**: Router driven - generates all required files from the routes.
-- **Databases**: Sqlite3.
-- **Views**: Json, ERB.
+- **Databases**: Sqlite3, Postgres, Mysql and many more supported by sequel gem.
+- **Views**: Json, ERB and plain HTML
 - **Bundlable** Charge your RuBee with any gem you need and update your project with bundle.
 - **ORM** All models are natively ORM objects, however you can use it as a blueurpint for any datasources.
 - **Authentificatable** Add JWT authentification easily to any controller action.
@@ -120,7 +120,7 @@ Just make sure Serializable module included in the target class.
 However, you can simply turn it to ORM object by extending database class.
 
 ```Ruby
-  class Apple < SqliteObject
+  class Apple < SequelObject
     attr_accessor :colour, :weight
   end
 ```
