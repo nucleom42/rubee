@@ -11,11 +11,12 @@ class RubeeAppTest < Minitest::Test
 
   def setup
     Rubee::Autoload.call
-    WelcomeController.include(AuthTokenable)
-    WelcomeController.auth_methods :show
   end
 
   def test_welcome_controller_included_auth_tokenable
+    WelcomeController.include(AuthTokenable)
+    WelcomeController.auth_methods :show
+
     get "/"
 
     assert_equal last_response.status, 401
