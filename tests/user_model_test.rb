@@ -1,12 +1,11 @@
 require_relative 'test_helper'
 
 describe 'User model' do
-  before do
-    @user = User.new(email: 'test@test.com', password: 'password')
-  end
+  describe ".create" do
+    it 'persists to db' do
+      user = User.create(email: "ok-test@test.com", password: "123")
 
-  it 'persists to db' do
-    @user.save
-    assert_equal User.where(email: 'test@test.com').last.nil?, false
+       _(user.persisted?).must_equal true
+    end
   end
 end

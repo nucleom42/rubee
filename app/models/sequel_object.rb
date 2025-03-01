@@ -30,6 +30,10 @@ class SequelObject < DatabaseObject
     false
   end
 
+  def persisted?
+    !!id
+  end
+
   def reload
     self.class.find(id)
   end
