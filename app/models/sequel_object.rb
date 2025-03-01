@@ -6,17 +6,26 @@ class SequelObject < DatabaseObject
   end
 
   def save
-    args = to_h.dup
-    args.delete(:id)
-    update(args)
+    args = to_h.dup&.transform_keys(&:to_sym)
+    if args[:id]
+      udpate(args) rescue false
+      true
+    else
+      self.class.create(args) rescue false
+      true
+    end
   end
 
-  def update(args = {})
+  def assign_attributes(args={})
     to_h.each do |attr, value|
       self.send("#{attr}=", args[attr.to_sym]) if args[attr.to_sym]
     end
+  end
+
+  def update(args = {})
+    assign_attributes(args)
     found_hash = self.class.connection.where(id:)
-    return true if found_hash&.update(**args)
+    return self.class.find(id) if found_hash&.update(**args)
 
     false
   end

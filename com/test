@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-
+ENV['RACK_ENV'] = 'test'
 file_name = ARGV.first # Get the first argument
 
 if file_name

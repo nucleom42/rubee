@@ -8,3 +8,4 @@ if command == 'run'
 else
   puts "Unknown command: #{command}"
 end
+

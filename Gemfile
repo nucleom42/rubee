@@ -3,8 +3,9 @@ source 'https://rubygems.org'
 # web serverb
 gem 'puma'
 gem 'rack'
-# sqllite db
+# db
 gem 'sqlite3'
+# orm
 gem 'sequel'
 # debugging
 gem 'pry'
@@ -13,11 +14,13 @@ gem 'json'
 gem 'jwt'
 
 group :test do
+  # testing framework
   gem "minitest"
   gem "rack-test"
 end
 
 group :development do
+  # code reloading
   gem "rerun"
   # linting
   gem 'rubocop', require: false

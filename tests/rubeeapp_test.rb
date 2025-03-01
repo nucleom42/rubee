@@ -1,4 +1,4 @@
-require_relative File.join(__dir__, 'helper')
+require_relative 'test_helper'
 
 class RubeeAppTest < Minitest::Test
   include Rack::Test::Methods

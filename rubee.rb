@@ -107,8 +107,13 @@ module Rubee
         # autoload all rbs
         root_directory = File.dirname(__FILE__)
         priority_order_require(root_directory)
+
         Dir[File.join(root_directory, '**', '*.rb')].each do |file|
-          require_relative file unless ['rubee.rb'].include?(File.basename(file))
+          base_name = File.basename(file)
+
+          unless base_name.end_with?('_test.rb') || ['rubee.rb', 'test_helper.rb'].include?(base_name)
+            require_relative file
+          end
         end
       end
 
