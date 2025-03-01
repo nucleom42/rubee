@@ -11,6 +11,13 @@ class RubeeAppTest < Minitest::Test
     Rubee::Autoload.call
   end
 
+  def teardown
+    # detach auth methods
+     if WelcomeController.instance_variable_defined?(:@auth_methods)
+       WelcomeController.send(:remove_instance_variable, :@auth_methods)
+     end
+  end
+
   def test_welcome_controller_included_auth_tokenable
     WelcomeController.include(AuthTokenable)
     WelcomeController.auth_methods :show

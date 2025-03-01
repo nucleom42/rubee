@@ -73,5 +73,9 @@ class SequelObject < DatabaseObject
       out_id = connection.insert(**attrs)
       self.new(**(attrs.merge(id: out_id)))
     end
+
+    def destroy_all
+      all.each(&:destroy)
+    end
   end
 end
