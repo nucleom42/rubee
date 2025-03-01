@@ -260,6 +260,12 @@ end
 ./com/test # run all tests
 ./com/test auth_tokenable_test.rb # run specific tests
 ```
+If you want to run any RuBee command within a specific ENV make sure you added it before a command.
+For instance if you want to run console in test environment you need to run the following command
+
+```bash
+RACK_ENV=test ./com/test console
+```
 
 ## TODOs
 - [x] Token authorization API

@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 require_relative '../rubee.rb'
 method, path = ARGV
+ENV['RACK_ENV'] ||= 'development'
 
 routes = eval(File.read('config/routes.rb'))
 puts routes

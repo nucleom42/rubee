@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 
 require 'rack'
+ENV['RACK_ENV'] ||= 'development'
 
 APP_ROOT = File.expand_path('..', File.dirname(__FILE__))
 ENV['RACKUP_FILE'] = File.join(APP_ROOT, 'config.ru')

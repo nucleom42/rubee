@@ -3,6 +3,8 @@
 require 'irb'
 require_relative '../rubee.rb'
 
+ENV['RACK_ENV'] ||= 'development'
+
 Rubee::Autoload.call
 
 def reload
