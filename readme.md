@@ -1,4 +1,4 @@
-# RuBee <div style="display: flex; align-items: center;><img src="images/rubee.svg" alt="Rubee" height="40"></div>
+# RuBee <img src="images/rubee.svg" alt="Rubee" height="40">
 
 ```markdown
   ____  _    _  ____  _____
