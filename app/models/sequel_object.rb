@@ -1,6 +1,6 @@
-DB = Sequel.connect(Rubee::Configuration.get_database_url)
-
 class SequelObject < DatabaseObject
+  DB = Sequel.connect(Rubee::Configuration.get_database_url)
+
   def destroy
     self.class.connection.where(id:).delete
   end
