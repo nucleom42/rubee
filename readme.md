@@ -1,13 +1,4 @@
-# RuBee <img src="images/rubee.svg" alt="Rubee" height="40">
-
-```markdown
-  ____  _    _  ____  _____
- |  _ \| |  | || __ )| ____|
- | |_) | |  | ||  _ \|  _|
- |  _ <| |__| || |_) | |___
- |_| \_\\____/ |____/|_____|
-
-```
+# <img src="images/rubee.svg" alt="Rubee" height="40">    RuBee
 
 RuBee is a fast and lightweight Ruby application server designed for minimalism and flexibility .
 
