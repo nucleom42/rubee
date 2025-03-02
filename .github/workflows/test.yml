@@ -31,4 +31,4 @@ jobs:
 
       - name: Run Minitests
         run: |
-          bundle exec ruby -Itests -e 'Dir.glob("./tests/**/*_test.rb").each { |file| require file unless file.include?("vendor/bundle") }'
+          RACK_ENV=test bundle exec ruby -Itests -e 'Dir.glob("./tests/**/*_test.rb").each { |file| require file unless file.include?("vendor/bundle") }'
