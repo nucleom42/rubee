@@ -1,4 +1,4 @@
-DB = Sequel.sqlite(Rubee::Configuration.get_database_url)
+DB = Sequel.connect(Rubee::Configuration.get_database_url)
 
 class SequelObject < DatabaseObject
   def destroy

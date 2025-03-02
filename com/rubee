@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
-
+require 'bundler/setup'
 require 'rack'
+
 ENV['RACK_ENV'] ||= 'development'
 
 APP_ROOT = File.expand_path('..', File.dirname(__FILE__))

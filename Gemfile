@@ -1,10 +1,14 @@
 source 'https://rubygems.org'
 
-# web serverb
+ruby '3.4.1'
+
+# web server
 gem 'puma'
 gem 'rack'
+gem 'rackup'
 # db
 gem 'sqlite3'
+gem 'pg'
 # orm
 gem 'sequel'
 # debugging

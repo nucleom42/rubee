@@ -1,5 +1,6 @@
 require "bundler/setup"
 Bundler.require(:default)
+
 require "singleton"
 
 APP_ROOT = File.expand_path(File.dirname(__FILE__))
@@ -103,36 +104,36 @@ module Rubee
 
   class Autoload
     class << self
-      def call
+      def call(black_list=[])
         # autoload all rbs
         root_directory = File.dirname(__FILE__)
-        priority_order_require(root_directory)
+        priority_order_require(root_directory, black_list)
 
         Dir[File.join(root_directory, '**', '*.rb')].each do |file|
           base_name = File.basename(file)
 
-          unless base_name.end_with?('_test.rb') || ['rubee.rb', 'test_helper.rb'].include?(base_name)
+          unless base_name.end_with?('_test.rb') || (black_list + ['rubee.rb', 'test_helper.rb']).include?(base_name)
             require_relative file
           end
         end
       end
 
-      def priority_order_require(root_directory)
+      def priority_order_require(root_directory, black_list)
         # all the base classes should be loaded first
-        require_relative "config/base_configuration"
-        require_relative "config/routes"
+        require_relative "config/base_configuration" unless black_list.include?('base_configuration.rb')
+        require_relative "config/routes" unless black_list.include?('routes.rb')
         Dir[File.join(root_directory, 'app/models/extensions/**', '*.rb')].each do |file|
-          require_relative file
+          require_relative file unless black_list.include?("#{file}.rb")
         end
         Dir[File.join(root_directory, 'app/middlewares/**', '*.rb')].each do |file|
-          require_relative file
+          require_relative file unless black_list.include?("#{file}.rb")
         end
         Dir[File.join(root_directory, 'app/controllers/extensions/**', '*.rb')].each do |file|
-          require_relative file
+          require_relative file unless black_list.include?("#{file}.rb")
         end
-        require_relative "app/controllers/base_controller"
-        require_relative "app/models/database_object"
-        require_relative "app/models/sequel_object"
+        require_relative "app/controllers/base_controller" unless black_list.include?('base_controller.rb')
+        require_relative "app/models/database_object" unless black_list.include?('database_object.rb')
+        require_relative "app/models/sequel_object" unless black_list.include?('sequel_object.rb')
       end
     end
   end
