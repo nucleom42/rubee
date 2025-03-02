@@ -1,4 +1,4 @@
-# RuBee <p align="left"><img src="images/rubee.svg" alt="Rubee" height="40"></p>
+# RuBee <div align="left"><img src="images/rubee.svg" alt="Rubee" height="40"></div>
 
 ```markdown
   ____  _    _  ____  _____
