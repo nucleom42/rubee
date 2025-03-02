@@ -1,21 +1,48 @@
 #!/usr/bin/env ruby
 
-command, file_name = ARGV.first&.split(':')
 require_relative '../rubee.rb'
+
 Rubee::Autoload.call
 ENV['RACK_ENV'] ||= 'development'
-if command == 'run'
-  Object.const_get(file_name.split("_").map(&:capitalize).join).new.call
-elsif command == 'init'
-  begin
-    Sequel.connect(Rubee::Configuration.get_database_url)
-    puts "Database #{ENV['RACK_ENV']} exists"
-  rescue => _
-    con = Sequel.connect(Rubee::Configuration.get_database_url.gsub(/(\/test|\/development|\/production)/, ''))
-    con.run("CREATE DATABASE #{ENV['RACK_ENV']}")
-    puts "Database #{ENV['RACK_ENV']} created"
+
+command, file_name = ARGV.first&.split(':')
+
+
+def ensure_database_exists(db_url)
+  uri = URI.parse(db_url)
+  case uri.scheme
+  when "sqlite"
+    begin
+      Sequel.connect(db_url)
+      puts "Database #{ENV['RACK_ENV']} exists"
+    rescue => _
+      if File.exist?(db_path = db_url.sub(/^sqlite:\/\//, ''))
+        puts "Database #{ENV['RACK_ENV']} exists"
+      else
+        Sequel.sqlite(db_path)
+        puts "Database #{ENV['RACK_ENV']} created"
+      end
+    end
+  when "postgres"
+    begin
+      Sequel.connect(db_url)
+      puts "Database #{ENV['RACK_ENV']} exists"
+    rescue => _
+      con = Sequel.connect(Rubee::Configuration.get_database_url.gsub(/(\/test|\/development|\/production)/, ''))
+      con.run("CREATE DATABASE #{ENV['RACK_ENV']}")
+      puts "Database #{ENV['RACK_ENV']} created"
+    end
+  else
+    puts "Unsupported database type: #{db_url}"
   end
+end
+
+
+if command == 'run'
+  Object.const_get(file_name.split('_').map(&:capitalize).join).new.call
+  puts "Migration #{file_name} completed"
+elsif command == 'init'
+  ensure_database_exists(Rubee::Configuration.get_database_url)
 else
   puts "Unknown command: #{command}"
 end
-
