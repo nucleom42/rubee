@@ -264,7 +264,7 @@ If you want to run any RuBee command within a specific ENV make sure you added i
 For instance if you want to run console in test environment you need to run the following command
 
 ```bash
-RACK_ENV=test ./com/test console
+RACK_ENV=test ./com/console
 ```
 
 ## TODOs
