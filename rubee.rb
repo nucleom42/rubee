@@ -5,7 +5,6 @@ require "singleton"
 
 APP_ROOT = File.expand_path(File.dirname(__FILE__))
 IMAGE_DIR = File.join(APP_ROOT, 'images')
-VERSION = '0.0.1'
 
 module Rubee
   class Application
