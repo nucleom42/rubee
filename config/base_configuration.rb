@@ -1,5 +1,5 @@
 Rubee::Configuration.setup(env=:development) do |config|
-  config.database_url = { url: "postgres://postgres:postgres@localhost:5432/development", env: }
+  config.database_url = { url: "sqlite://db/development.db", env: }
 end
 
 Rubee::Configuration.setup(env=:test) do |config|
@@ -7,5 +7,5 @@ Rubee::Configuration.setup(env=:test) do |config|
 end
 
 Rubee::Configuration.setup(env=:production) do |config|
-  config.database_url = { url: "postgres://postgres:postgres@localhost:5432/production", env: }
+  config.database_url = { url: "sqlite://db/production.db", env: }
 end

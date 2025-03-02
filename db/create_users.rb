@@ -1,4 +1,4 @@
-# This migration is a prerequisite for the inbuild JWT authentification logic
+# WARNING: This migration is a prerequisite for the inbuild JWT authentification logic
 # Please make sure you executed it before using AuthTokenable module
 class CreateUsers
   def call
