@@ -1,5 +1,7 @@
-# RuBee <div align="left"><img src="images/rubee.svg" alt="Rubee" height="40"></div>
-
+<div align="left" style="display: flex; align-items: center;">
+  <img src="images/rubee.svg" alt="Rubee" height="40" style="margin-right: 10px;">
+  <span style="font-size: 24px; font-weight: bold;">RuBee</span>
+</div>
 ```markdown
   ____  _    _  ____  _____
  |  _ \| |  | || __ )| ____|
