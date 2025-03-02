@@ -84,7 +84,7 @@ module Rubee
         @routes.find do |route|
           return route if request.path == route[:path] && request.request_method&.downcase&.to_sym == route[:method]
 
-          pattern = route[:path].gsub(/{.*}/, '(.*)')
+          pattern = route[:path].gsub(/{.*?}/, '([^/]+)')
           regex = %r{^#{pattern}$}
           regex.match?(request.path) && request.request_method&.downcase&.to_sym == route[:method]
         end

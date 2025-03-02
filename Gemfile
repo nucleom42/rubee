@@ -13,6 +13,7 @@ gem 'pg'
 gem 'sequel'
 # debugging
 gem 'pry'
+gem 'byebug'
 gem 'json'
 # auth
 gem 'jwt'
