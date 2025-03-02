@@ -3,15 +3,17 @@
 command, file_name = ARGV.first&.split(':')
 require_relative '../rubee.rb'
 Rubee::Autoload.call
-
+ENV['RACK_ENV'] ||= 'development'
 if command == 'run'
   Object.const_get(file_name.split("_").map(&:capitalize).join).new.call
 elsif command == 'init'
   begin
-    DB = Sequel.connect(Rubee::Configuration.get_database_url)
+    Sequel.connect(Rubee::Configuration.get_database_url)
+    puts "Database #{ENV['RACK_ENV']} exists"
   rescue => _
-    DB = Sequel.connect(Rubee::Configuration.get_database_url.gsub(/(\/test|\/development|\/production)/, ''))
-    DB.run("CREATE DATABASE #{ENV['RACK_ENV']}")
+    con = Sequel.connect(Rubee::Configuration.get_database_url.gsub(/(\/test|\/development|\/production)/, ''))
+    con.run("CREATE DATABASE #{ENV['RACK_ENV']}")
+    puts "Database #{ENV['RACK_ENV']} created"
   end
 else
   puts "Unknown command: #{command}"
