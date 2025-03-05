@@ -139,7 +139,7 @@ So in the controller you would need to query your target object
 
 ## Views
 View in RuBee is just a plain html/erb file that can be rendered from the controller.
-Refer to the example PR https://github.com/nucleom42/rubee/pull/5
+Refer to the example PR https://github.com/nucleom42/rubee/tree/PR-view-examples
 
 ## Object hooks
 
