@@ -137,6 +137,10 @@ So in the controller you would need to query your target object
   end
 ```
 
+## Views
+View in RuBee is just a plain html/erb file that can be rendered from the controller.
+Refer to the example PR https://github.com/nucleom42/rubee/pull/5
+
 ## Object hooks
 
 In RuBee by extending Hookable module any Ruby objcet can be charged with hooks (logic),
