@@ -87,7 +87,7 @@ module Rubee
 
           pattern = route[:path].gsub(/{.*?}/, '([^/]+)')
           regex = %r{^#{pattern}$}
-          regex.match?(request.path) && method == route[:method].to_sym
+          regex.match?(request.path) && method.to_s == route[:method].to_s
         end
       end
 
