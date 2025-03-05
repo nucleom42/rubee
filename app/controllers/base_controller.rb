@@ -48,8 +48,8 @@ class BaseController
     @params ||= extract_params(@request.path, @route[:path])
       .merge(body)
       .merge(@request.params)
-
-    @params.transform_keys(&:to_sym).select {|k,v| ![:_method].include?(k.downcase.to_sym)}
+      .transform_keys(&:to_sym)
+      .select { |k,v| ![:_method].include?(k.downcase.to_sym) }
   end
 
   def headers

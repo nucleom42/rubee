@@ -11,10 +11,13 @@ class SequelObject < DatabaseObject
   def save
     args = to_h.dup&.transform_keys(&:to_sym)
     if args[:id]
-      udpate(args) rescue false
+      udpate(args) rescue return false
+
       true
     else
-      self.class.create(args) rescue false
+      created_object = self.class.create(args) rescue return false
+      self.id = created_object.id
+
       true
     end
   end
