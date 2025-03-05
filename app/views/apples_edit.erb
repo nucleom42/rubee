@@ -1,0 +1,11 @@
+<h1>Edit Apple</h1>
+<a href="/apples"><button>Apples</button></a>
+<form action="/apples/<%= @apple.id %>" method="post">
+    <input type="hidden" name="_method" value="patch">
+    <% if @error %>
+        <p><%= @error %></p>
+    <% end %>
+    <input type="text" name="apple[color]" value="<%= @apple.color %>">
+    <input type="text" name="apple[weight]" value="<%= @apple.weight %>">
+    <input type="submit" value="Update">
+</form>
