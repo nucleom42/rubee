@@ -1,0 +1,12 @@
+<h1>Apples</h1>
+<a href="/apples/new"><button>Add apple</button></a>
+<% @apples.each do |apple| %>
+    <p>ID: <%= apple.id %></p>
+    <p>Wiehgt: <%= apple.weight %></p>
+    <p>Colour: <%= apple.color %></p>
+    <a href="/apples/<%= apple.id %>/edit"><button>Edit</button></a>
+    <form action="/apples/<%= apple.id %>" method="POST">
+        <input type="hidden" name="_method" value="delete">
+        <input type="submit" value="Delete" onclick="return confirm('Are you sure?')">
+    </form>
+<% end %>
