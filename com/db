@@ -37,14 +37,7 @@ def ensure_database_exists(db_url)
   end
 end
 
-
-if command == 'run'
-  Object.const_get(file_name.split('_').map(&:capitalize).join).new.call
-  puts "Migration #{file_name} completed"
-  puts "Regenerate schema file"
-elsif command == 'init'
-  ensure_database_exists(Rubee::Configuration.get_database_url)
-elsif command == 'structure'
+def generate_structure
   schema_hash = {}
 
   SequelObject::DB.tables.each do |table|
@@ -63,6 +56,18 @@ elsif command == 'structure'
   end
 
   puts "db/#{ENV['RACK_ENV']}_structure.rb updated"
+end
+
+
+if command == 'run'
+  Object.const_get(file_name.split('_').map(&:capitalize).join).new.call
+  puts "Migration #{file_name} completed"
+  puts "Regenerate schema file"
+  generate_structure
+elsif command == 'init'
+  ensure_database_exists(Rubee::Configuration.get_database_url)
+elsif command == 'structure'
+  generate_structure
 else
   puts "Unknown command: #{command}"
 end

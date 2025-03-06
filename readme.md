@@ -248,6 +248,7 @@ end
 ## Migraiton commands
 ```bash
 ./com/db run:create_apples # where create_apples is the name of the migration file, located in /db folder
+./com/db structure # generate migration file for the database structure
 ```
 
 ## Rubee console
