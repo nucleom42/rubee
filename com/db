@@ -41,8 +41,28 @@ end
 if command == 'run'
   Object.const_get(file_name.split('_').map(&:capitalize).join).new.call
   puts "Migration #{file_name} completed"
+  puts "Regenerate schema file"
 elsif command == 'init'
   ensure_database_exists(Rubee::Configuration.get_database_url)
+elsif command == 'structure'
+  schema_hash = {}
+
+  SequelObject::DB.tables.each do |table|
+    schema_hash[table] = {}
+
+    SequelObject::DB.schema(table).each do |column, details|
+      schema_hash[table][column] = details
+    end
+  end
+  formatted_hash = JSON.pretty_generate(schema_hash)
+                       .gsub(/\"(\w+)\":/, '\1:')  # Convert keys to symbols
+                       .gsub(': null', ': nil')   # Convert `null` to `nil`
+
+  File.open("db/#{ENV['RACK_ENV']}_structure.rb", 'w') do |file|
+    file.puts "#{ENV['RACK_ENV'].upcase}_STRUCTURE = #{formatted_hash}"
+  end
+
+  puts "db/#{ENV['RACK_ENV']}_structure.rb updated"
 else
   puts "Unknown command: #{command}"
 end
