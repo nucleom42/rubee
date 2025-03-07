@@ -1,4 +1,4 @@
-DEVELOPMENT_STRUCTURE = {
+STRUCTURE = {
   users: {
     id: {
       generated: false,

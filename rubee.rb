@@ -39,7 +39,6 @@ module Rubee
     include Singleton
 
     @configuraiton = {
-      env: ENV['RACK_ENV'],
       development: {
         database_url: "",
         port: 7000
@@ -61,6 +60,10 @@ module Rubee
         if method_name.to_s.start_with?("get_")
           @configuraiton[ENV['RACK_ENV']&.to_sym || :development]&.[](method_name.to_s.delete_prefix("get_").to_sym)
         end
+      end
+
+      def envs
+        @configuraiton.keys
       end
     end
   end

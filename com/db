@@ -51,8 +51,8 @@ def generate_structure
                        .gsub(/\"(\w+)\":/, '\1:')  # Convert keys to symbols
                        .gsub(': null', ': nil')   # Convert `null` to `nil`
 
-  File.open("db/#{ENV['RACK_ENV']}_structure.rb", 'w') do |file|
-    file.puts "#{ENV['RACK_ENV'].upcase}_STRUCTURE = #{formatted_hash}"
+  File.open("db/structure.rb", 'w') do |file|
+    file.puts "STRUCTURE = #{formatted_hash}"
   end
 
   puts "db/#{ENV['RACK_ENV']}_structure.rb updated"
@@ -60,7 +60,11 @@ end
 
 
 if command == 'run'
-  Object.const_get(file_name.split('_').map(&:capitalize).join).new.call
+  Rubee::Configuration.envs.each do |env|
+    ENV['RACK_ENV'] = env.to_s
+    puts "Run #{file_name} file for #{env} env"
+    Object.const_get(file_name.split('_').map(&:capitalize).join).new.call
+  end
   puts "Migration #{file_name} completed"
   puts "Regenerate schema file"
   generate_structure
