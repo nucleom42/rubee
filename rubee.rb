@@ -127,6 +127,9 @@ module Rubee
 
       def priority_order_require(root_directory, black_list)
         # all the base classes should be loaded first
+        Dir[File.join(root_directory, 'inits/**', '*.rb')].each do |file|
+          require_relative file unless black_list.include?("#{file}.rb")
+        end
         require_relative "config/base_configuration" unless black_list.include?('base_configuration.rb')
         require_relative "config/routes" unless black_list.include?('routes.rb')
         Dir[File.join(root_directory, 'app/models/extensions/**', '*.rb')].each do |file|

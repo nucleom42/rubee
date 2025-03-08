@@ -14,26 +14,26 @@ def ensure_database_exists(db_url)
   when "sqlite"
     begin
       Sequel.connect(db_url)
-      puts "Database #{ENV['RACK_ENV']} exists"
+      color_puts "Database #{ENV['RACK_ENV']} exists", color: :cyan
     rescue => _
       if File.exist?(db_path = db_url.sub(/^sqlite:\/\//, ''))
-        puts "Database #{ENV['RACK_ENV']} exists"
+        color_puts "Database #{ENV['RACK_ENV']} exists", color: :cyan
       else
         Sequel.sqlite(db_path)
-        puts "Database #{ENV['RACK_ENV']} created"
+        color_puts "Database #{ENV['RACK_ENV']} created", color: :green
       end
     end
   when "postgres"
     begin
       Sequel.connect(db_url)
-      puts "Database #{ENV['RACK_ENV']} exists"
+      color_puts "Database #{ENV['RACK_ENV']} exists", color: :cyan
     rescue => _
       con = Sequel.connect(Rubee::Configuration.get_database_url.gsub(/(\/test|\/development|\/production)/, ''))
       con.run("CREATE DATABASE #{ENV['RACK_ENV']}")
-      puts "Database #{ENV['RACK_ENV']} created"
+      color_puts "Database #{ENV['RACK_ENV']} created", color: :green
     end
   else
-    puts "Unsupported database type: #{db_url}"
+    color_puts "Unsupported database type: #{db_url}", color: :red
   end
 end
 
@@ -55,23 +55,23 @@ def generate_structure
     file.puts "STRUCTURE = #{formatted_hash}"
   end
 
-  puts "db/#{ENV['RACK_ENV']}_structure.rb updated"
+  color_puts "db/#{ENV['RACK_ENV']}_structure.rb updated", color: :green
 end
 
 
 if command == 'run'
   Rubee::Configuration.envs.each do |env|
     ENV['RACK_ENV'] = env.to_s
-    puts "Run #{file_name} file for #{env} env"
+    color_puts "Run #{file_name} file for #{env} env", color: :cyan
     Object.const_get(file_name.split('_').map(&:capitalize).join).new.call
   end
-  puts "Migration #{file_name} completed"
-  puts "Regenerate schema file"
+  color_puts "Migration #{file_name} completed", color: :green
+  color_puts "Regenerate schema file", color: :cyan
   generate_structure
 elsif command == 'init'
   ensure_database_exists(Rubee::Configuration.get_database_url)
 elsif command == 'structure'
   generate_structure
 else
-  puts "Unknown command: #{command}"
+  color_puts "Unknown command: #{command}", color: :red
 end

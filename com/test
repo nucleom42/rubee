@@ -1,13 +1,15 @@
 #!/usr/bin/env ruby
+require_relative '../inits/print_colors'
+
 ENV['RACK_ENV'] = 'test'
 
 file_name = ARGV.first # Get the first argument
 
 if file_name
-  puts "Running #{file_name} test ..."
+  color_puts "Running #{file_name} test ...", color: :yellow
   exec("ruby -Itest -e \"require './tests/#{file_name}'\"")
 else
-  puts "Running all tests ..."
+  color_puts "Running all tests ...", color: :yellow
   exec("ruby -Itest -e \"Dir.glob('./tests/**/*_test.rb').each { |file| require file }\"")
 end
 

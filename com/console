@@ -10,7 +10,7 @@ Rubee::Autoload.call
 def reload
   app_files = Dir["./app/**/*.rb"]
   app_files.each { |file| load file }
-  puts "Reloaded!!!"
+  color_puts "Reloaded ..", color: :green
 end
 
 # Start IRB
