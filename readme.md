@@ -335,7 +335,8 @@ TestAsyncRunnner.new.perform_async(options: {"email"=> "new@new.com", "password"
 However it is not yet recommended for production. Use it with cautions!
 1. Do not define any adapter in the /config/base_configuration.rb file, so default ThreadAsync will be taken.
 2. Just create a worker and process it.
-```bash
+```ruby
+# test_async_runner.rb
 class TestAsyncRunnner
   include Asyncable
 
