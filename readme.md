@@ -1,3 +1,8 @@
+![Tests](https://github.com/nucleom42/rubee/actions/workflows/test.yml/badge.svg)
+![License](https://img.shields.io/github/license/nucleom42/rubee)
+![GitHub Repo stars](https://img.shields.io/github/stars/nucleom42/rubee?style=social)
+
+
 # <img src="images/rubee.svg" alt="Rubee" height="40"> ... RuBee
 
 RuBee is a fast and lightweight Ruby application server designed for minimalism and flexibility .
