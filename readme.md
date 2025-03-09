@@ -277,7 +277,7 @@ RACK_ENV=test ./com/console
 ## Background jobs
 Set your background job engine with ease!
 
-# Sidekiq engine
+### Sidekiq engine
 1. Add sidekiq to your Gemfile
 ```bash
 gem 'sidekiq'
@@ -331,7 +331,8 @@ end
 ```ruby
 TestAsyncRunnner.new.perform_async(options: {"email"=> "new@new.com", "password"=> "123"})
 ```
-# Default engine is ThreadAsync, however it is not yet recommended for production. Use it with cautions!
+### Default engine is ThreadAsync
+However it is not yet recommended for production. Use it with cautions!
 1. Do not define any adapter in the /config/base_configuration.rb file, so default ThreadAsync will be taken.
 2. Just create a worker and process it.
 ```bash
