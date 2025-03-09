@@ -20,13 +20,22 @@ class BaseController
     end
   end
 
-  def response_with type: nil, object: nil, status: 200, mime_type: nil, render_view: nil, headers: {}, to: nil
+  def response_with type: nil, object: nil, status: 200, mime_type: nil, render_view: nil, headers: {}, to: nil, file: nil, filename: nil
     case type&.to_sym
     in :json
       rendered_json = object.is_a?(Array) ? object&.map(&:to_h).to_json : object.to_json
       return [status, headers.merge("content-type" => "application/json"), [rendered_json]]
     in :image
       return [status, headers.merge("content-type" => mime_type), [object]]
+    in :file
+      return [
+        status,
+        headers.merge(
+          "content-disposition" => "attachment; filename=#{filename}",
+          "content-type" => "application/octet-stream"
+        ),
+        file
+      ]
     in :text
       return [status, headers.merge("content-type" => "text/plain"), [object.to_s]]
     in :unauthentificated

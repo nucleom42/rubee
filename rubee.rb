@@ -56,6 +56,10 @@ module Rubee
         @configuraiton[args[:env].to_sym][:database_url] = args[:url]
       end
 
+      def async_adapter=(args)
+        @configuraiton[args[:env].to_sym][:async_adapter] = args[:async_adapter]
+      end
+
       def method_missing(method_name, *args, &block)
         if method_name.to_s.start_with?("get_")
           @configuraiton[ENV['RACK_ENV']&.to_sym || :development]&.[](method_name.to_s.delete_prefix("get_").to_sym)
@@ -128,6 +132,9 @@ module Rubee
       def priority_order_require(root_directory, black_list)
         # all the base classes should be loaded first
         Dir[File.join(root_directory, 'inits/**', '*.rb')].each do |file|
+          require_relative file unless black_list.include?("#{file}.rb")
+        end
+        Dir[File.join(root_directory, 'app/async/extensions/**', '*.rb')].each do |file|
           require_relative file unless black_list.include?("#{file}.rb")
         end
         require_relative "config/base_configuration" unless black_list.include?('base_configuration.rb')
