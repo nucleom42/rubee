@@ -55,7 +55,7 @@ def generate_structure
     file.puts "STRUCTURE = #{formatted_hash}"
   end
 
-  color_puts "db/#{ENV['RACK_ENV']}_structure.rb updated", color: :green
+  color_puts "db/structure.rb updated", color: :green
 end
 
 

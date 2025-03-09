@@ -3,6 +3,7 @@
 # Unpreditable behaviour may happen. Take it as your own risk.
 class DatabaseObject
   include ::Serializable
+  include ::Hookable
 
   def destroy
   end
