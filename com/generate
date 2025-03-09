@@ -6,7 +6,7 @@ ENV['RACK_ENV'] ||= 'development'
 
 routes = eval(File.read('config/routes.rb'))
 route = routes.find { |route| route[:path] == path.to_s && route[:method] == method.to_sym }
-color_puts("Route not found with path: #{path} and method: #{method}", color: :red) unless rout
+color_puts("Route not found with path: #{path} and method: #{method}", color: :red) unless route
 
 Rubee::Generator.new(
   route[:model]&.[](:name),
