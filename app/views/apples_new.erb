@@ -1,0 +1,10 @@
+<h1>New Apple</h1>
+<a href="/apples"><button>Apples</button></a>
+<form action="/apples" method="post">
+    <% if @error %>
+        <p><%= @error %></p>
+    <% end %>
+    <input type="text" name="apple[color]" value="" placeholder="Color">
+    <input type="text" name="apple[weight]" value="" placeholder="Weight">
+    <input type="submit" value="Create">
+</form>
