@@ -42,7 +42,7 @@ class ThreadPool
           end
           break if task == :stop
           begin
-            task.new.run(**args)
+            task.new.perform(**args)
           rescue StandardError => e
             puts "ThreadPool Error: #{e.message}"
           end

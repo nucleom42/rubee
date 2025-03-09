@@ -274,6 +274,78 @@ For instance if you want to run console in test environment you need to run the 
 RACK_ENV=test ./com/console
 ```
 
+## Background jobs
+Set your background job engine with ease!
+
+# Sidekiq engine
+1. Add sidekiq to your Gemfile
+```bash
+gem 'sidekiq'
+```
+2. Configure adapter for desired env
+```ruby
+# config/base_configuration.rb
+
+Rubee::Configuration.setup(env=:development) do |config|
+  config.database_url = { url: "sqlite://db/development.db", env: }
+  config.async_adapter = { async_adapter: SidekiqAsync, env: }
+end
+```
+3. Bundle up
+```bash
+bundle install
+```
+4. Make sure redis is installed and running
+```bash
+redis-server
+```
+5. Add sidekiq configuration file
+```bash
+# config/sidekiq.yml
+
+development:
+  redis: redis://localhost:6379/0
+  concurrency: 5
+  queues:
+    default:
+    low:
+    high:
+```
+6. Create sidekiq worker
+```ruby
+# app/async/test_async_runner.rb
+require_relative 'extensions/asyncable' unless defined? Asyncable
+
+class TestAsyncRunnner
+  include Asyncable
+  include Sidekiq::Worker
+
+  sidekiq_options queue: :default
+
+  def perform(options)
+    User.create(email: options['email'], password: options['password'])
+  end
+end
+```
+7. Use it in the code base
+```ruby
+TestAsyncRunnner.new.perform_async(options: {"email"=> "new@new.com", "password"=> "123"})
+```
+# Default engine is ThreadAsync, however it is not yet recommended for production. Use it with cautions!
+1. Do not define any adapter in the /config/base_configuration.rb file, so default ThreadAsync will be taken.
+2. Just create a worker and process it.
+```bash
+class TestAsyncRunnner
+  include Asyncable
+
+  def perform(options)
+    User.create(email: options['email'], password: options['password'])
+  end
+end
+
+TestAsyncRunnner.new.perform_async(options: {"email"=> "new@new.com", "password"=> "123"})
+```
+
 ## TODOs
 - [x] Token authorization API
 - [ ] Document authorization API
