@@ -25,6 +25,7 @@ All greaet features are yet to come!
 - **Authentificatable** Add JWT authentification easily to any controller action.
 - **Hooks** Add logic before, after and around any action.
 - **Test** Run all or selected tests witin minitest.
+- **Asyncable** Add async adapter and pick any popular background job queue enginee
 
 ## Installation
 

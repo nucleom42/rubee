@@ -19,6 +19,10 @@ class ThreadPool
     @queue << { task: task, args: args }
   end
 
+  def bulk_enqueue(tasks)
+    @queue << tasks
+  end
+
   def shutdown
     @running = false
     THREADS_LIMIT.times { @queue << { task:  :stop, args: nil } }
