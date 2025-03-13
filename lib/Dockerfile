@@ -12,7 +12,7 @@ COPY Gemfile Gemfile.lock ./
 RUN bundle install
 
 # Copy the rest of the application files into the container
-COPY . .
+COPY .. .
 
 # Ensure scripts are executable (after the files are copied)
 RUN chmod +x ./com/db

@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-require_relative '../inits/print_colors'
+require_relative '../inits/ts/print_colors'
 require_relative '../rubee.rb'
 method, path = ARGV
 ENV['RACK_ENV'] ||= 'development'

@@ -1,3 +1,3 @@
-require_relative './rubee'
+require_relative './bee'
 
 run Rubee::Application.instance
