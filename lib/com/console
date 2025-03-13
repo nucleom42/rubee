@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 
 require 'irb'
-require_relative '../rubee.rb'
+require_relative '../../ee.rb'
 
 ENV['RACK_ENV'] ||= 'development'
 

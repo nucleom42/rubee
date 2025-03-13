@@ -3,7 +3,7 @@
 # Unpreditable behaviour may happen. Take it as your own risk.
 
 unless defined?(Rubee)
-  require_relative '../../../rubee.rb'
+  require_relative '../../../../ee.rb'
   Rubee::Autoload.call
 end
 

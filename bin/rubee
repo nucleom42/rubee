@@ -1,8 +1,8 @@
 #!/usr/bin/env ruby
 require 'bundler/setup'
 require 'rack'
-require_relative '../version'
-require_relative '../inits/print_colors'
+require_relative '../lib/version'
+require_relative '../lib/inits/print_colors'
 
 ENV['RACK_ENV'] ||= 'development'
 

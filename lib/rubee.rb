@@ -137,8 +137,8 @@ module Rubee
         Dir[File.join(root_directory, 'app/async/extensions/**', '*.rb')].each do |file|
           require_relative file unless black_list.include?("#{file}.rb")
         end
-        require_relative "config/base_configuration" unless black_list.include?('base_configuration.rb')
-        require_relative "config/routes" unless black_list.include?('routes.rb')
+        require_relative "lib/config/base_lib/configuration" unless black_list.include?('base_configuration.rb')
+        require_relative "lib/config/es" unless black_list.include?('routes.rb')
         Dir[File.join(root_directory, 'app/models/extensions/**', '*.rb')].each do |file|
           require_relative file unless black_list.include?("#{file}.rb")
         end
@@ -148,9 +148,9 @@ module Rubee
         Dir[File.join(root_directory, 'app/controllers/extensions/**', '*.rb')].each do |file|
           require_relative file unless black_list.include?("#{file}.rb")
         end
-        require_relative "app/controllers/base_controller" unless black_list.include?('base_controller.rb')
-        require_relative "app/models/database_object" unless black_list.include?('database_object.rb')
-        require_relative "app/models/sequel_object" unless black_list.include?('sequel_object.rb')
+        require_relative "lib/app/controllers/_controller" unless black_list.include?('base_controller.rb')
+        require_relative "lib/app/models/base_object" unless black_list.include?('database_object.rb')
+        require_relative "lib/app/models/el_object" unless black_list.include?('sequel_object.rb')
       end
     end
   end

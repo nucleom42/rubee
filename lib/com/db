@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 
-require_relative '../rubee.rb'
+require_relative '../../ee.rb'
 
 Rubee::Autoload.call
 ENV['RACK_ENV'] ||= 'development'
