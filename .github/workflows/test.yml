@@ -31,7 +31,7 @@ jobs:
 
       - name: Run db prereqs
         run: |
-          bundle exec rubee db run:create_apples
+          bundle exec ruby 'lib/db/create_users.rb'
 
       - name: Run Minitests
         run: |
