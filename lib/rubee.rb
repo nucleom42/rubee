@@ -138,8 +138,8 @@ module Rubee
           require_relative file unless black_list.include?("#{file}.rb")
         end
         # app inits
-        app_directory = File.join(root_directory,'../', 'app')
-        Dir[File.join('inits/**', '*.rb')].each do |file|
+        lib_dir = PROJECT_NAME == 'rubee' ? 'lib' : ''
+        Dir[File.join(APP_ROOT, lib_dir, 'inits/**', '*.rb')].each do |file|
           require_relative file unless black_list.include?("#{file}.rb")
         end
         # rubee async
@@ -147,8 +147,8 @@ module Rubee
           require_relative file unless black_list.include?("#{file}.rb")
         end
         # app config and routes
-        require_relative File.join("config/base_configuration") unless black_list.include?('base_configuration.rb')
-        require_relative File.join("config/routes") unless black_list.include?('routes.rb')
+        require_relative File.join(APP_ROOT, lib_dir, "config/base_configuration") unless black_list.include?('base_configuration.rb')
+        require_relative File.join(APP_ROOT, lib_dir, "config/routes") unless black_list.include?('routes.rb')
         # rubee extensions
         Dir[File.join(root_directory, "rubee/extensions/**", '*.rb')].each do |file|
           require_relative file unless black_list.include?("#{file}.rb")

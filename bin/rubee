@@ -38,7 +38,7 @@ if command =~ /^(start)$|^(start:(\d+))$/
 
   port ||= "7000"
   print_logo
-  color_puts "Starting takeoff of RuBee server on port #{port}...", color: :yellow
+  color_puts "Starting takeoff of ruBee server on port #{port}...", color: :yellow
   exec("rackup #{ENV['RACKUP_FILE']} -p #{port}")
 elsif command =~ /^(start_dev)$|^(start_dev:(\d+))$/
   command, port = ARGV.first&.split(':')
@@ -46,7 +46,7 @@ elsif command =~ /^(start_dev)$|^(start_dev:(\d+))$/
   port ||= "7000"
   print_logo
 
-  color_puts "Starting takeoff of RuBee server on port #{port} in dev mode...", color: :yellow
+  color_puts "Starting takeoff of ruBee server on port #{port} in dev mode...", color: :yellow
 
   exec("rerun -- rackup --port #{port} #{ENV['RACKUP_FILE']}")
 elsif command == "stop"

@@ -1,4 +1,4 @@
-require_relative File.join(__dir__, '..', 'rubee')
+require_relative File.join(File.expand_path(Dir.pwd), 'lib', 'rubee.rb')
 
 require "bundler/setup"
 Bundler.require(:test)
