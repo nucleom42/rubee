@@ -29,6 +29,18 @@ jobs:
           gem install bundler
           bundle install --jobs 4 --retry 3
 
+      - name: set up ruBee
+        run: |
+          gem build rubee.gemspec && gem install ./rubee-1.1.0.gem && cd .. && rm -rf my_project && rubee project my_project && cd my_project
+
+      - name: Run db init
+        run: |
+          cd /home/runner/work/rubee/my_project && rubee db init
+
+      - name: Run migration
+        run: |
+          cd /home/runner/work/rubee/my_project && rubee db run:create_users
+
       - name: Run Minitests
         run: |
-          RACK_ENV=test bundle exec ruby -Itests -e 'Dir.glob("./tests/**/*_test.rb").each { |file| require file unless file.include?("vendor/bundle") }'
+          cd /home/runner/work/rubee/my_project && rubee test

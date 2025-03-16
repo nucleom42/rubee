@@ -8,7 +8,7 @@ gem 'rack'
 gem 'rackup'
 # db
 gem 'sqlite3'
-gem 'pg'
+# gem 'pg'
 # orm
 gem 'sequel'
 # debugging
@@ -17,6 +17,8 @@ gem 'pry-byebug'
 gem 'json'
 # auth
 gem 'jwt'
+# console
+gem 'irb'
 
 group :test do
   # testing framework
