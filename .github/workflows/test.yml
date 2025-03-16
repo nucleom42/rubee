@@ -31,16 +31,16 @@ jobs:
 
       - name: set up ruBee
         run: |
-          bundle exec gem build rubee.gemspec && gem install ./rubee-1.1.0.gem && cd .. && rm -rf my_project && rubee project my_project && cd my_project
+          gem build rubee.gemspec && gem install ./rubee-1.1.0.gem && cd .. && rm -rf my_project && rubee project my_project && cd my_project
 
       - name: Run db init
         run: |
-          bundle exec rubee db init
+          cd /home/runner/work/rubee/my_project && rubee db init
 
       - name: Run migration
         run: |
-          bundle exec rubee db run:create_users
+          cd /home/runner/work/rubee/my_project rubee db run:create_users
 
       - name: Run Minitests
         run: |
-          bundle exec rubee test
+          cd /home/runner/work/rubee/my_project rubee test
