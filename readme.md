@@ -3,7 +3,7 @@
 ![GitHub Repo stars](https://img.shields.io/github/stars/nucleom42/rubee?style=social)
 
 
-# <img src="images/rubee.svg" alt="ru.Bee" height="40"> ... ru.Bee
+# <img src="lib/images/rubee.svg" alt="ru.Bee" height="40"> ... ru.Bee
 
 ru.Bee is a fast and lightweight Ruby application server designed for minimalism and flexibility .
 
@@ -225,7 +225,7 @@ class UsersController < Rubee::BaseController
   # POST /usres/logout (logout logic)
   def logout
     unauthentificate! # AuthTokenable method aimed to handle logout action.
-    # Make sure @zeroed_token_header is passed within headers options
+    # Make sure @zeroed_token_header is paRssed within headers options
     response_with type: :redirect, to: "/users/login", headers: @zeroed_token_header
   end
 
