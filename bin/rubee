@@ -1,15 +1,22 @@
 #!/usr/bin/env ruby
-require 'bundler/setup'
+
+require 'fileutils'
+require 'date'
+require 'irb'
+require 'sequel'
+require 'sqlite3'
+require 'json'
 require 'rack'
+require 'rackup'
+
 require_relative '../lib/version'
 require_relative '../lib/inits/print_colors'
+require_relative '../lib/rubee'
 
 ENV['RACK_ENV'] ||= 'development'
 
-APP_ROOT = File.expand_path('..', File.dirname(__FILE__))
-ENV['RACKUP_FILE'] = File.join(APP_ROOT, 'config.ru')
-
-command, port = ARGV.first&.split(':')
+LIB_ROOT = File.expand_path('../lib', File.dirname(__FILE__))
+ENV['RACKUP_FILE'] = File.join(LIB_ROOT, 'config.ru')
 
 LOGO = <<-'LOGO'
   ____  _    _  ____  _____
@@ -20,26 +27,233 @@ LOGO = <<-'LOGO'
  Ver: %s
 LOGO
 
+command = ARGV.first
+
 def print_logo
   puts "\e[36m" + (LOGO % VERSION) + "\e[0m" # Cyan color
 end
 
-if command == "start"
+if command =~ /^(start)$|^(start:(\d+))$/
+  command, port = ARGV.first&.split(':')
+
   port ||= "7000"
   print_logo
   color_puts "Starting takeoff of RuBee server on port #{port}...", color: :yellow
   exec("rackup #{ENV['RACKUP_FILE']} -p #{port}")
-elsif command == "start_dev"
+elsif command =~ /^(start_dev)$|^(start_dev:(\d+))$/
+  command, port = ARGV.first&.split(':')
+
   port ||= "7000"
   print_logo
 
   color_puts "Starting takeoff of RuBee server on port #{port} in dev mode...", color: :yellow
 
-  exec("rerun -- rackup --port #{port} config.ru")
+  exec("rerun -- rackup --port #{port} #{ENV['RACKUP_FILE']}")
 elsif command == "stop"
   exec("pkill -f rubee")
 elsif command == "status"
   exec("ps aux | grep rubee")
+elsif command == "project"
+  project_name = ARGV[1]
+  if project_name.nil?
+    color_puts "Please indicate project name.", color: :red
+    exit 1
+  end
+
+  source_dir = File.expand_path("../lib", __dir__)
+  target_dir = File.expand_path("./#{project_name}", Dir.pwd)
+
+  if Dir.exist?(target_dir)
+    color_puts "Error: Project #{project_name} already exists!", color: :red
+    exit 1
+  end
+
+  # Create target directory
+  FileUtils.mkdir_p(target_dir)
+
+  # Define blacklist
+  blacklist_files = %w[rubee.rb print_colors.rb version.rb config.ru]
+  blacklist_dirs = %w[rubee]
+
+  # Copy files, excluding blacklisted ones
+  Dir.glob("#{source_dir}/**/*", File::FNM_DOTMATCH).each do |file|
+    relative_path = file.sub("#{source_dir}/", "")
+
+    # Skip blacklisted directories
+    next if blacklist_dirs.any? { |dir| relative_path.split('/').include?(dir) }
+
+    # Skip blacklisted files
+    next if blacklist_files.include?(File.basename(file))
+
+    target_path = File.join(target_dir, relative_path)
+
+    if File.directory?(file)
+      FileUtils.mkdir_p(target_path)
+    else
+      FileUtils.cp(file, target_path)
+    end
+  end
+
+  # create a gemfile context
+  gemfile = <<~GEMFILE
+  source 'https://rubygems.org'
+
+  gem 'rubee', path: '../rubee'
+  gem 'sequel'
+  gem 'sqlite3'
+  gem 'rake'
+  gem 'rack'
+  gem 'rackup'
+  gem 'pry'
+  gem 'pry-byebug'
+  gem 'puma'
+
+  group :development do
+    gem 'rerun'
+    gem 'minitest'
+    gem 'rack-test'
+  end
+  GEMFILE
+  # create a gemfile
+  File.open("#{target_dir}/Gemfile", 'w') do |file|
+    file.puts gemfile
+  end
+
+  # create a test folder
+  FileUtils.mkdir_p("#{target_dir}/tests")
+  # create a test_helper context
+  test_helper = <<~RUBY
+  require "bundler/setup"
+  Bundler.require(:test)
+
+  require 'minitest/autorun'
+  require 'rack/test'
+  require 'rubee'
+
+  Rubee::Autoload.call
+  RUBY
+  File.open("#{target_dir}/tests/test_helper.rb", 'w') do |file|
+    file.puts test_helper
+  end
+
+  color_puts "Project #{project_name} created successfully at #{target_dir}", color: :green
+
+elsif command == "version"
+  puts "ruBee v#{VERSION}"
+elsif command == "test"
+  ENV['RACK_ENV'] = 'test'
+  file_name = ARGV[1] # Get the first argument
+
+  if file_name
+    color_puts "Running #{file_name} test ...", color: :yellow
+    exec("ruby -Itest -e \"require './tests/#{file_name}'\"")
+  else
+    color_puts "Running all tests ...", color: :yellow
+    exec("ruby -Itest -e \"Dir.glob('./tests/**/*_test.rb').each { |file| require file }\"")
+  end
+elsif ['generate', 'g'].include? command
+  method, path = ARGV[1..2]
+  ENV['RACK_ENV'] ||= 'development'
+
+  routes = eval(File.read('config/routes.rb'))
+  route = routes.find { |route| route[:path] == path.to_s && route[:method] == method.to_sym }
+  color_puts("Route not found with path: #{path} and method: #{method}", color: :red) unless route
+
+  Rubee::Generator.new(
+    route[:model]&.[](:name),
+    route[:model]&.[](:attributes),
+    "#{route[:controller]&.capitalize}Controller",
+    route[:action]
+  ).call
+elsif command == "db"
+  Rubee::Autoload.call
+  ENV['RACK_ENV'] ||= 'development'
+
+  command, file_name = ARGV[1]&.split(':')
+
+
+  def ensure_database_exists(db_url)
+    uri = URI.parse(db_url)
+    case uri.scheme
+    when "sqlite"
+      begin
+        Sequel.connect(db_url)
+        color_puts "Database #{ENV['RACK_ENV']} exists", color: :cyan
+      rescue => _
+        if File.exist?(db_path = db_url.sub(/^sqlite:\/\//, ''))
+          color_puts "Database #{ENV['RACK_ENV']} exists", color: :cyan
+        else
+          Sequel.sqlite(db_path)
+          color_puts "Database #{ENV['RACK_ENV']} created", color: :green
+        end
+      end
+    when "postgres"
+      begin
+        Sequel.connect(db_url)
+        color_puts "Database #{ENV['RACK_ENV']} exists", color: :cyan
+      rescue => _
+        con = Sequel.connect(Rubee::Configuration.get_database_url.gsub(/(\/test|\/development|\/production)/, ''))
+        con.run("CREATE DATABASE #{ENV['RACK_ENV']}")
+        color_puts "Database #{ENV['RACK_ENV']} created", color: :green
+      end
+    else
+      color_puts "Unsupported database type: #{db_url}", color: :red
+    end
+  end
+
+  def generate_structure
+    schema_hash = {}
+
+    Rubee::SequelObject::DB.tables.each do |table|
+      schema_hash[table] = {}
+
+      Rubee::SequelObject::DB.schema(table).each do |column, details|
+        schema_hash[table][column] = details
+      end
+    end
+    formatted_hash = JSON.pretty_generate(schema_hash)
+                         .gsub(/\"(\w+)\":/, '\1:')  # Convert keys to symbols
+                         .gsub(': null', ': nil')   # Convert `null` to `nil`
+
+    File.open("db/structure.rb", 'w') do |file|
+      file.puts "STRUCTURE = #{formatted_hash}"
+    end
+
+    color_puts "db/structure.rb updated", color: :green
+  end
+
+
+  if command == 'run'
+    Rubee::Autoload.call
+    Rubee::Configuration.envs.each do |env|
+      ENV['RACK_ENV'] = env.to_s
+      color_puts "Run #{file_name} file for #{env} env", color: :cyan
+      Object.const_get(file_name.split('_').map(&:capitalize).join).new.call
+    end
+    color_puts "Migration #{file_name} completed", color: :green
+    color_puts "Regenerate schema file", color: :cyan
+    generate_structure
+  elsif command == 'init'
+    ensure_database_exists(Rubee::Configuration.get_database_url)
+  elsif command == 'structure'
+    generate_structure
+  else
+    color_puts "Unknown command: #{command}", color: :red
+  end
+elsif ['console'].include? command
+  ARGV.clear
+  ENV['RACK_ENV'] ||= 'development'
+
+  Rubee::Autoload.call
+
+  def reload
+    app_files = Dir["./#{APP_ROOT}/**/*.rb"]
+    app_files.each { |file| load file }
+    color_puts "Reloaded ..", color: :green
+  end
+
+  # Start IRB
+  IRB.start
 else
   color_puts "Unknown command: #{command}", color: :red
 end

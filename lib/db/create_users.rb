@@ -2,8 +2,8 @@
 # Please make sure you executed it before using AuthTokenable module
 class CreateUsers
   def call
-    unless SequelObject::DB.tables.include?(:users)
-      SequelObject::DB.create_table :users do
+    unless Rubee::SequelObject::DB.tables.include?(:users)
+      Rubee::SequelObject::DB.create_table :users do
         primary_key :id
         String :email
         String :password

@@ -155,7 +155,7 @@ that can be executed before, after and around a specific method execution.
 Here below a controller example. However it can be used in any Ruby object, like Model etc.
 ```ruby
 # base conrteoller is hopokable by Default
-class ApplesController < BaseController
+class ApplesController < Rubee::BaseController
   before :index, :print_hello # you can useinstance method as a handler
   after :index, -> { puts "after index" }, if: -> { true } # or you can use lambda
   after :index, -> { puts "after index2" }, unless: -> { false } # if, unless guards may accept method or lambda
@@ -203,7 +203,7 @@ Feel free to customize it in the /db/create_users.rb file before running migrati
 
 Then in the controller you can include the AuthTokenable module and use its methods:
 ```ruby
-class UsersController < BaseController
+class UsersController < Rubee::BaseController
   include AuthTokenable
   # List methods you want to restrict
   auth_methods :index # unless the user is authentificated it will return unauthentificated
