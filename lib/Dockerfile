@@ -15,8 +15,7 @@ RUN bundle install
 COPY .. .
 
 # Ensure scripts are executable (after the files are copied)
-RUN chmod +x ./com/db
-RUN chmod +x ./com/rubee
+RUN chmod +x ./bin/rubee
 
 # Set the environment variable RACK_ENV to production
 ENV RACK_ENV=production

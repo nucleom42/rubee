@@ -98,7 +98,7 @@ elsif command == "project"
   gemfile = <<~GEMFILE
   source 'https://rubygems.org'
 
-  gem 'rubee', path: '../rubee'
+  gem 'ru.Bee'
   gem 'sequel'
   gem 'sqlite3'
   gem 'rake'
@@ -128,7 +128,7 @@ elsif command == "project"
 
   require 'minitest/autorun'
   require 'rack/test'
-  require 'rubee'
+  require 'ru.Bee'
 
   Rubee::Autoload.call
   RUBY
