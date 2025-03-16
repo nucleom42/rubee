@@ -29,6 +29,10 @@ jobs:
           gem install bundler
           bundle install --jobs 4 --retry 3
 
+      - name: Run db prereqs
+        run: |
+          bundle exec rubee db run:create_apples
+
       - name: Run Minitests
         run: |
           RACK_ENV=test bundle exec ruby -Itests -e 'Dir.glob(File.join(File.expand_path(Dir.pwd), "lib/rubee/tests", "**", "*_test.rb")).each { |file| require file unless file.include?("vendor/bundle") }'
