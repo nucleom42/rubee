@@ -8,11 +8,10 @@
 ruBee is a fast and lightweight Ruby application server designed for minimalism and flexibility .
 
 The main philosophy of ruBee is to focus on Ruby language explicit implementation of the MVC web application.
-There are no hidden details, you can oversee and even adjust it for your needs. It is not a gem all code base is self contained.
 
-Want to get a quick API server up and runing? You can do it for less than 7 min!
-[![Demo Video](http://img.youtube.com/vi/Udz476rI0gs/0.jpg)](http://www.youtube.com/watch?v=Udz476rI0gs "ruBee API demo")<br />
-My typing is bad, I probably could do it in 5 min.
+Want to get a quick API server up and runing? You can do it for real quick!
+<br />
+Laoding ... (demo is on its way)
 
 All greaet features are yet to come!
 
@@ -34,21 +33,21 @@ All greaet features are yet to come!
 
 ## Installation
 
-1. Create your project directory
+1. Install ruBee
 ```bash
-mkdir my_project
-cd my_project
+gem install rubee
 ```
 
-2. Clone the rubee repository
+2. Create your first project
 ```bash
-git clone https://github.com/nucleom42/rubee .
+rubee project my_project
+cd my_project
 ```
 
 3. Install dependencies
 
 ***Prerequisites***<br />
-**ruBee** is using **Sqlite** as a default database. Please make sure you get it installed.
+**ruBee** is using **Sqlite** as a default database. However you can pick up any other database supported by sequel gem.
 Aside that, make sure:
 **Ruby** language (3+) is installed
 **Bundler** is installed
@@ -59,12 +58,12 @@ bundle install
 
 4. Run ruBee server. Default port is 7000
 ```bash
-./com/rubee start
+rubee start
 ```
 
 5. Open your browser and go to http://localhost:7000
 
-## Generating files from the routes
+## Create API contract and generate files from the routes
 1. Add the routes to the routes.rb
 ```bash
 Rubee::Router.draw do |router|
@@ -83,7 +82,7 @@ end
 ```
 2. genrate the files
 ```bash
-./com/generate get /apples
+rubee generate get /apples
 ```
 3. This will generate the following files
 ```bash
@@ -116,18 +115,18 @@ Just make sure Serializable module included in the target class.
 ```ruby
   class Apple
     include Serializable
-    attr_accessor :colour, :weight
+    attr_accessor :id, :colour, :weight
   end
 ```
 However, you can simply turn it to ORM object by extending database class.
 
 ```Ruby
-  class Apple < SequelObject
-    attr_accessor :colour, :weight
+  class Apple < Rubee::SequelObject
+    attr_accessor :id, :colour, :weight
   end
 ```
 
-So in the controller you would need to query your target object
+So in the controller you would need to query your target object now.
 
 ```ruby
   #ApplesController
@@ -145,11 +144,10 @@ So in the controller you would need to query your target object
 
 ## Views
 View in ruBee is just a plain html/erb file that can be rendered from the controller.
-Refer to the example PR https://github.com/nucleom42/rubee/tree/PR-view-examples
 
 ## Object hooks
 
-In ruBee by extending Hookable module any Ruby objcet can be charged with hooks (logic),
+In ruBee by extending Hookable module any Ruby object can be charged with hooks (logic),
 that can be executed before, after and around a specific method execution.
 
 Here below a controller example. However it can be used in any Ruby object, like Model etc.
@@ -195,7 +193,7 @@ include AuthTokenable module to your controller and authentificate any action yo
 
 Make sure you have initiated User model which is a part of the logic.
 ```bash
-./com/db run:create_users
+rubee db run:create_users
 ```
 This will create table users and initiate first user with demo credentials.
 email: "ok@ok.com", password: "password"
@@ -240,38 +238,38 @@ end
 
 ## Rubee commands
 ```bash
-./com/rubee start # start the server
-./com/rubee start_dev # start the server in dev mode, which restart server on changes
-./com/rubee stop # stop the server
-./com/rubee restart # restart the server
+rubee start # start the server
+rubee start_dev # start the server in dev mode, which restart server on changes
+rubee stop # stop the server
+rubee restart # restart the server
 ```
 
 ## Generate commands
 ```bash
-./com/generate get /apples # generate controller view, model and migration if set in the routes
+rubee generate get /apples # generate controller view, model and migration if set in the routes
 ```
 
 ## Migraiton commands
 ```bash
-./com/db run:create_apples # where create_apples is the name of the migration file, located in /db folder
-./com/db structure # generate migration file for the database structure
+rubee db run:create_apples # where create_apples is the name of the migration file, located in /db folder
+rubee db structure # generate migration file for the database structure
 ```
 
 ## Rubee console
 ```bash
-./com/console # start the console
+rubee console # start the console
 ```
 
 ## Testing
 ```bash
-./com/test # run all tests
-./com/test auth_tokenable_test.rb # run specific tests
+rubee test # run all tests
+rubee test auth_tokenable_test.rb # run specific tests
 ```
 If you want to run any ruBee command within a specific ENV make sure you added it before a command.
 For instance if you want to run console in test environment you need to run the following command
 
 ```bash
-RACK_ENV=test ./com/console
+RACK_ENV=test rubee console
 ```
 
 ## Background jobs
@@ -317,7 +315,7 @@ development:
 require_relative 'extensions/asyncable' unless defined? Asyncable
 
 class TestAsyncRunnner
-  include Asyncable
+  include Rubee::Asyncable
   include Sidekiq::Worker
 
   sidekiq_options queue: :default
@@ -338,7 +336,7 @@ However it is not yet recommended for production. Use it with cautions!
 ```ruby
 # test_async_runner.rb
 class TestAsyncRunnner
-  include Asyncable
+  include Rubee::Asyncable
 
   def perform(options)
     User.create(email: options['email'], password: options['password'])
