@@ -39,8 +39,8 @@ jobs:
 
       - name: Run migration
         run: |
-          cd /home/runner/work/rubee/my_project rubee db run:create_users
+          cd /home/runner/work/rubee/my_project && rubee db run:create_users
 
       - name: Run Minitests
         run: |
-          cd /home/runner/work/rubee/my_project rubee test
+          cd /home/runner/work/rubee/my_project && rubee test
