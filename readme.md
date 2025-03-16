@@ -1,9 +1,10 @@
 ![Tests](https://github.com/nucleom42/rubee/actions/workflows/test.yml/badge.svg)
 ![License](https://img.shields.io/github/license/nucleom42/rubee)
-![GitHub Repo stars](https://img.shields.io/github/stars/nucleom42/rubee?style=social)
 ![Gem](https://img.shields.io/gem/dt/ru.Bee.svg)
 ![GitHub last commit](https://img.shields.io/github/last-commit/nucleom42/rubee.svg)
 ![Gem](https://img.shields.io/gem/v/ru.Bee.svg)
+![GitHub Repo stars](https://img.shields.io/github/stars/nucleom42/rubee?style=social)
+
 
 # <img src="lib/images/rubee.svg" alt="ru.Bee" height="40"> ... ru.Bee
 
