@@ -107,6 +107,7 @@ elsif command == "project"
   gem 'pry'
   gem 'pry-byebug'
   gem 'puma'
+  gem 'json'
 
   group :development do
     gem 'rerun'
