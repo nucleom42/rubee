@@ -39,7 +39,7 @@ jobs:
 
       - name: Run migration
         run: |
-          cd /home/runner/work/rubee/my_project && rubee db run:create_users
+          cd /home/runner/work/rubee/my_project && RACK_ENV=test rubee db run:create_users
 
       - name: Run Minitests for the dummy project
         run: |
