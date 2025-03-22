@@ -19,7 +19,7 @@ class RubeeAppTest < Minitest::Test
   end
 
   def test_welcome_controller_included_auth_tokenable
-    WelcomeController.include(AuthTokenable)
+    WelcomeController.include(Rubee::AuthTokenable)
     WelcomeController.auth_methods :show
 
     get '/'

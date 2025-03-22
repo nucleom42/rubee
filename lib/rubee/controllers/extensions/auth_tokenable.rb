@@ -11,7 +11,7 @@ module Rubee
       base.include(InstanceMethods)
       base.extend(ClassMethods)
 
-      base.attach('AuthTokenMiddleware')
+      base.attach('Rubee::AuthTokenMiddleware')
     end
 
     module InstanceMethods

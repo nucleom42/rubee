@@ -43,7 +43,8 @@ module Rubee
       else # rendering erb view is a default behavior
         view_file_name = self.class.name.split("Controller").first.downcase
         erb_file = render_view ? "#{render_view}.erb" : "#{view_file_name}_#{@route[:action]}.erb"
-        rendered_erb = ERB.new(File.open("app/views/#{erb_file}").read).result(binding)
+        lib = Rubee::PROJECT_NAME == 'rubee' ? 'lib/' : ''
+        rendered_erb = ERB.new(File.open("#{lib}app/views/#{erb_file}").read).result(binding)
         return [status, headers.merge("content-type" => "text/html"), [rendered_erb]]
       end
     end

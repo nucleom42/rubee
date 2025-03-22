@@ -73,7 +73,7 @@ elsif command == "project"
 
   # Define blacklist
   blacklist_files = %w[rubee.rb print_colors.rb version.rb config.ru]
-  blacklist_dirs = %w[rubee]
+  blacklist_dirs = %w[rubee tests]
 
   # Copy files, excluding blacklisted ones
   Dir.glob("#{source_dir}/**/*", File::FNM_DOTMATCH).each do |file|
@@ -93,6 +93,11 @@ elsif command == "project"
       FileUtils.cp(file, target_path)
     end
   end
+
+  # create tests dir and copy test_helper.rb and user_model_test.rb
+  FileUtils.mkdir_p("#{target_dir}/tests")
+  FileUtils.cp("#{source_dir}/tests/test_helper.rb", "#{target_dir}/tests/test_helper.rb")
+  FileUtils.cp("#{source_dir}/tests/user_model_test.rb", "#{target_dir}/tests/user_model_test.rb")
 
   # create a gemfile context
   gemfile = <<~GEMFILE
@@ -120,27 +125,10 @@ elsif command == "project"
     file.puts gemfile
   end
 
-  # create a test folder
-  FileUtils.mkdir_p("#{target_dir}/tests")
-  # create a test_helper context
-  test_helper = <<~RUBY
-  require "bundler/setup"
-  Bundler.require(:test)
-
-  require 'minitest/autorun'
-  require 'rack/test'
-  require 'ru.Bee'
-
-  Rubee::Autoload.call
-  RUBY
-  File.open("#{target_dir}/tests/test_helper.rb", 'w') do |file|
-    file.puts test_helper
-  end
-
   color_puts "Project #{project_name} created successfully at #{target_dir}", color: :green
 
 elsif command == "version"
-  puts "ruBee v#{VERSION}"
+  puts "ru.Bee v#{VERSION}"
 elsif command == "test"
   ENV['RACK_ENV'] = 'test'
   file_name = ARGV[1] # Get the first argument

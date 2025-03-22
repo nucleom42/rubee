@@ -38,6 +38,15 @@ describe 'User model' do
       end
     end
 
+    describe 'when save existing user' do
+      it 'persists to db' do
+        user = User.new(email: "ok-test@test.com", password: "123")
+        user.save
+
+        _(user.reload.password).must_equal "123"
+      end
+    end
+
     describe 'when data is invalid' do
       it 'is not changing users number' do
         initial_count = User.all.count
