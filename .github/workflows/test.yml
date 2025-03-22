@@ -43,8 +43,8 @@ jobs:
 
       - name: Run Minitests for the dummy project
         run: |
-          cd /home/runner/work/rubee/my_project && rubee test
+          cd /home/runner/work/rubee/my_project && RACK_ENV=test rubee test
 
       - name: Run ru.Bee minitest
         run: |
-          cd /home/runner/work/rubee && RACK_ENV=test bundle exec ruby -Itests -e 'Dir.glob(".lib/tests/**/*_test.rb").each { |file| require file unless file.include?("vendor/bundle") || file.end_with?("user_model_test.rb") }'
+          cd /home/runner/work/rubee && RACK_ENV=test rubee test

@@ -50,6 +50,10 @@ module Rubee
         nil
       end
 
+      def reconnect!
+        const_set(:DB, Sequel.connect(Rubee::Configuration.get_database_url))
+      end
+
       def connection
         @connection ||= DB[pluralize_class_name.to_sym]
       end
