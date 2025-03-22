@@ -8,6 +8,7 @@ module Rubee
   APP_ROOT = File.expand_path(Dir.pwd) unless defined?(APP_ROOT)
   IMAGE_DIR = File.join(APP_ROOT, 'images') unless defined?(IMAGE_DIR)
   PROJECT_NAME = File.basename(APP_ROOT) unless defined?(PROJECT_NAME)
+  VERSION = '1.1.32'
 
   class Application
     include Singleton

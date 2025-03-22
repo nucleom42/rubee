@@ -19,6 +19,10 @@ gem 'json'
 gem 'jwt'
 # console
 gem 'irb'
+# openstruct
+gem 'ostruct'
+# documentation
+gem 'rdoc'
 
 group :test do
   # testing framework

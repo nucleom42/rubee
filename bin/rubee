@@ -9,7 +9,6 @@ require 'json'
 require 'rack'
 require 'rackup'
 
-require_relative '../lib/version'
 require_relative '../lib/inits/print_colors'
 require_relative '../lib/rubee'
 
@@ -30,7 +29,7 @@ LOGO
 command = ARGV.first
 
 def print_logo
-  puts "\e[36m" + (LOGO % VERSION) + "\e[0m" # Cyan color
+  puts "\e[36m" + (LOGO % Rubee::VERSION) + "\e[0m" # Cyan color
 end
 
 if command =~ /^(start)$|^(start:(\d+))$/
@@ -77,8 +76,8 @@ elsif command == "project"
   FileUtils.mkdir_p(target_dir)
 
   # Define blacklist
-  blacklist_files = %w[rubee.rb print_colors.rb version.rb config.ru test_helper.rb]
-  blacklist_dirs = %w[rubee tests]
+  blacklist_files = %w[rubee.rb print_colors.rb version.rb config.ru test_helper.rb Gemfile.lock test.yml test.db development.db production.db]
+  blacklist_dirs = %w[rubee tests .git .github .idea]
 
   # Copy files, excluding blacklisted ones
   Dir.glob("#{source_dir}/**/*", File::FNM_DOTMATCH).each do |file|
@@ -148,7 +147,7 @@ elsif command == "project"
   color_puts "Project #{project_name} created successfully at #{target_dir}", color: :green
 
 elsif command == "version"
-  puts "ru.Bee v#{VERSION}"
+  color_puts "ru.Bee v#{Rubee::VERSION}", color: :yellow
 elsif command == "test"
 
   ENV['RACK_ENV'] = 'test'
