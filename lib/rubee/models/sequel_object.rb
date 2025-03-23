@@ -50,6 +50,52 @@ module Rubee
         nil
       end
 
+      # ## User
+      # one_to_many :comments
+      # > user.comments
+      # > [<comment1>, <comment2>]
+      def one_to_many(assoc)
+        define_method(assoc) do
+          singularized_assoc_name = singularize(assoc.to_s)
+          fk_name = "#{self.class.to_s.downcase}_id"
+          Object.const_get(singularized_assoc_name.capitalize).where(fk_name => id)
+        end
+      end
+
+      # ## Comment
+      # many_to_one :user
+      # > comment.user
+      # > <user>
+      def many_to_one(assoc)
+        define_method(assoc) do
+          fk_name = "#{assoc}_id"
+          Object.const_get(assoc.capitalize).find(send(fk_name))
+        end
+      end
+
+      # ## User
+      # one_to_one :profile
+      # > user.profile
+      # > <profile>
+      def one_to_one(assoc)
+        define_method(assoc) do
+          fk_name = "#{assoc}_id"
+          Object.const_get(assoc.capitalize).find(send(fk_name))
+        end
+      end
+
+      # ## User
+      # many_to_many :posts, over: :comments
+      # > user.posts
+      # > [<post1>, <post2>]
+      def many_to_many(assoc, over:)
+        define_method(assoc) do
+          singularized_assoc_name = singularize(assoc.to_s)
+          fk_name = "#{self.class.to_s.downcase}_id"
+          Object.const_get(singularized_assoc_name.capitalize).association_join(over).where(fk_name => id)
+        end
+      end
+
       def reconnect!
         const_set(:DB, Sequel.connect(Rubee::Configuration.get_database_url))
       end
