@@ -38,7 +38,7 @@ module Rubee
         pluralize(self.name.downcase)
       end
 
-      def plaralize(word)
+      def pluralize(word)
         if word.end_with?('y') && !%w[a e i o u].include?(word[-2])
           word[0..-2] + 'ies' # Replace "y" with "ies"
         elsif word.end_with?('s', 'x', 'z', 'ch', 'sh')
