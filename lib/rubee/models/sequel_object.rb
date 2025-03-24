@@ -154,7 +154,9 @@ module Rubee
 
       def sequel_to_obj(suquel_dataset, klass)
         suquel_dataset.map do |record_hash|
-          klass.new(**record_hash)
+          target_klass_fields = DB[pluralize(klass.name.downcase).to_sym].columns
+          klass_attributes = record_hash.filter{ target_klass_fields.include? _1 }
+          klass.new(**klass_attributes)
         end
       end
     end

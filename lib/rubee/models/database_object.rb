@@ -59,6 +59,11 @@ module Rubee
           word # Return as-is if no plural form is detected
         end
       end
+
+      def accessor_names
+        instance_methods(false)
+          .select { |m| method_defined?("#{m}=") }  # Check if setter exists
+      end
     end
   end
 end
