@@ -70,7 +70,7 @@ module Rubee
             sequel_dataset = klass
               .join(over.to_sym, "#{singularized_assoc_name}_id".to_sym => :id)
               .where(fk_name.to_sym => id)
-            self.class.sequel_to_obj(sequel_dataset, klass)
+            self.class.serialize(sequel_dataset, klass)
           else
             klass.where(fk_name.to_sym => id)
           end
@@ -152,7 +152,8 @@ module Rubee
         all.each(&:destroy)
       end
 
-      def sequel_to_obj(suquel_dataset, klass)
+      def serialize(suquel_dataset, klass = nil)
+        klass ||= self
         suquel_dataset.map do |record_hash|
           target_klass_fields = DB[pluralize(klass.name.downcase).to_sym].columns
           klass_attributes = record_hash.filter{ target_klass_fields.include? _1 }
