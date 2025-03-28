@@ -50,6 +50,68 @@ module Rubee
         nil
       end
 
+      def first
+        found_hash = connection.order(:id).first
+        return self.new(**found_hash) if found_hash
+
+        nil
+      end
+
+      # ## User
+      # owns_many :comments
+      # > user.comments
+      # > [<comment1>, <comment2>]
+      def owns_many(assoc, fk_name: nil, over: nil)
+        singularized_assoc_name = singularize(assoc.to_s)
+        fk_name ||= "#{self.name.to_s.downcase}_id"
+        define_method(assoc) do
+          klass = Object.const_get(singularized_assoc_name.capitalize)
+          if over
+            sequel_dataset = klass
+              .join(over.to_sym, "#{singularized_assoc_name}_id".to_sym => :id)
+              .where(fk_name.to_sym => id)
+            self.class.serialize(sequel_dataset, klass)
+          else
+            klass.where(fk_name.to_sym => id)
+          end
+        end
+      end
+
+      # ## Comment
+      # owns_one :user
+      # > comment.user
+      # > <user>
+      def owns_one(assoc, fk_name: nil)
+        fk_name ||= "#{self.name.to_s.downcase}_id"
+        define_method(assoc) do
+          Object.const_get(assoc.capitalize).where(fk_name.to_sym => id)&.first
+        end
+      end
+
+      # ## Account
+      # holds_one :user
+      # > account.user
+      # > <user>
+      def holds_one(assoc, fk_name: nil)
+        fk_name ||= "#{assoc.to_s.downcase}_id"
+        define_method(assoc) do
+          target_klass = Object.const_get(assoc.capitalize)
+          target_klass.find(self.send(fk_name))
+        end
+      end
+
+      # ## Post
+      # holds_many :comments
+      # > post.comments
+      # > [<comment1>, <comment2>]
+      def holds_many(assoc, fk_name: nil)
+        singularized_assoc_name = singularize(assoc.to_s)
+        fk_name ||= "#{singularized_assoc_name.to_s.downcase}_id"
+        define_method(assoc) do
+          Object.const_get(singularized_assoc_name.capitalize).where(id: self.send(fk_name))
+        end
+      end
+
       def reconnect!
         const_set(:DB, Sequel.connect(Rubee::Configuration.get_database_url))
       end
@@ -77,6 +139,10 @@ module Rubee
         end
       end
 
+      def join(assoc, args)
+        connection.join(assoc, **args)
+      end
+
       def create(attrs)
         out_id = connection.insert(**attrs)
         self.new(**(attrs.merge(id: out_id)))
@@ -84,6 +150,15 @@ module Rubee
 
       def destroy_all
         all.each(&:destroy)
+      end
+
+      def serialize(suquel_dataset, klass = nil)
+        klass ||= self
+        suquel_dataset.map do |record_hash|
+          target_klass_fields = DB[pluralize(klass.name.downcase).to_sym].columns
+          klass_attributes = record_hash.filter{ target_klass_fields.include? _1 }
+          klass.new(**klass_attributes)
+        end
       end
     end
   end
