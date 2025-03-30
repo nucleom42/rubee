@@ -123,6 +123,9 @@ module Rubee
         # autoload all rbs
         root_directory = File.dirname(__FILE__)
         priority_order_require(root_directory, black_list)
+        # ensure sequel object is connected
+        Rubee::SequelObject.reconnect!
+
         Dir.glob(File.join(APP_ROOT, '**', '*.rb')).sort.each do |file|
           base_name = File.basename(file)
 

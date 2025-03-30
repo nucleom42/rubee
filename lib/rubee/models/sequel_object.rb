@@ -115,6 +115,8 @@ module Rubee
       end
 
       def reconnect!
+        return if defined?(DB) && !DB.nil?
+
         const_set(:DB, Sequel.connect(Rubee::Configuration.get_database_url))
       end
 
