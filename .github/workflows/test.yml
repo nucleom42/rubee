@@ -39,7 +39,7 @@ jobs:
 
       - name: Run db init for the dummy project
         run: |
-          rubee db init
+          RACK_ENV=test rubee db init
 
       - name: Run all migration for the dummy project
         run: |
