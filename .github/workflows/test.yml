@@ -29,9 +29,21 @@ jobs:
           gem install bundler
           bundle install --jobs 4 --retry 3
 
-      - name: set up ru.Bee and create dummy project
+      - name: set up ru.Bee
         run: |
-          bundle install --redownload && gem build rubee.gemspec && gem install ru.Bee-*.gem && rm -rf my_project && rubee project my_project && cd my_project
+          bundle install --redownload && gem build rubee.gemspec && gem install ru.Bee-*.gem
+
+      - name: Run all migration for ru.Bee internals
+        run: |
+          RACK_ENV=test bin/rubee db run:all
+
+      - name: Run ru.Bee internals minitest
+        run: |
+          RACK_ENV=test bin/rubee test
+
+      - name: Create dummy project
+        run: |
+          rm -rf my_project && rubee project my_project && cd my_project
 
       - name: Run bundle for the dummy project
         run: |
@@ -49,11 +61,4 @@ jobs:
         run: |
           RACK_ENV=test rubee test
 
-      - name: Run all migration for rubee internals
-        run: |
-          cd .. &&
-          RACK_ENV=test bin/rubee db run:all
 
-      - name: Run ru.Bee internals minitest
-        run: |
-          RACK_ENV=test bin/rubee test
