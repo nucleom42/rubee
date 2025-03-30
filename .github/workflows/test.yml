@@ -31,19 +31,19 @@ jobs:
 
       - name: set up ruBee
         run: |
-          gem build rubee.gemspec && gem install ru.Bee-*.gem && cd .. && rm -rf my_project && rubee project my_project && cd my_project
+          gem build rubee.gemspec && gem install ru.Bee-*.gem && cd .. && rm -rf my_project && bundle exec rubee project my_project && cd my_project
 
       - name: Run db init
         run: |
-          cd /home/runner/work/rubee/my_project && rubee db init
+          cd /home/runner/work/rubee/my_project && RACK_ENV=test bundle exec rubee db init
 
       - name: Run all migration for the dummy project
         run: |
-          cd /home/runner/work/rubee/my_project && RACK_ENV=test rubee db run:all
+          cd /home/runner/work/rubee/my_project && RACK_ENV=test bundle exec rubee db run:all
 
       - name: Run Minitests for the dummy project
         run: |
-          cd /home/runner/work/rubee/my_project && RACK_ENV=test rubee test
+          cd /home/runner/work/rubee/my_project && RACK_ENV=test bundle exec rubee test
 
       - name: Run all migration for rubee
         run: |
