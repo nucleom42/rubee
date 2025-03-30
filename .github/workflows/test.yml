@@ -31,7 +31,8 @@ jobs:
 
       - name: set up ruBee
         run: |
-          gem build rubee.gemspec && gem install ru.Bee-*.gem && cd .. && rm -rf my_project && bundle exec rubee project my_project && cd my_project
+          cd /home/runner/work/rubee &&
+          gem build rubee.gemspec && gem install ru.Bee-*.gem && cd .. && rm -rf my_project && rubee project my_project
 
       - name: Run db init
         run: |
