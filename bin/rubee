@@ -218,10 +218,10 @@ elsif command == "db"
   def generate_structure
     schema_hash = {}
 
-    DB.tables.each do |table|
+    Rubee::SequelObject::DB.tables.each do |table|
       schema_hash[table] = {}
 
-      DB.schema(table).each do |column, details|
+      Rubee::SequelObject::DB.schema(table).each do |column, details|
         schema_hash[table][column] = details
       end
     end

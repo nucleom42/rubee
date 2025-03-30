@@ -152,14 +152,12 @@ module Rubee
         lib = PROJECT_NAME == 'rubee' ? 'lib/' : ''
         require_relative File.join(APP_ROOT, lib, "config/base_configuration") unless black_list.include?('base_configuration.rb')
         # This is necessary prerequisitedb init step
-        unless defined?(DB)
+        unless defined?(Rubee::SequelObject::DB)
           if PROJECT_NAME == 'rubee'
             Rubee::Configuration.setup(env=:test) do |config|
               config.database_url = { url: "sqlite://lib/tests/test.db", env: }
             end
           end
-          const_set(:DB, Sequel.connect(Rubee::Configuration.get_database_url))
-          Sequel::Model.db ||= DB
         end
 
         require_relative File.join(APP_ROOT, lib, "config/routes") unless black_list.include?('routes.rb')
