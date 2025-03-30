@@ -1,5 +1,5 @@
 unless defined?(Rubee)
-  require_relative '../../../../ee.rb'
+  require_relative '../../../../rubee.rb'
   Rubee::Autoload.call
 end
 

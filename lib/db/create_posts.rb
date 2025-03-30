@@ -1,14 +1,14 @@
-class CreateUsers
+class CreatePosts
   def call
-    unless Rubee::SequelObject::DB.tables.include?(:users)
-      Rubee::SequelObject::DB.create_table :users do
+    unless Rubee::SequelObject::DB.tables.include?(:posts)
+      Rubee::SequelObject::DB.create_table :posts do
         primary_key :id
-        String :email
-        String :password
-        index :email
+        foreign_key :user_id, :users
+        foreign_key :comment_id, :comments
       end
 
-      User.create(email: "ok@ok.com", password: "password")
+      Post.create(user_id: User.all.first.id, comment_id: Comment.all.first.id)
+      Post.create(user_id: User.all.last.id, comment_id: Comment.all.last.id)
     end
   end
 end

@@ -1,9 +1,21 @@
 module Rubee
-  class SequelObject < DatabaseObject
-    DB = Sequel.connect(Rubee::Configuration.get_database_url) rescue nil
+  class SequelObject
+    include Rubee::DatabaseObjectable
 
-    def destroy
-      self.class.connection.where(id:).delete
+    def destroy(cascade: false, **options)
+      if cascade
+        # find all tables with foreign key
+        tables_with_fk = DB.tables.select do |table|
+          DB.foreign_key_list(table).any? { |fk| fk[:table] == self.class.pluralize_class_name.to_sym }
+        end
+        # destroy related records
+        tables_with_fk.each do |table|
+          fk_name ||= "#{self.class.name.to_s.downcase}_id".to_sym
+          target_klass = Object.const_get(self.class.singularize(table.to_s).capitalize)
+          target_klass.where(fk_name => id).map(&:destroy)
+        end
+      end
+      self.class.dataset.where(id:).delete
     end
 
     def save
@@ -28,7 +40,7 @@ module Rubee
 
     def update(args = {})
       assign_attributes(args)
-      found_hash = self.class.connection.where(id:)
+      found_hash = self.class.dataset.where(id:)
       return self.class.find(id) if found_hash&.update(**args)
 
       false
@@ -44,14 +56,14 @@ module Rubee
 
     class << self
       def last
-        found_hash = connection.order(:id).last
+        found_hash = dataset.order(:id).last
         return self.new(**found_hash) if found_hash
 
         nil
       end
 
       def first
-        found_hash = connection.order(:id).first
+        found_hash = dataset.order(:id).first
         return self.new(**found_hash) if found_hash
 
         nil
@@ -61,9 +73,10 @@ module Rubee
       # owns_many :comments
       # > user.comments
       # > [<comment1>, <comment2>]
-      def owns_many(assoc, fk_name: nil, over: nil)
+      def owns_many(assoc, fk_name: nil, over: nil, **options)
         singularized_assoc_name = singularize(assoc.to_s)
         fk_name ||= "#{self.name.to_s.downcase}_id"
+
         define_method(assoc) do
           klass = Object.const_get(singularized_assoc_name.capitalize)
           if over
@@ -81,7 +94,8 @@ module Rubee
       # owns_one :user
       # > comment.user
       # > <user>
-      def owns_one(assoc, fk_name: nil)
+      def owns_one(assoc, options={})
+        Sequel::Model.one_to_one(assoc, **options)
         fk_name ||= "#{self.name.to_s.downcase}_id"
         define_method(assoc) do
           Object.const_get(assoc.capitalize).where(fk_name.to_sym => id)&.first
@@ -89,10 +103,10 @@ module Rubee
       end
 
       # ## Account
-      # holds_one :user
+      # holds :user
       # > account.user
       # > <user>
-      def holds_one(assoc, fk_name: nil)
+      def holds(assoc, fk_name: nil, **options)
         fk_name ||= "#{assoc.to_s.downcase}_id"
         define_method(assoc) do
           target_klass = Object.const_get(assoc.capitalize)
@@ -100,56 +114,53 @@ module Rubee
         end
       end
 
-      # ## Post
-      # holds_many :comments
-      # > post.comments
-      # > [<comment1>, <comment2>]
-      def holds_many(assoc, fk_name: nil)
-        singularized_assoc_name = singularize(assoc.to_s)
-        fk_name ||= "#{singularized_assoc_name.to_s.downcase}_id"
-        define_method(assoc) do
-          Object.const_get(singularized_assoc_name.capitalize).where(id: self.send(fk_name))
-        end
-      end
-
       def reconnect!
         const_set(:DB, Sequel.connect(Rubee::Configuration.get_database_url))
       end
 
-      def connection
-        @connection ||= DB[pluralize_class_name.to_sym]
+      def dataset
+        @dataset ||= DB[pluralize_class_name.to_sym]
+      rescue Exception => _
+        reconnect!
+        retry
       end
 
       def all
-        connection.map do |record_hash|
+        dataset.map do |record_hash|
           self.new(**record_hash)
         end
       end
 
       def find(id)
-        found_hash = connection.where(id:)&.first
+        found_hash = dataset.where(id:)&.first
         return self.new(**found_hash) if found_hash
 
         nil
       end
 
       def where(args)
-        connection.where(**args).map do |record_hash|
+        dataset.where(**args).map do |record_hash|
+          self.new(**record_hash)
+        end
+      end
+
+      def order(*args)
+        dataset.order(*args).map do |record_hash|
           self.new(**record_hash)
         end
       end
 
       def join(assoc, args)
-        connection.join(assoc, **args)
+        dataset.join(assoc, **args)
       end
 
       def create(attrs)
-        out_id = connection.insert(**attrs)
+        out_id = dataset.insert(**attrs)
         self.new(**(attrs.merge(id: out_id)))
       end
 
-      def destroy_all
-        all.each(&:destroy)
+      def destroy_all(cascade: false)
+        all.each{ |record| record.destroy(cascade:) }
       end
 
       def serialize(suquel_dataset, klass = nil)

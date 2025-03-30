@@ -123,7 +123,6 @@ module Rubee
         # autoload all rbs
         root_directory = File.dirname(__FILE__)
         priority_order_require(root_directory, black_list)
-
         Dir.glob(File.join(APP_ROOT, '**', '*.rb')).sort.each do |file|
           base_name = File.basename(file)
 
@@ -149,6 +148,17 @@ module Rubee
         # app config and routes
         lib = PROJECT_NAME == 'rubee' ? 'lib/' : ''
         require_relative File.join(APP_ROOT, lib, "config/base_configuration") unless black_list.include?('base_configuration.rb')
+        # This is necessary prerequisitedb init step
+        unless defined?(DB)
+          if PROJECT_NAME == 'rubee'
+            Rubee::Configuration.setup(env=:test) do |config|
+              config.database_url = { url: "sqlite://lib/tests/test.db", env: }
+            end
+          end
+          const_set(:DB, Sequel.connect(Rubee::Configuration.get_database_url))
+          Sequel::Model.db ||= DB
+        end
+
         require_relative File.join(APP_ROOT, lib, "config/routes") unless black_list.include?('routes.rb')
         # rubee extensions
         Dir[File.join(root_directory, "rubee/extensions/**", '*.rb')].each do |file|
@@ -163,7 +173,7 @@ module Rubee
         end
         require_relative File.join(root_directory, "rubee/controllers/base_controller") unless black_list.include?('base_controller.rb')
         # rubee models
-        require_relative File.join(root_directory, "rubee/models/database_object") unless black_list.include?('database_object.rb')
+        require_relative File.join(root_directory, "rubee/models/database_objectable") unless black_list.include?('database_objectable.rb')
         require_relative File.join(root_directory, "rubee/models/sequel_object") unless black_list.include?('sequel_object.rb')
       end
     end

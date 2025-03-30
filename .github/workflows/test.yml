@@ -37,14 +37,18 @@ jobs:
         run: |
           cd /home/runner/work/rubee/my_project && rubee db init
 
-      - name: Run migration
+      - name: Run all migration for the dummy project
         run: |
-          cd /home/runner/work/rubee/my_project && RACK_ENV=test rubee db run:create_users
+          cd /home/runner/work/rubee/my_project && RACK_ENV=test rubee db run:all
 
       - name: Run Minitests for the dummy project
         run: |
           cd /home/runner/work/rubee/my_project && RACK_ENV=test rubee test
 
+      - name: Run all migration for rubee
+        run: |
+          cd /home/runner/work/rubee && RACK_ENV=test bin/rubee db run:all
+
       - name: Run ru.Bee minitest
         run: |
-          cd /home/runner/work/rubee && RACK_ENV=test rubee test
+          cd /home/runner/work/rubee && RACK_ENV=test bin/rubee test

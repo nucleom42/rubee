@@ -1,39 +1,15 @@
 module Rubee
-  class DatabaseObject
-    include Serializable
-    include Hookable
+  module DatabaseObjectable
+    def self.included(base)
+      base.extend ClassMethods
+      base.include InstanceMethods
+      base.prepend Initializer
 
-    def destroy
+      base.include Rubee::Hookable
+      base.include Rubee::Serializable
     end
 
-    def save
-    end
-
-    def update(args = {})
-    end
-
-    def reload
-    end
-
-    class << self
-      def last
-      end
-
-      def connection
-      end
-
-      def all
-      end
-
-      def find(id)
-      end
-
-      def where(args)
-      end
-
-      def create(attrs)
-      end
-
+    module ClassMethods
       def pluralize_class_name
         pluralize(self.name.downcase)
       end
@@ -65,5 +41,12 @@ module Rubee
           .select { |m| method_defined?("#{m}=") }  # Check if setter exists
       end
     end
+
+    module InstanceMethods
+    end
+
+    module Initializer
+    end
   end
 end
+

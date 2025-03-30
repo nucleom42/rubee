@@ -160,7 +160,7 @@ elsif command == "test"
     color_puts "Running all tests ...", color: :yellow
     exec("ruby -Itest -e \"Dir.glob('.#{lib}/tests/**/*_test.rb').each { |file| require file }\"")
   end
-elsif ['generate', 'g'].include? command
+elsif ['generate', 'gen'].include? command
   method, path = ARGV[1..2]
   ENV['RACK_ENV'] ||= 'development'
 
@@ -181,9 +181,9 @@ elsif command == "db"
   command, file_name = ARGV[1]&.split(':')
   if Rubee::PROJECT_NAME == 'rubee'
     Rubee::Configuration.setup(env=:test) do |config|
-      config.database_url = { url: "sqlite://test.db", env: }
+      config.database_url = { url: "sqlite://lib/tests/test.db", env: }
     end
-    Rubee::SequelObject.reconnect!
+    Rubee::SequelObject.reconnect! unless command == 'init'
   end
 
   def ensure_database_exists(db_url)
@@ -193,7 +193,7 @@ elsif command == "db"
       begin
         Sequel.connect(db_url)
         color_puts "Database #{ENV['RACK_ENV']} exists", color: :cyan
-      rescue => _
+      rescue Exception => e
         if File.exist?(db_path = db_url.sub(/^sqlite:\/\//, ''))
           color_puts "Database #{ENV['RACK_ENV']} exists", color: :cyan
         else
@@ -218,10 +218,10 @@ elsif command == "db"
   def generate_structure
     schema_hash = {}
 
-    Rubee::SequelObject::DB.tables.each do |table|
+    DB.tables.each do |table|
       schema_hash[table] = {}
 
-      Rubee::SequelObject::DB.schema(table).each do |column, details|
+      DB.schema(table).each do |column, details|
         schema_hash[table][column] = details
       end
     end
@@ -237,14 +237,22 @@ elsif command == "db"
   end
 
 
-    if command == 'run'
+  if command == 'run'
     Rubee::Autoload.call
+    file_names = if file_name == 'all'
+      lib = Rubee::PROJECT_NAME == 'rubee' ? '/lib' : ''
+      Dir.glob(".#{lib}/db/*.rb").map { |file| File.basename(file, '.rb') }.select { |file| file != 'structure' }
+    else
+      [file_name]
+    end
     Rubee::Configuration.envs.each do |env|
       ENV['RACK_ENV'] = env.to_s
-      color_puts "Run #{file_name} file for #{env} env", color: :cyan
-      Object.const_get(file_name.split('_').map(&:capitalize).join).new.call
+      file_names.each do |file_name|
+        color_puts "Run #{file_name} file for #{env} env", color: :cyan
+        Object.const_get(file_name.split('_').map(&:capitalize).join).new.call
+      end
     end
-    color_puts "Migration #{file_name} completed", color: :green
+    color_puts "Migration for #{file_name} completed", color: :green
     unless Rubee::PROJECT_NAME == 'rubee'
       color_puts "Regenerate schema file", color: :cyan
       generate_structure
@@ -261,15 +269,25 @@ elsif ['console'].include? command
   ENV['RACK_ENV'] ||= 'development'
 
   Rubee::Autoload.call
+  if Rubee::PROJECT_NAME == 'rubee'
+    Rubee::Configuration.setup(env=:test) do |config|
+      config.database_url = { url: "sqlite://lib/tests/test.db", env: }
+    end
+    Rubee::Autoload.call
+    Rubee::SequelObject.reconnect!
+  end
 
   def reload
     app_files = Dir["./#{Rubee::APP_ROOT}/**/*.rb"]
     app_files.each { |file| load file }
     color_puts "Reloaded ..", color: :green
   end
-
-  # Start IRB
-  IRB.start
+  begin
+    # Start IRB
+    IRB.start
+  rescue Exception => e
+    IRB.start
+  end
 else
   color_puts "Unknown command: #{command}", color: :red
 end
