@@ -8,7 +8,7 @@ module Rubee
   APP_ROOT = File.expand_path(Dir.pwd) unless defined?(APP_ROOT)
   IMAGE_DIR = File.join(APP_ROOT, 'images') unless defined?(IMAGE_DIR)
   PROJECT_NAME = File.basename(APP_ROOT) unless defined?(PROJECT_NAME)
-  VERSION = '1.1.32'
+  VERSION = '1.1.4'
 
   class Application
     include Singleton
@@ -123,6 +123,8 @@ module Rubee
         # autoload all rbs
         root_directory = File.dirname(__FILE__)
         priority_order_require(root_directory, black_list)
+        # ensure sequel object is connected
+        Rubee::SequelObject.reconnect!
 
         Dir.glob(File.join(APP_ROOT, '**', '*.rb')).sort.each do |file|
           base_name = File.basename(file)
@@ -149,6 +151,15 @@ module Rubee
         # app config and routes
         lib = PROJECT_NAME == 'rubee' ? 'lib/' : ''
         require_relative File.join(APP_ROOT, lib, "config/base_configuration") unless black_list.include?('base_configuration.rb')
+        # This is necessary prerequisitedb init step
+        unless defined?(Rubee::SequelObject::DB)
+          if PROJECT_NAME == 'rubee'
+            Rubee::Configuration.setup(env=:test) do |config|
+              config.database_url = { url: "sqlite://lib/tests/test.db", env: }
+            end
+          end
+        end
+
         require_relative File.join(APP_ROOT, lib, "config/routes") unless black_list.include?('routes.rb')
         # rubee extensions
         Dir[File.join(root_directory, "rubee/extensions/**", '*.rb')].each do |file|
@@ -163,7 +174,7 @@ module Rubee
         end
         require_relative File.join(root_directory, "rubee/controllers/base_controller") unless black_list.include?('base_controller.rb')
         # rubee models
-        require_relative File.join(root_directory, "rubee/models/database_object") unless black_list.include?('database_object.rb')
+        require_relative File.join(root_directory, "rubee/models/database_objectable") unless black_list.include?('database_objectable.rb')
         require_relative File.join(root_directory, "rubee/models/sequel_object") unless black_list.include?('sequel_object.rb')
       end
     end

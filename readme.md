@@ -107,7 +107,7 @@ Here below is a simple example on how it can be used by rendering json from in m
 
   def show
     # in memory example
-    apples = [Apple.new(colour: 'red', weight: '1lb'), Apple.new(colour: 'green', weight: '1lb')]
+apples = [Apple.new(colour: 'red', weight: '1lb'), Apple.new(colour: 'green', weight: '1lb')]
     apple = apples.find { |apple| apple.colour = params[:colour] }
 
     response_with object: apple, type: :json
@@ -128,6 +128,24 @@ However, you can simply turn it to ORM object by extending database class.
     attr_accessor :id, :colour, :weight
   end
 ```
+Rubee::SequelObject methods:
+
+- `apple.save`
+- `apple.destroy(cascade: true)` # default false
+- `apple.destroy_all`
+- `apple.update(colour: 'red')`
+- `apple.persisted?`
+- `apple.reload`
+- `apple.assign_attributes(colour: 'red', weight: '1lb')`
+- `Apple.last`
+- `Apple.where(colour: 'red')`
+- `Apple.last`
+- `Apple.all`
+- `Apple.create(colour: 'red', weight: '1lb')`
+- `Apple.destroy_all`
+- `Apple.serialize`
+- `Apple.serialize(Apple.dataset.joins(:trees).where(tree: { colour: 'brown' }))`
+...
 
 So in the controller you would need to query your target object now.
 
