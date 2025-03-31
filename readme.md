@@ -137,23 +137,23 @@ Rubee::SequelObject methods:
 - `apple.update(colour: 'red')`
 # Check wheter it includes id
 - `apple.persisted?`
-# reloading the Rubee object by fetching it from the database
+### reloading the Rubee object by fetching it from the database
 - `apple.reload`
-# Assign attributes without persisiting it to db
+### Assign attributes without persisiting it to db
 - `apple.assign_attributes(colour: 'red', weight: '1lb')`
-# Get last record
+### Get last record
 - `Apple.last`
-# Get all records scoped by colour field
+### Get all records scoped by colour field
 - `Apple.where(colour: 'red')`
-# Get last record
+### Get last record
 - `Apple.last`
-# Get all records
+### Get all records
 - `Apple.all`
-# Create new record
+### Create new record
 - `Apple.create(colour: 'red', weight: '1lb')`
-# Destroy all records one by one
+### Destroy all records one by one
 - `Apple.destroy_all`
-# Use complex queries chains and when ready serialize it back to Rubee object
+### Use complex queries chains and when ready serialize it back to Rubee object
 - `Comment.dataset.join(:posts, comment_id: :id)
           .where(comment_id: Comment.where(text: "test").last.id)
           .then { |dataset| Comment.serialize(dataset) }`
