@@ -129,22 +129,34 @@ However, you can simply turn it to ORM object by extending database class.
   end
 ```
 Rubee::SequelObject methods:
-
+# Save record in db
 - `apple.save`
+# Destroy record and all related records
 - `apple.destroy(cascade: true)` # default false
-- `apple.destroy_all`
+# Update record with new value
 - `apple.update(colour: 'red')`
+# Check wheter it includes id
 - `apple.persisted?`
+# reloading the Rubee object by fetching it from the database
 - `apple.reload`
+# Assign attributes without persisiting it to db
 - `apple.assign_attributes(colour: 'red', weight: '1lb')`
+# Get last record
 - `Apple.last`
+# Get all records scoped by colour field
 - `Apple.where(colour: 'red')`
+# Get last record
 - `Apple.last`
+# Get all records
 - `Apple.all`
+# Create new record
 - `Apple.create(colour: 'red', weight: '1lb')`
+# Destroy all records one by one
 - `Apple.destroy_all`
-- `Apple.serialize`
-- `Apple.serialize(Apple.dataset.joins(:trees).where(tree: { colour: 'brown' }))`
+# Use complex queries chains and when ready serialize it back to Rubee object
+- `Comment.dataset.join(:posts, comment_id: :id)
+          .where(comment_id: Comment.where(text: "test").last.id)
+          .then { |dataset| Comment.serialize(dataset) }`
 ...
 
 So in the controller you would need to query your target object now.
