@@ -129,13 +129,13 @@ However, you can simply turn it to ORM object by extending database class.
   end
 ```
 Rubee::SequelObject methods:
-# Save record in db
+### Save record in db
 - `apple.save`
-# Destroy record and all related records
+### Destroy record and all related records
 - `apple.destroy(cascade: true)` # default false
-# Update record with new value
+### Update record with new value
 - `apple.update(colour: 'red')`
-# Check wheter it includes id
+### Check wheter it includes id
 - `apple.persisted?`
 ### reloading the Rubee object by fetching it from the database
 - `apple.reload`
