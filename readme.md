@@ -1,16 +1,16 @@
 ![Tests](https://github.com/nucleom42/rubee/actions/workflows/test.yml/badge.svg)
 ![License](https://img.shields.io/github/license/nucleom42/rubee)
-![Gem](https://img.shields.io/gem/dt/ru.Bee.svg)
+![Gem](https://img.shields.io/gem/dt/ruBee.svg)
 ![GitHub last commit](https://img.shields.io/github/last-commit/nucleom42/rubee.svg)
-![Gem](https://img.shields.io/gem/v/ru.Bee.svg)
+![Gem](https://img.shields.io/gem/v/ruBee.svg)
 ![GitHub Repo stars](https://img.shields.io/github/stars/nucleom42/rubee?style=social)
 
 
-# <img src="lib/images/rubee.svg" alt="ru.Bee" height="40"> ... ru.Bee
+# <img src="lib/images/rubee.svg" alt="ruBee" height="40"> ... ruBee
 
-ru.Bee is a fast and lightweight Ruby application server designed for minimalism and flexibility .
+ruBee is a fast and lightweight Ruby application server designed for minimalism and flexibility .
 
-The main philosophy of ru.Bee is to focus on Ruby language explicit implementation of the MVC web application.
+The main philosophy of ruBee is to focus on Ruby language explicit implementation of the MVC web application.
 
 Want to get a quick API server up and runing? You can do it for real quick!
 <br />
@@ -27,7 +27,7 @@ All greaet features are yet to come!
 - **Router**: Router driven - generates all required files from the routes.
 - **Databases**: Sqlite3, Postgres, Mysql and many more supported by sequel gem.
 - **Views**: Json, ERB and plain HTML
-- **Bundlable** Charge your ru.Bee with any gem you need and update your project with bundle.
+- **Bundlable** Charge your ruBee with any gem you need and update your project with bundle.
 - **ORM** All models are natively ORM objects, however you can use it as a blueurpint for any datasources.
 - **Authentificatable** Add JWT authentification easily to any controller action.
 - **Hooks** Add logic before, after and around any action.
@@ -36,9 +36,9 @@ All greaet features are yet to come!
 
 ## Installation
 
-1. Install ru.Bee
+1. Install ruBee
 ```bash
-gem install ru.Bee
+gem install ruBee
 ```
 
 2. Create your first project
@@ -50,7 +50,7 @@ cd my_project
 3. Install dependencies
 
 ***Prerequisites***<br />
-**ru.Bee** is using **Sqlite** as a default database. However you can pick up any other database supported by sequel gem.
+**ruBee** is using **Sqlite** as a default database. However you can pick up any other database supported by sequel gem.
 Aside that, make sure:
 **Ruby** language (3+) is installed
 **Bundler** is installed
@@ -59,7 +59,7 @@ Aside that, make sure:
 bundle install
 ```
 
-4. Run ru.Bee server. Default port is 7000
+4. Run ruBee server. Default port is 7000
 ```bash
 rubee start
 ```
@@ -97,7 +97,7 @@ rubee generate get /apples
 4. Fill those files with the logic you need and run the server again!
 
 ## Model
-Model in ru.Bee is just simple ruby object that can be serilalized in the view
+Model in ruBee is just simple ruby object that can be serilalized in the view
 in the way it required (ie json).
 
 Here below is a simple example on how it can be used by rendering json from in memory object
@@ -176,11 +176,11 @@ So in the controller you would need to query your target object now.
 ```
 
 ## Views
-View in ru.Bee is just a plain html/erb file that can be rendered from the controller.
+View in ruBee is just a plain html/erb file that can be rendered from the controller.
 
 ## Object hooks
 
-In ru.Bee by extending Hookable module any Ruby object can be charged with hooks (logic),
+In ruBee by extending Hookable module any Ruby object can be charged with hooks (logic),
 that can be executed before, after and around a specific method execution.
 
 Here below a controller example. However it can be used in any Ruby object, like Model etc.
@@ -298,7 +298,7 @@ rubee console # start the console
 rubee test # run all tests
 rubee test auth_tokenable_test.rb # run specific tests
 ```
-If you want to run any ru.Bee command within a specific ENV make sure you added it before a command.
+If you want to run any ruBee command within a specific ENV make sure you added it before a command.
 For instance if you want to run console in test environment you need to run the following command
 
 ```bash
