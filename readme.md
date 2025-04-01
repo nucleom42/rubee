@@ -128,35 +128,58 @@ However, you can simply turn it to ORM object by extending database class.
     attr_accessor :id, :colour, :weight
   end
 ```
-Rubee::SequelObject methods:
-### Save record in db
-- `apple.save`
-### Destroy record and all related records
-- `apple.destroy(cascade: true)` # default false
-### Update record with new value
-- `apple.update(colour: 'red')`
-### Check wheter it includes id
-- `apple.persisted?`
-### reloading the Rubee object by fetching it from the database
-- `apple.reload`
-### Assign attributes without persisiting it to db
-- `apple.assign_attributes(colour: 'red', weight: '1lb')`
-### Get last record
-- `Apple.last`
-### Get all records scoped by colour field
-- `Apple.where(colour: 'red')`
-### Get last record
-- `Apple.last`
-### Get all records
-- `Apple.all`
-### Create new record
-- `Apple.create(colour: 'red', weight: '1lb')`
-### Destroy all records one by one
-- `Apple.destroy_all`
-### Use complex queries chains and when ready serialize it back to Rubee object
-- `Comment.dataset.join(:posts, comment_id: :id)
+#### Rubee::SequelObject methods:
+
+- Save record in db
+```
+apple.save
+```
+- Destroy record and all related records
+```
+apple.destroy(cascade: true)
+```
+- Update record with new value
+```
+apple.update(colour: 'red')
+```
+- Check wheter it includes id
+```
+apple.persisted?
+```
+- Get the record from the database
+```
+apple.reload
+```
+- Assign attributes without persisiting it to db
+```
+apple.assign_attributes(colour: 'red', weight: '1lb')
+```
+- Get last record
+```
+Apple.last
+```
+- Get all records scoped by colour field
+```
+Apple.where(colour: 'red')
+```
+- Get last record
+```
+Apple.all
+```
+- Create new record
+```
+Apple.create(colour: 'red', weight: '1lb')
+```
+- Destroy all records one by one
+```
+Apple.destroy_all
+```
+- Use complex queries chains and when ready serialize it back to Rubee object
+```
+Comment.dataset.join(:posts, comment_id: :id)
           .where(comment_id: Comment.where(text: "test").last.id)
-          .then { |dataset| Comment.serialize(dataset) }`
+          .then { |dataset| Comment.serialize(dataset) }
+```
 ...
 
 So in the controller you would need to query your target object now.
