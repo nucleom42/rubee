@@ -142,7 +142,7 @@ apple.destroy(cascade: true)
 ```
 apple.update(colour: 'red')
 ```
-- Check wheter it includes id
+- Check whether it includes id
 ```
 apple.persisted?
 ```
@@ -162,7 +162,7 @@ Apple.last
 ```
 Apple.where(colour: 'red')
 ```
-- Get last record
+- Get all record
 ```
 Apple.all
 ```
@@ -177,8 +177,8 @@ Apple.destroy_all
 - Use complex queries chains and when ready serialize it back to Rubee object
 ```
 Comment.dataset.join(:posts, comment_id: :id)
-          .where(comment_id: Comment.where(text: "test").last.id)
-          .then { |dataset| Comment.serialize(dataset) }
+  .where(comment_id: Comment.where(text: "test").last.id)
+  .then { |dataset| Comment.serialize(dataset) }
 ```
 ...
 
