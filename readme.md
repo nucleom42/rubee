@@ -128,59 +128,6 @@ However, you can simply turn it to ORM object by extending database class.
     attr_accessor :id, :colour, :weight
   end
 ```
-#### Rubee::SequelObject methods:
-
-- Save record in db
-```
-apple.save
-```
-- Destroy record and all related records
-```
-apple.destroy(cascade: true)
-```
-- Update record with new value
-```
-apple.update(colour: 'red')
-```
-- Check whether it includes id
-```
-apple.persisted?
-```
-- Get the record from the database
-```
-apple.reload
-```
-- Assign attributes without persisiting it to db
-```
-apple.assign_attributes(colour: 'red', weight: '1lb')
-```
-- Get last record
-```
-Apple.last
-```
-- Get all records scoped by colour field
-```
-Apple.where(colour: 'red')
-```
-- Get all record
-```
-Apple.all
-```
-- Create new record
-```
-Apple.create(colour: 'red', weight: '1lb')
-```
-- Destroy all records one by one
-```
-Apple.destroy_all
-```
-- Use complex queries chains and when ready serialize it back to Rubee object
-```
-Comment.dataset.join(:posts, comment_id: :id)
-  .where(comment_id: Comment.where(text: "test").last.id)
-  .then { |dataset| Comment.serialize(dataset) }
-```
-...
 
 So in the controller you would need to query your target object now.
 
@@ -197,6 +144,138 @@ So in the controller you would need to query your target object now.
     end
   end
 ```
+
+#### Rubee::SequelObject base methods:
+
+Initiate new record in memory
+```Ruby
+irb(main):015> user = User.new(email: "llo@ok.com", password: 543)
+=> #<User:0x000000010cda23b8 @email="llo@ok.com", @password=543>
+```
+
+Save record in db
+```Ruby
+=> #<User:0x000000010cda23b8 @email="llo@ok.com", @password=543>
+irb(main):018> user.save
+=> true
+```
+
+Update record with new value
+```Ruby
+irb(main):019> user.update(email: "update@email.com")
+=> #<User:0x000000010c39b298 @email="update@email.com", @id=3, @password="543">
+```
+
+Check whether it includes id
+```Ruby
+irb(main):015> user = User.new(email: "llo@ok.com", password: 543)
+=> #<User:0x000000010cda23b8 @email="llo@ok.com", @password=543>
+irb(main):016> user.persisted?
+=> false
+```
+
+Get the record from the database
+```Ruby
+irb(main):011> user = User.last
+=> #<User:0x000000010ccea178 @email="ok23@ok.com", @id=2, @password="123">
+irb(main):012> user.email = "new@ok.com"
+=> "new@ok.com"
+irb(main):013> user
+=> #<User:0x000000010ccea178 @email="new@ok.com", @id=2, @password="123">
+irb(main):014> user.reload
+=> #<User:0x000000010c488548 @email="ok23@ok.com", @id=2, @password="123"> # not persited data was updated from db
+```
+
+Assign attributes without persisiting it to db
+```Ruby
+irb(main):008> User.last.assign_attributes(email: "bb@ok.com")
+=> {"id" => 2, "email" => "ok23@ok.com", "password" => "123"
+```
+
+Get all records scoped by field
+```Ruby
+irb(main):005> User.where(email: "ok23@ok.com")
+=> [#<User:0x000000010cfaa5c0 @email="ok23@ok.com", @id=2, @password="123">]
+```
+
+Get all record
+```Ruby
+irb(main):001> User.all
+=> [#<User:0x000000010c239a30 @email="ok@ok.com", @id=1, @password="password">]
+```
+Find by id
+```Ruby
+irb(main):002> user = User.find 1
+=> #<User:0x000000010c2f7cd8 @email="ok@ok.com", @id=1, @password="password">
+```
+
+Get last record
+```Ruby
+irb(main):003> User.last
+=> #<User:0x000000010c2f7cd8 @email="ok@ok.com", @id=1, @password="password">
+```
+
+Create new persited record
+```Ruby
+irb(main):004> User.create(email: "ok23@ok.com", password: 123)
+=> #<User:0x000000010c393818 @email="ok23@ok.com", @id=2, @password=123>
+```
+
+Destroy record and all related records
+```Ruby
+irb(main):021> user.destroy(cascade: true)
+=> 1
+```
+
+Destroy all records one by one
+```Ruby
+irb(main):022> User.destroy_all
+=> [#<User:0x000000010d42df98 @email="ok@ok.com", @id=1, @password="password">, #<User:0x000000010d42de80 @email="ok23@ok.com", @id=2, @password="123">
+irb(main):023> User.all
+=> []
+```
+
+Use complex queries chains and when ready serialize it back to Rubee object.
+```Ruby
+# user model
+class User < Rubee::SequelObject
+  attr_accessor :id, :email, :password
+  owns_many :accounts
+end
+
+# comment model
+class Comment < Rubee::SequelObject
+  attr_accessor :id, :text, :user_id
+  owns_many :users, over: :posts
+end
+
+# join post model
+class Post < Rubee::SequelObject
+  attr_accessor :id, :user_id, :comment_id
+  holds :comment
+  holds :user
+end
+```
+
+```Ruby
+irb(main):001> comment = Comment.new(text: "test")
+irb(main):002> comment.save
+irb(main):003> user = User.new(email: "ok-test@test.com", password: "123")
+irb(main):004> user.save
+irb(main):005> post = Post.new(user_id: user.id, comment_id: comment.id)
+irb(main):006> post.save
+=> true
+irb(main):007> comment
+=> #<Comment:0x000000012281a650 @id=21, @text="test">
+irb(main):008> result = Comment.dataset.join(:posts, comment_id: :id)
+irb(main):009>  .where(comment_id: Comment.where(text: "test").last.id)
+irb(main):010>  .then { |dataset| Comment.serialize(dataset) }
+=> [#<Comment:0x0000000121889998 @id=30, @text="test", @user_id=702>]
+```
+This is recommended when you want to run one query and serialize it back to Rubee object only once.
+So it may safe some resources.
+
+
 
 ## Views
 View in ruBee is just a plain html/erb file that can be rendered from the controller.
