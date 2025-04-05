@@ -38,7 +38,7 @@ All greaet features are yet to come!
 
 1. Install ruBee
 ```bash
-gem install ruBee
+gem install ru.Bee
 ```
 
 2. Create your first project
