@@ -240,7 +240,7 @@ Use complex queries chains and when ready serialize it back to Rubee object.
 # user model
 class User < Rubee::SequelObject
   attr_accessor :id, :email, :password
-  owns_many :accounts
+  owns_many :comments, over: :posts
 end
 
 # comment model
