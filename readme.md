@@ -481,8 +481,32 @@ end
 TestAsyncRunnner.new.perform_async(options: {"email"=> "new@new.com", "password"=> "123"})
 ```
 
-## TODOs
-- [x] Token authorization API
-- [ ] Document authorization API
-- [ ] Add test coverage
-- [ ] Fix bugs
+### Contributing
+
+You are more than welcome to contribute to ruBee! To do so, please follow these steps:
+
+1. Fork the repository by clicking the "Fork" button on the GitHub page.
+
+2. Clone your fork:
+```bash
+git clone https://github.com/your-username/rubee.git
+```
+
+3. Create a new branch for your feature or bug fix:
+```bash
+git checkout -b feature/your-feature-name
+```
+
+4. Make your changes and commit them with descriptive messages:
+```bash
+git commit -m "Add feature: [brief description of feature]"
+```
+
+5. Push your changes to your fork:
+```bash
+git push origin feature/your-feature-name
+```
+
+6. Submit a pull request to the main branch of the original repository.
+
+Let's make it shine even brighter!
