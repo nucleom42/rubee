@@ -284,6 +284,9 @@ View in ruBee is just a plain html/erb file that can be rendered from the contro
 
 You can use erb as a template engine in the views.
 
+layout.erb is the parent template that is rendered first and then the child templates are rendered inside it.
+Feel free to include you custom css and js files in the this file.
+
 ```ruby
 # app/controllers/welcome_controller.rb
 
