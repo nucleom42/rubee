@@ -280,6 +280,34 @@ So it may safe some resources.
 ## Views
 View in ruBee is just a plain html/erb file that can be rendered from the controller.
 
+## Templates over erb
+
+You can use erb as a template engine in the views.
+
+```ruby
+# app/controllers/welcome_controller.rb
+
+class WelcomeController < Rubee::BaseController
+  def show
+    response_with object: { message: 'Hello, world!' }
+  end
+end
+```
+
+```html
+# app/views/welcome_header.erb
+
+<h1>All set up and running!</h1>
+```
+
+```html
+# app/views/welcome_show.erb
+
+<div class="container">
+    <%= render_template :welcome_header %> # you can easily atach erb temlate
+    <p><%= locals[:object][:message] %></p> # render passed in the controller object
+</div>
+```
 ## Object hooks
 
 In ruBee by extending Hookable module any Ruby object can be charged with hooks (logic),

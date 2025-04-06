@@ -18,7 +18,7 @@ module Rubee
       end
     end
 
-    def response_with type: nil, object: nil, status: 200, mime_type: nil, render_view: nil, headers: {}, to: nil, file: nil, filename: nil
+    def response_with type: nil, object: nil, status: 200, mime_type: nil, render_view: nil, headers: {}, to: nil, file: nil, filename: nil, **options
       case type&.to_sym
       in :json
         rendered_json = object.is_a?(Array) ? object&.map(&:to_h).to_json : object.to_json
@@ -42,11 +42,29 @@ module Rubee
         return [302, headers.merge("location" => "#{to}"), ["Unauthentificated"]]
       else # rendering erb view is a default behavior
         view_file_name = self.class.name.split("Controller").first.downcase
-        erb_file = render_view ? "#{render_view}.erb" : "#{view_file_name}_#{@route[:action]}.erb"
+        erb_file = render_view ? "#{render_view}" : "#{view_file_name}_#{@route[:action]}"
         lib = Rubee::PROJECT_NAME == 'rubee' ? 'lib/' : ''
-        rendered_erb = ERB.new(File.open("#{lib}app/views/#{erb_file}").read).result(binding)
-        return [status, headers.merge("content-type" => "text/html"), [rendered_erb]]
+        view = render_template(erb_file, { object:, **(options[:locals] || {}) })
+
+        whole_erb = if File.exist?(layout_path = "#{lib}app/views/#{options[:layout] || 'layout'}.erb")
+          context = Object.new
+          context.define_singleton_method(:_yield_template) { view }
+          layout = File.read(layout_path)
+          ERB.new(layout).result(context.instance_eval { binding })
+        else
+          ERB.new(view).result(binding)
+        end
+
+        return [status, headers.merge("content-type" => "text/html"), [whole_erb]]
       end
+    end
+
+    def render_template(file_name, locals = {})
+      lib = Rubee::PROJECT_NAME == 'rubee' ? 'lib/' : ''
+      path = "#{lib}app/views/#{file_name}.erb"
+      erb_template = ERB.new(File.read(path))
+
+      erb_template.result(binding)
     end
 
     def params
