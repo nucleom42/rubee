@@ -294,18 +294,18 @@ class WelcomeController < Rubee::BaseController
 end
 ```
 
-```html
+```erb
 # app/views/welcome_header.erb
 
 <h1>All set up and running!</h1>
 ```
 
-```html
+```erb
 # app/views/welcome_show.erb
 
 <div class="container">
-    <%= render_template :welcome_header %> # you can easily atach erb temlate
-    <p><%= locals[:object][:message] %></p> # render passed in the controller object
+    <%= render_template :welcome_header %> # you can easily attach erb temlate using render_template method
+    <p><%= locals[:object][:message] %></p> # displaying, passed in the controller object
 </div>
 ```
 ## Object hooks
