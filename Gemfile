@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 source 'https://rubygems.org'
 
 ruby '3.4.1'
@@ -12,9 +14,9 @@ gem 'sqlite3'
 # orm
 gem 'sequel'
 # debugging
+gem 'json'
 gem 'pry'
 gem 'pry-byebug'
-gem 'json'
 # auth
 gem 'jwt'
 # console
@@ -26,13 +28,13 @@ gem 'rdoc'
 
 group :test do
   # testing framework
-  gem "minitest"
-  gem "rack-test"
+  gem 'minitest'
+  gem 'rack-test'
 end
 
 group :development do
   # code reloading
-  gem "rerun"
+  gem 'rerun'
   # linting
   gem 'rubocop', require: false
 end

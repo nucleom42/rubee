@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative 'test_helper'
 
 class RubeeAppTest < Minitest::Test
@@ -13,9 +15,9 @@ class RubeeAppTest < Minitest::Test
 
   def teardown
     # detach auth methods
-     if WelcomeController.instance_variable_defined?(:@auth_methods)
-       WelcomeController.send(:remove_instance_variable, :@auth_methods)
-     end
+    return unless WelcomeController.instance_variable_defined?(:@auth_methods)
+
+    WelcomeController.send(:remove_instance_variable, :@auth_methods)
   end
 
   def test_welcome_controller_included_auth_tokenable

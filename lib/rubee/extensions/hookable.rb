@@ -58,7 +58,6 @@ module Rubee
       def conditions_met?(if_condition = nil, unless_condition = nil)
         return true if if_condition.nil? && unless_condition.nil?
 
-        if_condition_result = true
         if_condition_result =
           if if_condition.nil?
             true
@@ -67,8 +66,6 @@ module Rubee
           elsif respond_to?(if_condition)
             send(if_condition)
           end
-
-        unless_condition_result = true
         unless_condition_result =
           if unless_condition.nil?
             false
