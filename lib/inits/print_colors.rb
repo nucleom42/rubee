@@ -19,6 +19,6 @@ def color_puts(text, color: :nil, background: :nil, style: :normal)
   color_code = colors[color]
   bg_code = backgrounds[background]
   style_code = styles[style]
-  options = [style_code, color_code, bg_code].compact.join(";")
+  options = [style_code, color_code, bg_code].compact.join(';')
   puts "\e[#{options}m#{text}\e[0m"
 end

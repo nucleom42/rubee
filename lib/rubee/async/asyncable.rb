@@ -1,5 +1,5 @@
 unless defined?(Rubee)
-  require_relative '../../../../rubee.rb'
+  require_relative '../../../../rubee'
   Rubee::Autoload.call
 end
 
@@ -11,7 +11,7 @@ module Rubee
     end
 
     def adapter
-      @adapter ||= (Rubee::Configuration.get_async_adapter || ThreadAsync)
+      @adapter ||= Rubee::Configuration.get_async_adapter || ThreadAsync
     end
   end
 end

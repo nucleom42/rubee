@@ -1,8 +1,12 @@
-require "singleton"
-require "bundler/setup"
+require 'singleton'
+require 'bundler/setup'
 require 'bundler'
 
-Bundler.require(:default) rescue nil
+begin
+  Bundler.require(:default)
+rescue StandardError
+  nil
+end
 
 module Rubee
   APP_ROOT = File.expand_path(Dir.pwd) unless defined?(APP_ROOT)
@@ -19,16 +23,16 @@ module Rubee
       # register images paths
       request = Rack::Request.new(env)
       # Add default path for images
-      Router.draw { |route| route.get "/images/{path}", to: "base#image", namespace: "Rubee"}
+      Router.draw { |route| route.get('/images/{path}', to: 'base#image', namespace: 'Rubee') }
       # define route
       route = Router.route_for(request)
       # init controller class
-      return [404, { "content-type" => "text/plain" }, ["Route not found"]] unless route
+      return [404, { 'content-type' => 'text/plain' }, ['Route not found']] unless route
 
-      if route[:namespace]
-        controller_class = "#{route[:namespace]}::#{route[:controller].capitalize}Controller"
+      controller_class = if route[:namespace]
+        "#{route[:namespace]}::#{route[:controller].capitalize}Controller"
       else
-        controller_class = "#{route[:controller].capitalize}Controller"
+        "#{route[:controller].capitalize}Controller"
       end
       # instantiate controller
       controller = Object.const_get(controller_class).new(request, route)
@@ -44,15 +48,15 @@ module Rubee
 
     @configuraiton = {
       development: {
-        database_url: "",
-        port: 7000
+        database_url: '',
+        port: 7000,
       },
       production: {},
-      test: {}
+      test: {},
     }
 
     class << self
-      def setup(env)
+      def setup(_env)
         yield(self)
       end
 
@@ -64,10 +68,10 @@ module Rubee
         @configuraiton[args[:env].to_sym][:async_adapter] = args[:async_adapter]
       end
 
-      def method_missing(method_name, *args, &block)
-        if method_name.to_s.start_with?("get_")
-          @configuraiton[ENV['RACK_ENV']&.to_sym || :development]&.[](method_name.to_s.delete_prefix("get_").to_sym)
-        end
+      def method_missing(method_name, *_args)
+        return unless method_name.to_s.start_with?('get_')
+
+        @configuraiton[ENV['RACK_ENV']&.to_sym || :development]&.[](method_name.to_s.delete_prefix('get_').to_sym)
       end
 
       def envs
@@ -79,7 +83,7 @@ module Rubee
   class Router
     include Singleton
 
-    HTTP_METHODS = [:get, :post, :put, :patch, :delete, :head, :connect, :options, :trace].freeze
+    HTTP_METHODS = %i[get post put patch delete head connect options trace].freeze
 
     attr_reader :request, :routes
 
@@ -92,19 +96,19 @@ module Rubee
 
       def route_for(request)
         puts request.request_method
-        method = (request.params["_method"] || request.request_method).downcase.to_sym
+        method = (request.params['_method'] || request.request_method).downcase.to_sym
         @routes.find do |route|
           return route if request.path == route[:path] && request.request_method&.downcase&.to_sym == route[:method]
 
           pattern = route[:path].gsub(/{.*?}/, '([^/]+)')
-          regex = %r{^#{pattern}$}
+          regex = /^#{pattern}$/
           regex.match?(request.path) && method.to_s == route[:method].to_s
         end
       end
 
       def set_route(path, to:, method: __method__, **args)
-        controller, action = to.split("#")
-        @routes.delete_if { |route| route[:path] == path && route[:method]  == method }
+        controller, action = to.split('#')
+        @routes.delete_if { |route| route[:path] == path && route[:method] == method }
         @routes << { path:, controller:, action:, method:, **args }
       end
 
@@ -116,10 +120,9 @@ module Rubee
     end
   end
 
-
   class Autoload
     class << self
-      def call(black_list=[])
+      def call(black_list = [])
         # autoload all rbs
         root_directory = File.dirname(__FILE__)
         priority_order_require(root_directory, black_list)
@@ -150,19 +153,20 @@ module Rubee
         end
         # app config and routes
         lib = PROJECT_NAME == 'rubee' ? 'lib/' : ''
-        require_relative File.join(APP_ROOT, lib, "config/base_configuration") unless black_list.include?('base_configuration.rb')
+        unless black_list.include?('base_configuration.rb')
+          require_relative File.join(APP_ROOT, lib,
+                                     'config/base_configuration')
+        end
         # This is necessary prerequisitedb init step
-        unless defined?(Rubee::SequelObject::DB)
-          if PROJECT_NAME == 'rubee'
-            Rubee::Configuration.setup(env=:test) do |config|
-              config.database_url = { url: "sqlite://lib/tests/test.db", env: }
-            end
+        if !defined?(Rubee::SequelObject::DB) && (PROJECT_NAME == 'rubee')
+          Rubee::Configuration.setup(env = :test) do |config|
+            config.database_url = { url: 'sqlite://lib/tests/test.db', env: }
           end
         end
 
-        require_relative File.join(APP_ROOT, lib, "config/routes") unless black_list.include?('routes.rb')
+        require_relative File.join(APP_ROOT, lib, 'config/routes') unless black_list.include?('routes.rb')
         # rubee extensions
-        Dir[File.join(root_directory, "rubee/extensions/**", '*.rb')].each do |file|
+        Dir[File.join(root_directory, 'rubee/extensions/**', '*.rb')].each do |file|
           require_relative file unless black_list.include?("#{file}.rb")
         end
         # rubee controllers
@@ -172,10 +176,19 @@ module Rubee
         Dir[File.join(root_directory, 'rubee/controllers/extensions/**', '*.rb')].each do |file|
           require_relative file unless black_list.include?("#{file}.rb")
         end
-        require_relative File.join(root_directory, "rubee/controllers/base_controller") unless black_list.include?('base_controller.rb')
+        unless black_list.include?('base_controller.rb')
+          require_relative File.join(root_directory,
+                                     'rubee/controllers/base_controller')
+        end
         # rubee models
-        require_relative File.join(root_directory, "rubee/models/database_objectable") unless black_list.include?('database_objectable.rb')
-        require_relative File.join(root_directory, "rubee/models/sequel_object") unless black_list.include?('sequel_object.rb')
+        unless black_list.include?('database_objectable.rb')
+          require_relative File.join(root_directory,
+                                     'rubee/models/database_objectable')
+        end
+        return if black_list.include?('sequel_object.rb')
+
+        require_relative File.join(root_directory,
+                                   'rubee/models/sequel_object')
       end
     end
   end
@@ -184,7 +197,7 @@ module Rubee
     def initialize(model_name, attributes, controller_name, action_name)
       @model_name = model_name&.downcase
       @attributes = attributes
-      @plural_name = "#{controller_name.to_s.gsub("Controller", "").downcase}"
+      @plural_name = controller_name.to_s.gsub('Controller', '').downcase.to_s
       @action_name = action_name
       @controller_name = controller_name
     end
@@ -207,12 +220,12 @@ module Rubee
 
       content = <<~RUBY
         class #{@model_name.capitalize} < Rubee::SequelObject
-          attr_accessor #{@attributes.map { |hash| ":#{hash[:name]}"  }.join(", ")}
+          attr_accessor #{@attributes.map { |hash| ":#{hash[:name]}" }.join(', ')}
         end
       RUBY
 
       File.open(model_file, 'w') { |file| file.write(content) }
-      color_puts "Model #{@model_name} created", color: :green
+      color_puts("Model #{@model_name} created", color: :green)
     end
 
     def generate_controller
@@ -231,7 +244,7 @@ module Rubee
       RUBY
 
       File.open(controller_file, 'w') { |file| file.write(content) }
-      color_puts "Controller #{@plural_name} created", color: :green
+      color_puts("Controller #{@plural_name} created", color: :green)
     end
 
     def generate_view
@@ -246,7 +259,7 @@ module Rubee
       ERB
 
       File.open(view_file, 'w') { |file| file.write(content) }
-      color_puts "View #{@plural_name}_#{@action_name} created", color: :green
+      color_puts("View #{@plural_name}_#{@action_name} created", color: :green)
     end
 
     def generate_db_file
@@ -264,8 +277,7 @@ module Rubee
       RUBY
 
       File.open(db_file, 'w') { |file| file.write(content) }
-      color_puts "DB file for #{@plural_name} created", color: :green
+      color_puts("DB file for #{@plural_name} created", color: :green)
     end
   end
 end
-
