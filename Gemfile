@@ -28,6 +28,7 @@ group :test do
   # testing framework
   gem "minitest"
   gem "rack-test"
+  gem 'simplecov', require: false
 end
 
 group :development do
