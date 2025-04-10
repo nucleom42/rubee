@@ -4,11 +4,11 @@ class CreateUsers
   def call
     return if Rubee::SequelObject::DB.tables.include?(:users)
 
-    Rubee::SequelObject::DB.create_table :users do
-      primary_key :id
-      String :email
-      String :password
-      index :email
+    Rubee::SequelObject::DB.create_table(:users) do
+      primary_key(:id)
+      String(:email)
+      String(:password)
+      index(:email)
     end
 
     User.create(email: 'ok@ok.com', password: 'password')

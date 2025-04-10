@@ -12,7 +12,7 @@ Gem::Specification.new do |spec|
   spec.required_ruby_version = '>= 3.2.1'
 
   # Runtime dependencies
-  spec.add_dependency 'bundler', '~> 2.1', '>= 2.1.4'
+  spec.add_dependency('bundler', '~> 2.1', '>= 2.1.4')
 
   # Specify which files to include
   spec.files         = Dir['lib/**/*', 'README.md', 'LICENSE', 'bin/*']

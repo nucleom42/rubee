@@ -23,17 +23,17 @@ module Rubee
       # register images paths
       request = Rack::Request.new(env)
       # Add default path for images
-      Router.draw { |route| route.get '/images/{path}', to: 'base#image', namespace: 'Rubee' }
+      Router.draw { |route| route.get('/images/{path}', to: 'base#image', namespace: 'Rubee') }
       # define route
       route = Router.route_for(request)
       # init controller class
       return [404, { 'content-type' => 'text/plain' }, ['Route not found']] unless route
 
       controller_class = if route[:namespace]
-                           "#{route[:namespace]}::#{route[:controller].capitalize}Controller"
-                         else
-                           "#{route[:controller].capitalize}Controller"
-                         end
+        "#{route[:namespace]}::#{route[:controller].capitalize}Controller"
+      else
+        "#{route[:controller].capitalize}Controller"
+      end
       # instantiate controller
       controller = Object.const_get(controller_class).new(request, route)
       # get the action
@@ -49,10 +49,10 @@ module Rubee
     @configuraiton = {
       development: {
         database_url: '',
-        port: 7000
+        port: 7000,
       },
       production: {},
-      test: {}
+      test: {},
     }
 
     class << self
@@ -225,7 +225,7 @@ module Rubee
       RUBY
 
       File.open(model_file, 'w') { |file| file.write(content) }
-      color_puts "Model #{@model_name} created", color: :green
+      color_puts("Model #{@model_name} created", color: :green)
     end
 
     def generate_controller
@@ -244,7 +244,7 @@ module Rubee
       RUBY
 
       File.open(controller_file, 'w') { |file| file.write(content) }
-      color_puts "Controller #{@plural_name} created", color: :green
+      color_puts("Controller #{@plural_name} created", color: :green)
     end
 
     def generate_view
@@ -259,7 +259,7 @@ module Rubee
       ERB
 
       File.open(view_file, 'w') { |file| file.write(content) }
-      color_puts "View #{@plural_name}_#{@action_name} created", color: :green
+      color_puts("View #{@plural_name}_#{@action_name} created", color: :green)
     end
 
     def generate_db_file
@@ -277,7 +277,7 @@ module Rubee
       RUBY
 
       File.open(db_file, 'w') { |file| file.write(content) }
-      color_puts "DB file for #{@plural_name} created", color: :green
+      color_puts("DB file for #{@plural_name} created", color: :green)
     end
   end
 end

@@ -12,23 +12,23 @@ describe 'Comment model' do
     end
 
     after do
-      Comment.destroy_all cascade: true
+      Comment.destroy_all(cascade: true)
     end
 
     describe 'when there are associated comment records' do
       it 'returns all records' do
-        _(Comment.where(text: 'test').last.users.count).must_equal 1
-        _(Comment.where(text: 'test').last.users.first.email).must_equal 'ok-test@test.com'
+        _(Comment.where(text: 'test').last.users.count).must_equal(1)
+        _(Comment.where(text: 'test').last.users.first.email).must_equal('ok-test@test.com')
       end
     end
 
     describe 'sequel dataset query' do
       it 'returns all records' do
         result = Comment.dataset.join(:posts, comment_id: :id)
-                        .where(comment_id: Comment.where(text: 'test').last.id)
-                        .then { |dataset| Comment.serialize(dataset) }
+          .where(comment_id: Comment.where(text: 'test').last.id)
+          .then { |dataset| Comment.serialize(dataset) }
 
-        _(result.first.text).must_equal 'test'
+        _(result.first.text).must_equal('test')
       end
     end
   end

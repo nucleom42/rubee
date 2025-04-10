@@ -20,10 +20,10 @@ class RubeeAppTest < Minitest::Test
 
   def test_welcome_controller_included_auth_tokenable
     WelcomeController.include(Rubee::AuthTokenable)
-    WelcomeController.auth_methods :show
+    WelcomeController.auth_methods(:show)
 
-    get '/'
+    get('/')
 
-    assert_equal last_response.status, 401
+    assert_equal(last_response.status, 401)
   end
 end

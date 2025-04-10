@@ -8,7 +8,7 @@ STRUCTURE = {
       primary_key: true,
       auto_increment: true,
       type: 'integer',
-      ruby_default: nil
+      ruby_default: nil,
     },
     email: {
       generated: false,
@@ -18,7 +18,7 @@ STRUCTURE = {
       primary_key: false,
       type: 'string',
       ruby_default: nil,
-      max_length: 255
+      max_length: 255,
     },
     password: {
       generated: false,
@@ -28,8 +28,8 @@ STRUCTURE = {
       primary_key: false,
       type: 'string',
       ruby_default: nil,
-      max_length: 255
-    }
+      max_length: 255,
+    },
   },
   accounts: {
     id: {
@@ -40,7 +40,7 @@ STRUCTURE = {
       primary_key: true,
       auto_increment: true,
       type: 'integer',
-      ruby_default: nil
+      ruby_default: nil,
     },
     addres: {
       generated: false,
@@ -50,7 +50,7 @@ STRUCTURE = {
       primary_key: false,
       type: 'string',
       ruby_default: nil,
-      max_length: 255
+      max_length: 255,
     },
     user_id: {
       generated: false,
@@ -59,8 +59,8 @@ STRUCTURE = {
       db_type: 'INTEGER',
       primary_key: false,
       type: 'integer',
-      ruby_default: nil
-    }
+      ruby_default: nil,
+    },
   },
   posts: {
     id: {
@@ -71,7 +71,7 @@ STRUCTURE = {
       primary_key: true,
       auto_increment: true,
       type: 'integer',
-      ruby_default: nil
+      ruby_default: nil,
     },
     user_id: {
       generated: false,
@@ -80,7 +80,7 @@ STRUCTURE = {
       db_type: 'INTEGER',
       primary_key: false,
       type: 'integer',
-      ruby_default: nil
+      ruby_default: nil,
     },
     comment_id: {
       generated: false,
@@ -89,8 +89,8 @@ STRUCTURE = {
       db_type: 'INTEGER',
       primary_key: false,
       type: 'integer',
-      ruby_default: nil
-    }
+      ruby_default: nil,
+    },
   },
   comments: {
     id: {
@@ -101,7 +101,7 @@ STRUCTURE = {
       primary_key: true,
       auto_increment: true,
       type: 'integer',
-      ruby_default: nil
+      ruby_default: nil,
     },
     text: {
       generated: false,
@@ -111,7 +111,7 @@ STRUCTURE = {
       primary_key: false,
       type: 'string',
       ruby_default: nil,
-      max_length: 255
+      max_length: 255,
     },
     user_id: {
       generated: false,
@@ -120,7 +120,7 @@ STRUCTURE = {
       db_type: 'INTEGER',
       primary_key: false,
       type: 'integer',
-      ruby_default: nil
-    }
-  }
+      ruby_default: nil,
+    },
+  },
 }.freeze
