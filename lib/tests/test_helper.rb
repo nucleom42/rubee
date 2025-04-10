@@ -1,4 +1,4 @@
-require "bundler/setup"
+require 'bundler/setup'
 Bundler.require(:test)
 
 require 'minitest/autorun'
@@ -9,9 +9,7 @@ require 'simplecov'
 SimpleCov.start
 
 Rubee::Autoload.call
-Rubee::Configuration.setup(env=:test) do |config|
-  config.database_url = { url: "sqlite://lib/tests/test.db", env: }
+Rubee::Configuration.setup(env = :test) do |config|
+  config.database_url = { url: 'sqlite://lib/tests/test.db', env: }
 end
 Rubee::SequelObject.reconnect!
-
-

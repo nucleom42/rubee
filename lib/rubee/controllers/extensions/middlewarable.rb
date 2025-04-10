@@ -9,7 +9,7 @@ module Middlewarable
 
   module Initializer
     def initialize(req, route)
-      app = ->(env) { super(req, route) }
+      app = ->(_env) { super(req, route) }
       self.class.middlewares.reverse_each do |middleware|
         middleware_class = Object.const_get(middleware)
         app = middleware_class.new(app, req)

@@ -7,18 +7,16 @@ class RubeeAppTest < Minitest::Test
     Rubee::Application.instance
   end
 
-
   def test_welcome_route
-    get '/'
+    get('/')
 
-    assert_equal 200, last_response.status, "Unexpected response: #{last_response.body}"
-    assert_includes last_response.body, 'All set up and running!'
+    assert_equal(200, last_response.status, "Unexpected response: #{last_response.body}")
+    assert_includes(last_response.body, 'All set up and running!')
   end
 
-
   def test_not_found_route
-    get '/random'
+    get('/random')
 
-    assert_equal 404, last_response.status
+    assert_equal(404, last_response.status)
   end
 end

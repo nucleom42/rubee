@@ -7,13 +7,13 @@ module Rubee
 
     def call(env)
       # get token from header
-      auth_header = headers(env)["HTTP_AUTHORIZATION"]
-      token = auth_header ? auth_header[/^Bearer (.*)$/]&.gsub("Bearer ", "") : nil
+      auth_header = headers(env)['HTTP_AUTHORIZATION']
+      token = auth_header ? auth_header[/^Bearer (.*)$/]&.gsub('Bearer ', '') : nil
       # get token from cookies
-      token = @req.cookies["jwt"] unless token
+      token ||= @req.cookies['jwt']
       if valid_token?(token)
-        env["rack.session"] ||= {}
-        env["rack.session"]["authentificated"] = true
+        env['rack.session'] ||= {}
+        env['rack.session']['authentificated'] = true
       end
 
       @app.call(env)
@@ -22,7 +22,7 @@ module Rubee
     private
 
     def headers(env)
-      env.each_with_object({}) { |(k, v), h| h[k] = v if k.start_with?("HTTP_") }
+      env.each_with_object({}) { |(k, v), h| h[k] = v if k.start_with?('HTTP_') }
     end
 
     def valid_token?(token)
@@ -35,8 +35,12 @@ module Rubee
     end
 
     def decode_jwt(token)
-      decoded_array = JWT.decode(token, AuthTokenable::KEY, true, { algorithm: 'HS256' }) rescue decoded_array = []
-      decoded_array&.first&.transform_keys(&:to_sym) || {}  # Extract payload
+      decoded_array = begin
+        JWT.decode(token, AuthTokenable::KEY, true, { algorithm: 'HS256' })
+                      rescue StandardError
+                        []
+      end
+      decoded_array&.first&.transform_keys(&:to_sym) || {} # Extract payload
     end
   end
 end

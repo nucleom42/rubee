@@ -2,7 +2,7 @@ module Rubee
   class SequelObject
     include Rubee::DatabaseObjectable
 
-    def destroy(cascade: false, **options)
+    def destroy(cascade: false, **_options)
       if cascade
         # find all tables with foreign key
         tables_with_fk = DB.tables.select do |table|
@@ -23,26 +23,25 @@ module Rubee
       if args[:id]
         begin
           udpate(args)
-        rescue => _
+        rescue StandardError => _e
           return false
         end
 
-        true
       else
         begin
           created_object = self.class.create(args)
-        rescue => _
+        rescue StandardError => _e
           return false
         end
         self.id = created_object.id
 
-        true
       end
+      true
     end
 
-    def assign_attributes(args={})
-      to_h.each do |attr, value|
-        self.send("#{attr}=", args[attr.to_sym]) if args[attr.to_sym]
+    def assign_attributes(args = {})
+      to_h.each_key do |attr|
+        send("#{attr}=", args[attr.to_sym]) if args[attr.to_sym]
       end
     end
 
@@ -65,14 +64,14 @@ module Rubee
     class << self
       def last
         found_hash = dataset.order(:id).last
-        return self.new(**found_hash) if found_hash
+        return new(**found_hash) if found_hash
 
         nil
       end
 
       def first
         found_hash = dataset.order(:id).first
-        return self.new(**found_hash) if found_hash
+        return new(**found_hash) if found_hash
 
         nil
       end
@@ -81,9 +80,9 @@ module Rubee
       # owns_many :comments
       # > user.comments
       # > [<comment1>, <comment2>]
-      def owns_many(assoc, fk_name: nil, over: nil, **options)
+      def owns_many(assoc, fk_name: nil, over: nil, **_options)
         singularized_assoc_name = singularize(assoc.to_s)
-        fk_name ||= "#{self.name.to_s.downcase}_id"
+        fk_name ||= "#{name.to_s.downcase}_id"
 
         define_method(assoc) do
           klass = Object.const_get(singularized_assoc_name.capitalize)
@@ -102,9 +101,9 @@ module Rubee
       # owns_one :user
       # > comment.user
       # > <user>
-      def owns_one(assoc, options={})
+      def owns_one(assoc, options = {})
         Sequel::Model.one_to_one(assoc, **options)
-        fk_name ||= "#{self.name.to_s.downcase}_id"
+        fk_name ||= "#{name.to_s.downcase}_id"
         define_method(assoc) do
           Object.const_get(assoc.capitalize).where(fk_name.to_sym => id)&.first
         end
@@ -114,11 +113,11 @@ module Rubee
       # holds :user
       # > account.user
       # > <user>
-      def holds(assoc, fk_name: nil, **options)
+      def holds(assoc, fk_name: nil, **_options)
         fk_name ||= "#{assoc.to_s.downcase}_id"
         define_method(assoc) do
           target_klass = Object.const_get(assoc.capitalize)
-          target_klass.find(self.send(fk_name))
+          target_klass.find(send(fk_name))
         end
       end
 
@@ -130,33 +129,33 @@ module Rubee
 
       def dataset
         @dataset ||= DB[pluralize_class_name.to_sym]
-      rescue Exception => _
+      rescue Exception => _e
         reconnect!
         retry
       end
 
       def all
         dataset.map do |record_hash|
-          self.new(**record_hash)
+          new(**record_hash)
         end
       end
 
       def find(id)
         found_hash = dataset.where(id:)&.first
-        return self.new(**found_hash) if found_hash
+        return new(**found_hash) if found_hash
 
         nil
       end
 
       def where(args)
         dataset.where(**args).map do |record_hash|
-          self.new(**record_hash)
+          new(**record_hash)
         end
       end
 
       def order(*args)
         dataset.order(*args).map do |record_hash|
-          self.new(**record_hash)
+          new(**record_hash)
         end
       end
 
@@ -166,18 +165,18 @@ module Rubee
 
       def create(attrs)
         out_id = dataset.insert(**attrs)
-        self.new(**(attrs.merge(id: out_id)))
+        new(**attrs.merge(id: out_id))
       end
 
       def destroy_all(cascade: false)
-        all.each{ |record| record.destroy(cascade:) }
+        all.each { |record| record.destroy(cascade:) }
       end
 
       def serialize(suquel_dataset, klass = nil)
         klass ||= self
         suquel_dataset.map do |record_hash|
           target_klass_fields = DB[pluralize(klass.name.downcase).to_sym].columns
-          klass_attributes = record_hash.filter{ target_klass_fields.include? _1 }
+          klass_attributes = record_hash.filter { target_klass_fields.include?(_1) }
           klass.new(**klass_attributes)
         end
       end

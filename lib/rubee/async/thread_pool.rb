@@ -23,7 +23,7 @@ module Rubee
 
     def shutdown
       @running = false
-      THREADS_LIMIT.times { @queue << { task:  :stop, args: nil } }
+      THREADS_LIMIT.times { @queue << { task: :stop, args: nil } }
       @workers.each(&:join)
     end
 
@@ -39,6 +39,7 @@ module Rubee
               args = task_hash[:args]
             end
             break if task == :stop
+
             begin
               task.new.perform(**args)
             rescue StandardError => e
@@ -50,4 +51,3 @@ module Rubee
     end
   end
 end
-
