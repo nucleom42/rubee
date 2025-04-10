@@ -1,12 +1,12 @@
 module Rubee
   module DatabaseObjectable
     def self.included(base)
-      base.extend ClassMethods
-      base.include InstanceMethods
-      base.prepend Initializer
+      base.extend(ClassMethods)
+      base.include(InstanceMethods)
+      base.prepend(Initializer)
 
-      base.include Rubee::Hookable
-      base.include Rubee::Serializable
+      base.include(Rubee::Hookable)
+      base.include(Rubee::Serializable)
     end
 
     module ClassMethods

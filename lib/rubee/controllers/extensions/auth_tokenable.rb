@@ -50,7 +50,7 @@ module Rubee
         @authehtificated_user = nil if @authehtificated_user
         @zeroed_token_header = {
           'set-cookie' => 'jwt=; path=/; httponly; secure; expires=thu, 01 jan 1970 00:00:00 gmt',
-          'content-type' => 'application/json'
+          'content-type' => 'application/json',
         }
 
         true
@@ -60,7 +60,7 @@ module Rubee
         if authentificated?
           yield
         else
-          response_with type: :unauthentificated
+          response_with(type: :unauthentificated)
         end
       end
     end
@@ -71,7 +71,7 @@ module Rubee
         @auth_methods.concat(args.map(&:to_sym)).uniq!
 
         @auth_methods.each do |method|
-          around method, :handle_auth
+          around(method, :handle_auth)
         end
       end
 

@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 class CreatePosts
   def call
     return if Rubee::SequelObject::DB.tables.include?(:posts)

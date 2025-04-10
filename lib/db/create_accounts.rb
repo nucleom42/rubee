@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 class CreateAccounts
   def call
     return if Rubee::SequelObject::DB.tables.include?(:accounts)

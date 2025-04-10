@@ -37,8 +37,8 @@ module Rubee
     def decode_jwt(token)
       decoded_array = begin
         JWT.decode(token, AuthTokenable::KEY, true, { algorithm: 'HS256' })
-      rescue StandardError
-        []
+                      rescue StandardError
+                        []
       end
       decoded_array&.first&.transform_keys(&:to_sym) || {} # Extract payload
     end

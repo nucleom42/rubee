@@ -16,7 +16,7 @@ module Rubee
             super(*args, &block)
           end
         end
-        prepend hooks
+        prepend(hooks)
       end
 
       def after(method, handler, **options)
@@ -31,7 +31,7 @@ module Rubee
             result
           end
         end
-        prepend hooks
+        prepend(hooks)
       end
 
       def around(method, handler, **options)
@@ -48,7 +48,7 @@ module Rubee
             end
           end
         end
-        prepend hooks
+        prepend(hooks)
       end
     end
 

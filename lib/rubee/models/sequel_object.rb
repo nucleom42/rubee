@@ -88,8 +88,8 @@ module Rubee
           klass = Object.const_get(singularized_assoc_name.capitalize)
           if over
             sequel_dataset = klass
-                             .join(over.to_sym, "#{singularized_assoc_name}_id".to_sym => :id)
-                             .where(fk_name.to_sym => id)
+              .join(over.to_sym, "#{singularized_assoc_name}_id".to_sym => :id)
+              .where(fk_name.to_sym => id)
             self.class.serialize(sequel_dataset, klass)
           else
             klass.where(fk_name.to_sym => id)
@@ -176,7 +176,7 @@ module Rubee
         klass ||= self
         suquel_dataset.map do |record_hash|
           target_klass_fields = DB[pluralize(klass.name.downcase).to_sym].columns
-          klass_attributes = record_hash.filter { target_klass_fields.include? _1 }
+          klass_attributes = record_hash.filter { target_klass_fields.include?(_1) }
           klass.new(**klass_attributes)
         end
       end
