@@ -12,9 +12,9 @@ gem 'sqlite3'
 # orm
 gem 'sequel'
 # debugging
-gem 'json'
 gem 'pry'
 gem 'pry-byebug'
+gem 'json'
 # auth
 gem 'jwt'
 # console
@@ -26,19 +26,14 @@ gem 'rdoc'
 
 group :test do
   # testing framework
-<<<<<<< HEAD
   gem "minitest"
   gem "rack-test"
   gem 'simplecov', require: false
-=======
-  gem 'minitest'
-  gem 'rack-test'
->>>>>>> 3aaadccdc5bfec53bb526b2fe140227aef96ae5a
 end
 
 group :development do
   # code reloading
-  gem 'rerun'
+  gem "rerun"
   # linting
   gem 'rubocop', require: false
 end
