@@ -1,4 +1,4 @@
-require_relative 'test_helper'
+require_relative '../test_helper'
 
 class RubeeAppTest < Minitest::Test
   include Rack::Test::Methods
