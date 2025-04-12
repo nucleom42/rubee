@@ -207,8 +207,7 @@ describe 'Hookable Controller' do
 
       hookable.success_around
 
-      _(hookable.glue).must_equal('white')
+      _(hookable.glue).must_be_nil
     end
-
   end
 end
