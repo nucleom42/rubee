@@ -43,6 +43,24 @@ elsif command == 'stop'
   exec('pkill -f rubee')
 elsif command == 'status'
   exec('ps aux | grep rubee')
+elsif command == 'react'
+  case ARGV[1]
+  when 'prepare'
+    if Rubee::PROJECT_NAME == 'rubee'
+      exec('cd ./lib && npm run prepare')
+    else
+      exec('npm run prepare')
+    end
+  when 'watch'
+    if Rubee::PROJECT_NAME == 'rubee'
+      exec('cd ./lib && npm run watch')
+    else
+      exec('npm run watch')
+    end
+  else
+    color_puts "Unknown command: #{command}", color: :red
+    exit 1
+  end
 elsif command == 'project'
   project_name = ARGV[1]
   if project_name.nil?
@@ -156,7 +174,7 @@ elsif %w[generate gen].include?(command)
   method, path = ARGV[1..2]
   ENV['RACK_ENV'] ||= 'development'
 
-  routes = eval(File.read('config/routes.rb'))
+  routes = eval(File.read(File.join(LIB_ROOT, 'config/routes.rb')))
   route = routes.find { |route| route[:path] == path.to_s && route[:method] == method.to_sym }
   color_puts("Route not found with path: #{path} and method: #{method}", color: :red) unless route
 
@@ -164,7 +182,8 @@ elsif %w[generate gen].include?(command)
     route[:model]&.[](:name),
     route[:model]&.[](:attributes),
     "#{route[:controller]&.capitalize}Controller",
-    route[:action]
+    route[:action],
+    react: route[:react]
   ).call
 elsif command == 'db'
   Rubee::Autoload.call

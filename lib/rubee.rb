@@ -32,9 +32,14 @@ module Rubee
       end
       # define route
       route = Router.route_for(request)
-      # init controller class
+      # if react is the view so we would like to delegate not cauth by rubee routes to it.
+      if Rubee::Configuration.react[:on] && !route
+        index = File.read File.join(Rubee::APP_ROOT, Rubee::LIB, 'app/views', 'index.html')
+        return [200, { 'content-type' => 'text/html' }, [index]]
+      end
+      # if not found return 404
       return [404, { 'content-type' => 'text/plain' }, ['Route not found']] unless route
-
+      # init controller class
       controller_class = if route[:namespace]
         "#{route[:namespace]}::#{route[:controller].capitalize}Controller"
       else
@@ -72,6 +77,15 @@ module Rubee
 
       def async_adapter=(args)
         @configuraiton[args[:env].to_sym][:async_adapter] = args[:async_adapter]
+      end
+
+      def react=(args)
+        @configuraiton[args[:env].to_sym][:react] ||= { on: false }
+        @configuraiton[args[:env].to_sym][:react].merge!(on: args[:on])
+      end
+
+      def react
+        @configuraiton[ENV['RACK_ENV']&.to_sym || :development][:react] || {}
       end
 
       def method_missing(method_name, *_args)
@@ -199,12 +213,13 @@ module Rubee
   end
 
   class Generator
-    def initialize(model_name, attributes, controller_name, action_name)
+    def initialize(model_name, attributes, controller_name, action_name, **options)
       @model_name = model_name&.downcase
       @attributes = attributes
       @plural_name = controller_name.to_s.gsub('Controller', '').downcase.to_s
       @action_name = action_name
       @controller_name = controller_name
+      @react = options[:react] || {}
     end
 
     def call
@@ -253,15 +268,32 @@ module Rubee
     end
 
     def generate_view
-      view_file = File.join("app/views/#{@plural_name}_#{@action_name}.erb")
+      if @react[:view_name]
+        view_file = File.join("app/views/#{@react[:view_name]}")
+        content = <<~JS
+        import React, { useEffect, useState } from "react";
+
+        export function User() {
+
+          return (
+            <div>
+              <h2>#{@react[:view_name]} view</h2>
+            </div>
+          );
+        }
+        JS
+      else
+        view_file = File.join("app/views/#{@plural_name}_#{@action_name}.erb")
+        content = <<~ERB
+          <h1>#{@plural_name}_#{@action_name} View</h1>
+        ERB
+      end
+
+
       if File.exist?(view_file)
         puts "View #{@plural_name}_#{@action_name} already exists. Remove it if you want to regenerate"
         return
       end
-
-      content = <<~ERB
-        <h1>#{@plural_name}_#{@action_name} View</h1>
-      ERB
 
       File.open(view_file, 'w') { |file| file.write(content) }
       color_puts("View #{@plural_name}_#{@action_name} created", color: :green)

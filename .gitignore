@@ -1,5 +1,6 @@
 # Node dependencies
 node_modules/
+lib/node_modules
 
 # Ignore compiled JS bundles
 lib/js/bundle.js

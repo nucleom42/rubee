@@ -12,21 +12,8 @@ export function User() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    setUsers([{id: 1, name: "Oleg", email: "9t6yD@example.com"}, {id: 2, name: "Maria", email: "9t6yD@example.com"}]);
+    setUsers([{id: 1, name: "User1", email: "9t6yD@example.com"}, {id: 2, name: "User2", email: "9t6yD@example.com"}]);
     setLoading(false);
-    // fetch("/users")
-    //   .then((res) => {
-    //     if (!res.ok) throw new Error("Failed to fetch users");
-    //     return res.json();
-    //   })
-    //   .then((data: User[]) => {
-    //     setUsers(data);
-    //     setLoading(false);
-    //   })
-    //   .catch((err) => {
-    //     setError(err.message);
-    //     setLoading(false);
-    //   });
   }, []);
 
   if (loading) return <p>Loading users...</p>;
@@ -34,10 +21,10 @@ export function User() {
 
   return (
     <div>
-      <h2 className="text-xl font-bold mb-2">User List</h2>
-      <ul className="space-y-1">
+      <h2>User List</h2>
+      <ul>
         {users.map((user) => (
-          <li key={user.id} className="border-b py-1">
+          <li key={user.id}>
             <strong>{user.name}</strong> – {user.email}
           </li>
         ))}
