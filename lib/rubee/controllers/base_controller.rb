@@ -18,6 +18,16 @@ module Rubee
       end
     end
 
+    def js
+      js_path = File.join(JS_DIR, @request.path.sub('/js/', ''))
+
+      if File.exist?(js_path) && File.file?(js_path)
+        response_with(object: File.read(js_path), type: :js)
+      else
+        response_with(object: 'Js file is not found', type: :text)
+      end
+    end
+
     def response_with type: nil, object: nil, status: 200, mime_type: nil, render_view: nil, headers: {}, to: nil,
       file: nil, filename: nil, **options
       case type&.to_sym
@@ -26,6 +36,8 @@ module Rubee
         [status, headers.merge('content-type' => 'application/json'), [rendered_json]]
       in :image
         [status, headers.merge('content-type' => mime_type), [object]]
+      in :js
+        [status, headers.merge('content-type' => 'application/javascript'), [object]]
       in :file
         [
           status,

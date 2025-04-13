@@ -1,0 +1,11 @@
+{
+  "scripts": {
+    "build": "node esbuild.config.js",
+    "watch": "node esbuild.config.js --watch",
+    "serve": "live-server public",
+    "dev": "concurrently \"npm run watch\" \"npm run serve\""
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  }
+}

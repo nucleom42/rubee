@@ -10,8 +10,10 @@ end
 
 module Rubee
   APP_ROOT = File.expand_path(Dir.pwd) unless defined?(APP_ROOT)
-  IMAGE_DIR = File.join(APP_ROOT, 'images') unless defined?(IMAGE_DIR)
   PROJECT_NAME = File.basename(APP_ROOT) unless defined?(PROJECT_NAME)
+  LIB = PROJECT_NAME == 'rubee' ? 'lib/' : '' unless defined?(LIB)
+  IMAGE_DIR = File.join(APP_ROOT, LIB, 'images') unless defined?(IMAGE_DIR)
+  JS_DIR = File.join(APP_ROOT, LIB, 'js') unless defined?(JS_DIR)
   VERSION = '1.3.3'
 
   class Application
@@ -23,7 +25,11 @@ module Rubee
       # register images paths
       request = Rack::Request.new(env)
       # Add default path for images
-      Router.draw { |route| route.get('/images/{path}', to: 'base#image', namespace: 'Rubee') }
+      Router.draw do |route|
+        route.get('/images/{path}', to: 'base#image', namespace: 'Rubee')
+        route.get('/js/{path}', to: 'base#js', namespace: 'Rubee')
+        route.get('/css/{path}', to: 'base#css', namespace: 'Rubee')
+      end
       # define route
       route = Router.route_for(request)
       # init controller class
@@ -152,9 +158,8 @@ module Rubee
           require_relative file unless black_list.include?("#{file}.rb")
         end
         # app config and routes
-        lib = PROJECT_NAME == 'rubee' ? 'lib/' : ''
         unless black_list.include?('base_configuration.rb')
-          require_relative File.join(APP_ROOT, lib,
+          require_relative File.join(APP_ROOT, LIB,
                                      'config/base_configuration')
         end
         # This is necessary prerequisitedb init step
@@ -164,7 +169,7 @@ module Rubee
           end
         end
 
-        require_relative File.join(APP_ROOT, lib, 'config/routes') unless black_list.include?('routes.rb')
+        require_relative File.join(APP_ROOT, LIB, 'config/routes') unless black_list.include?('routes.rb')
         # rubee extensions
         Dir[File.join(root_directory, 'rubee/extensions/**', '*.rb')].each do |file|
           require_relative file unless black_list.include?("#{file}.rb")
