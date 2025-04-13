@@ -1,14 +1,5 @@
 #!/usr/bin/env ruby
 
-require 'fileutils'
-require 'date'
-require 'irb'
-require 'sequel'
-require 'sqlite3'
-require 'json'
-require 'rack'
-require 'rackup'
-
 require_relative '../lib/inits/print_colors'
 require_relative '../lib/rubee'
 
