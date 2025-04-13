@@ -272,7 +272,8 @@ module Rubee
         view_file = File.join(Rubee::LIB, "app/views/#{@react[:view_name]}")
         content = <<~JS
         import React, { useEffect, useState } from "react";
-
+        // 1. Add your logic that fetches data
+        // 2. Do not forget to add respective react route
         export function User() {
 
           return (
