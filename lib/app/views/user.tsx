@@ -12,19 +12,21 @@ export function User() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    fetch("/users")
-      .then((res) => {
-        if (!res.ok) throw new Error("Failed to fetch users");
-        return res.json();
-      })
-      .then((data: User[]) => {
-        setUsers(data);
-        setLoading(false);
-      })
-      .catch((err) => {
-        setError(err.message);
-        setLoading(false);
-      });
+    setUsers([{id: 1, name: "Oleg", email: "9t6yD@example.com"}, {id: 2, name: "Maria", email: "9t6yD@example.com"}]);
+    setLoading(false);
+    // fetch("/users")
+    //   .then((res) => {
+    //     if (!res.ok) throw new Error("Failed to fetch users");
+    //     return res.json();
+    //   })
+    //   .then((data: User[]) => {
+    //     setUsers(data);
+    //     setLoading(false);
+    //   })
+    //   .catch((err) => {
+    //     setError(err.message);
+    //     setLoading(false);
+    //   });
   }, []);
 
   if (loading) return <p>Loading users...</p>;
