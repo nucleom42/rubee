@@ -53,6 +53,8 @@ module Rubee
         [401, headers.merge('content-type' => 'text/plain'), ['Unauthentificated']]
       in :redirect
         [302, headers.merge('location' => to.to_s), ['Unauthentificated']]
+      in :not_found
+        [404, { 'content-type' => 'text/plain' }, ['Route not found']]
       else # rendering erb view is a default behavior
         view_file_name = self.class.name.split('Controller').first.downcase
         erb_file = render_view ? render_view.to_s : "#{view_file_name}_#{@route[:action]}"

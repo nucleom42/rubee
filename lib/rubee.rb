@@ -290,15 +290,15 @@ module Rubee
         ERB
       end
 
+      name = @react[:view_name] || "#{@plural_name}_#{@action_name}"
 
       if File.exist?(view_file)
-        name = @react[:view_name] || "#{@plural_name}_#{@action_name}"
         puts "View #{name} already exists. Remove it if you want to regenerate"
         return
       end
 
       File.open(view_file, 'w') { |file| file.write(content) }
-      color_puts("View #{@plural_name}_#{@action_name} created", color: :green)
+      color_puts("View #{name} created", color: :green)
     end
 
     def generate_db_file

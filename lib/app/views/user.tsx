@@ -1,28 +1,11 @@
 import React, { useEffect, useState } from "react";
-
-interface User {
-  id: number;
-  email: string;
-  password: string;
-}
-
+// 1. Add your logic that fetches data
+// 2. Do not forget to add respective react route
 export function User() {
-  const [users, setUsers] = useState([]);
-
-  useEffect(() => {
-    fetch("api/users")
-      .then((response) => response.json())
-      .then((data) => setUsers(data));
-  }, []);
 
   return (
-    <>
-      <h2>Users</h2>
-      <ul>
-        {users.map((user) => (
-          <li key={user.id}>{user.id} {user.email}</li>
-        ))}
-      </ul>
-    </>
+    <div>
+      <h2>user.tsx view</h2>
+    </div>
   );
 }

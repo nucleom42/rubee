@@ -158,6 +158,8 @@ elsif command == 'project'
 
 elsif command == 'version'
   color_puts "ru.Bee v#{Rubee::VERSION}", color: :yellow
+elsif command == 'routes'
+  puts eval(File.read(File.join(LIB_ROOT, 'config/routes.rb')))
 elsif command == 'test'
 
   ENV['RACK_ENV'] = 'test'
