@@ -272,12 +272,58 @@ module Rubee
       content = <<~RUBY
         class Create#{@plural_name.capitalize}
           def call
+            return if Rubee::SequelObject::DB.tables.include?(:#{@plural_name})
+
+            Rubee::SequelObject::DB.create_table(:#{@plural_name}) do
+              #{@attributes.map{ |attr| generate_sequel_schema(attr) }.join("\n\t\t\t")}
+            end
           end
         end
       RUBY
 
       File.open(db_file, 'w') { |file| file.write(content) }
       color_puts("DB file for #{@plural_name} created", color: :green)
+    end
+
+
+    def generate_sequel_schema(attribute)
+      statement = ''
+
+      type = attribute[:type]
+      name = attribute[:name]
+      options = attribute[:options] ? attribute[:options] : {}
+
+      case type.to_sym
+      when :primary
+        statement = "primary_key"
+      when :string
+        statement = "String"
+      when :text
+        statement = "String"
+      when :integer
+        statement = "Integer"
+      when :date
+        statement = "Date"
+      when :datetime
+        statement = "DateTime"
+      when :time
+        statement = "Time"
+      when :boolean
+        statement = "TrueClass"
+      when :bigint
+        statement = "Bignum"
+      when :decimal
+        statement = "BigDecimal"
+      end
+
+      statement += " :#{name}"
+      statement += ", text: true" if type == :text
+
+      options.keys.each do |key|
+        statement += ", #{key.to_s}: #{options[key]}"
+      end
+
+      statement
     end
   end
 end
