@@ -1,7 +1,10 @@
 #!/usr/bin/env ruby
 
+require 'fileutils'
+
 require_relative '../lib/inits/print_colors'
 require_relative '../lib/rubee'
+
 
 ENV['RACK_ENV'] ||= 'development'
 
@@ -87,7 +90,7 @@ elsif command == 'project'
   # Define blacklist
   blacklist_files = %w[rubee.rb print_colors.rb version.rb config.ru test_helper.rb Gemfile.lock test.yml test.db
                        development.db production.db]
-  blacklist_dirs = %w[rubee tests .git .github .idea]
+  blacklist_dirs = %w[rubee tests .git .github .idea node_modules db]
 
   # Copy files, excluding blacklisted ones
   Dir.glob("#{source_dir}/**/*", File::FNM_DOTMATCH).each do |file|
@@ -111,6 +114,11 @@ elsif command == 'project'
   # create tests dir and copy test_helper.rb and user_model_test.rb
   FileUtils.mkdir_p("#{target_dir}/tests")
   FileUtils.cp("#{source_dir}/tests/user_model_test.rb", "#{target_dir}/tests/user_model_test.rb")
+
+  # create db dir
+  FileUtils.mkdir_p("#{target_dir}/db")
+  FileUtils.cp("#{source_dir}/db/structure.rb", "#{target_dir}/db/structure.rb")
+  FileUtils.cp("#{source_dir}/db/create_users.rb", "#{target_dir}/db/create_users.rb")
 
   # create a gemfile context
   gemfile = <<~GEMFILE
@@ -159,7 +167,10 @@ elsif command == 'project'
 elsif command == 'version'
   color_puts "ru.Bee v#{Rubee::VERSION}", color: :yellow
 elsif command == 'routes'
-  puts eval(File.read(File.join(LIB_ROOT, 'config/routes.rb')))
+  file = Rubee::PROJECT_NAME == 'rubee' ? File.join('/lib', 'config/routes.rb') : 'config/routes.rb'
+  routes = eval(File.read(file))
+
+  puts routes
 elsif command == 'test'
 
   ENV['RACK_ENV'] = 'test'
@@ -175,8 +186,8 @@ elsif command == 'test'
 elsif %w[generate gen].include?(command)
   method, path = ARGV[1..2]
   ENV['RACK_ENV'] ||= 'development'
-
-  routes = eval(File.read(File.join(LIB_ROOT, 'config/routes.rb')))
+  file = Rubee::PROJECT_NAME == 'rubee' ? File.join('/lib', 'config/routes.rb') : 'config/routes.rb'
+  routes = eval(File.read(file))
   route = routes.find { |route| route[:path] == path.to_s && route[:method] == method.to_sym }
   color_puts("Route not found with path: #{path} and method: #{method}", color: :red) unless route
 

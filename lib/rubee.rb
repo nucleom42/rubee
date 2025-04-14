@@ -14,7 +14,7 @@ module Rubee
   LIB = PROJECT_NAME == 'rubee' ? 'lib/' : '' unless defined?(LIB)
   IMAGE_DIR = File.join(APP_ROOT, LIB, 'images') unless defined?(IMAGE_DIR)
   JS_DIR = File.join(APP_ROOT, LIB, 'js') unless defined?(JS_DIR)
-  VERSION = '1.3.3'
+  VERSION = '1.4.0'
 
   class Application
     include Singleton
@@ -232,7 +232,7 @@ module Rubee
     private
 
     def generate_model
-      model_file = File.join(Rubee::LIB, "app/models/#{@model_name}.rb")
+      model_file = File.join(Rubee::APP_ROOT, Rubee::LIB, "app/models/#{@model_name}.rb")
       if File.exist?(model_file)
         puts "Model #{@model_name} already exists. Remove it if you want to regenerate"
         return
@@ -249,7 +249,7 @@ module Rubee
     end
 
     def generate_controller
-      controller_file = File.join(Rubee::LIB, "app/controllers/#{@plural_name}_controller.rb")
+      controller_file = File.join(Rubee::APP_ROOT, Rubee::LIB, "app/controllers/#{@plural_name}_controller.rb")
       if File.exist?(controller_file)
         puts "Controller #{@plural_name} already exists. Remove it if you want to regenerate"
         return
@@ -269,7 +269,7 @@ module Rubee
 
     def generate_view
       if @react[:view_name]
-        view_file = File.join(Rubee::LIB, "app/views/#{@react[:view_name]}")
+        view_file = File.join(Rubee::APP_ROOT, Rubee::LIB, "app/views/#{@react[:view_name]}")
         content = <<~JS
         import React, { useEffect, useState } from "react";
         // 1. Add your logic that fetches data
@@ -284,7 +284,7 @@ module Rubee
         }
         JS
       else
-        view_file = File.join(Rubee::LIB, "app/views/#{@plural_name}_#{@action_name}.erb")
+        view_file = File.join(Rubee::APP_ROOT, Rubee::LIB, "app/views/#{@plural_name}_#{@action_name}.erb")
         content = <<~ERB
           <h1>#{@plural_name}_#{@action_name} View</h1>
         ERB
@@ -302,7 +302,7 @@ module Rubee
     end
 
     def generate_db_file
-      db_file = File.join(Rubee::LIB, "db/create_#{@plural_name}.rb")
+      db_file = File.join(Rubee::APP_ROOT, Rubee::LIB, "db/create_#{@plural_name}.rb")
       if File.exist?(db_file)
         puts "DB file for #{@plural_name} already exists. Remove it if you want to regenerate"
         return

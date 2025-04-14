@@ -26,11 +26,12 @@ All greaet features are yet to come!
 - **Rack**: Rack backed. All Rack api is available for integration.
 - **Router**: Router driven - generates all required files from the routes.
 - **Databases**: Sqlite3, Postgres, Mysql and many more supported by sequel gem.
-- **Views**: Json, ERB and plain HTML
+- **Views**: Json, ERB and plain HTML and ..
+- **React** Supported out of the box as a rubee view
 - **Bundlable** Charge your ruBee with any gem you need and update your project with bundle.
 - **ORM** All models are natively ORM objects, however you can use it as a blueurpint for any datasources.
 - **Authentificatable** Add JWT authentification easily to any controller action.
-- **Hooks** Add logic before, after and around any action.
+- **Hooks** Addlogic before, after and around any action.
 - **Test** Run all or selected tests witin minitest.
 - **Asyncable** Add async adapter and pick any popular background job queue enginee
 
@@ -311,6 +312,107 @@ end
     <p><%= locals[:object][:message] %></p> # displaying, passed in the controller object
 </div>
 ```
+
+## React as a view
+
+React is supported out of the box in the rubee view.
+Make react as a view representation layer is easy.
+
+Prerequisites: Node and NPM are required
+
+1. Make sure after creating project and bundling you have installed react dependencies by
+
+```bash
+rubee react prepare # this will install react related node modules
+```
+2. Make sure you have configured react in the configuration file
+
+```ruby
+# config/base_configuration/rb
+Rubee::Configuration.setup(env = :development) do |config|
+  config.database_url = { url: 'sqlite://db/development.db', env: }
+
+  # this line registers react as a view
+  config.react = { on: true, env: }
+end
+```
+
+3. Start server by
+
+```bash
+rubee start
+```
+
+3. Open your browser and navigate to http://localhost:3000/home
+
+4. You will see the react app running in the browser.
+
+5. For development purposes make sure you run `rubee start_dev` and in other terminal window run `rubee react watch`.
+So that will ensure all cahnges applying instantly.
+
+6. You can generate react view from the route by indicating the view name explicitly
+
+```ruby
+# config/routes.rb
+Rubee::Router.draw do |router|
+  router.get('/', to: 'welcome#show') # override it for your app
+
+  router.get('/api/users', to: 'user#index', react: { view_name: 'users.tsx' })
+  # Please note /api/users is the backend endpoint
+  # For rendering generated /app/views/users.tsx file, you need to update react routes
+end
+```
+
+7. Add logic to generated api controller
+
+```ruby
+# app/controllers/api/user_controller.rb
+class Api::UserController < Rubee::BaseController
+  def index
+    response_with object: User.all
+  end
+end
+```
+8. Register path in react routes
+
+```javascript
+// app/views/app.tsx
+<Router>
+  <Routes>
+    <Route path="/users" element={<Home />} />
+    <Route path="*" element={<NotFound />} />
+  </Routes>
+</Router>
+```
+9. Fetch data from the backend in the users.tsx react component and display it in the browser http://localhost:3000/users
+
+```javascript
+# app/views/users.tsx
+import { useState, useEffect } from 'react';
+
+function Users() {
+  const [users, setUsers] = useState([]);
+
+  useEffect(() => {
+    fetch('/api/users')
+      .then(response => response.json())
+      .then(data => setUsers(data));
+  }, []);
+
+  return (
+    <div>
+      <h1>Users</h1>
+      <ul>
+        {users.map(user => (
+          <li key={user.id}>id: {user.id}: {user.name}</li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+```
+
 ## Object hooks
 
 In ruBee by extending Hookable module any Ruby object can be charged with hooks (logic),
