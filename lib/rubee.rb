@@ -287,34 +287,26 @@ module Rubee
 
 
     def generate_sequel_schema(attribute)
-      statement = ''
+      
 
       type = attribute[:type]
       name = attribute[:name]
       options = attribute[:options] ? attribute[:options] : {}
 
-      case type.to_sym
-      when :primary
-        statement = "primary_key"
-      when :string
-        statement = "String"
-      when :text
-        statement = "String"
-      when :integer
-        statement = "Integer"
-      when :date
-        statement = "Date"
-      when :datetime
-        statement = "DateTime"
-      when :time
-        statement = "Time"
-      when :boolean
-        statement = "TrueClass"
-      when :bigint
-        statement = "Bignum"
-      when :decimal
-        statement = "BigDecimal"
-      end
+      lookupHash = {
+        primary: "primary_key",
+        string: "String",
+        text: "String",
+        integer: "Integer",
+        date: "Date",
+        datetime: "DateTime",
+        time: "Time",
+        boolean: "TrueClass",
+        bigint: "Bignum",
+        decimal: "BigDecimal"
+      }
+
+      statement = lookupHash[type.to_sym]
 
       statement += " :#{name}"
       statement += ", text: true" if type == :text
