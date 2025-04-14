@@ -23,6 +23,10 @@ gem 'irb'
 gem 'ostruct'
 # documentation
 gem 'rdoc'
+# file utils
+gem 'fileutils'
+# date
+gem 'date'
 
 group :test do
   # testing framework

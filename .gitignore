@@ -1,0 +1,9 @@
+# Node dependencies
+node_modules/
+lib/node_modules
+
+# Ignore compiled JS bundles
+lib/js/bundle.js
+lib/js/bundle.js.map
+lib/js/app.js.map
+

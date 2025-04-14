@@ -153,9 +153,13 @@ describe 'User model' do
       User.destroy_all(cascade: true)
     end
 
+    before do
+      User.destroy_all(cascade: true)
+    end
+
     describe 'when there are records' do
       it 'returns all records' do
-        skip "This is Flaky test that blcoks dev, need to be fixed"
+        # skip "This is Flaky test that blcoks dev, need to be fixed"
         user = User.new(email: 'ok-test@test.com', password: '123')
         user2 = User.new(email: 'ok-test2@test.com', password: '123')
         user.save
