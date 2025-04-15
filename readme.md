@@ -24,10 +24,9 @@ All greaet features are yet to come!
 - **Contract driven**: Define your API contracts in a simple, declarative manner. And generate the files for you.
 - **Fast**: Optimized for speed, providing a quick response to requests. Everything is relative, I know!
 - **Rack**: Rack backed. All Rack api is available for integration.
-- **Router**: Router driven - generates all required files from the routes.
 - **Databases**: Sqlite3, Postgres, Mysql and many more supported by sequel gem.
 - **Views**: Json, ERB and plain HTML and ..
-- **React** Supported out of the box as a rubee view
+- **React** is supported out of the box as a rubee view
 - **Bundlable** Charge your ruBee with any gem you need and update your project with bundle.
 - **ORM** All models are natively ORM objects, however you can use it as a blueurpint for any datasources.
 - **Authentificatable** Add JWT authentification easily to any controller action.
@@ -51,8 +50,7 @@ cd my_project
 3. Install dependencies
 
 ***Prerequisites***<br />
-**ruBee** is using **Sqlite** as a default database. However you can pick up any other database supported by sequel gem.
-Aside that, make sure:
+Make sure:
 **Ruby** language (3+) is installed
 **Bundler** is installed
 
@@ -66,6 +64,11 @@ rubee start
 ```
 
 5. Open your browser and go to http://localhost:7000
+
+## Run the tests
+```bash
+rubee test
+```
 
 ## Create API contract and generate files from the routes
 1. Add the routes to the routes.rb
@@ -107,8 +110,8 @@ Here below is a simple example on how it can be used by rendering json from in m
   #ApplesController
 
   def show
-    # in memory example
-apples = [Apple.new(colour: 'red', weight: '1lb'), Apple.new(colour: 'green', weight: '1lb')]
+    # In memory example
+    apples = [Apple.new(colour: 'red', weight: '1lb'), Apple.new(colour: 'green', weight: '1lb')]
     apple = apples.find { |apple| apple.colour = params[:colour] }
 
     response_with object: apple, type: :json
@@ -122,8 +125,8 @@ Just make sure Serializable module included in the target class.
     attr_accessor :id, :colour, :weight
   end
 ```
-However, you can simply turn it to ORM object by extending database class.
-
+However, you can simply turn it to ORM object by extending database class Rubee::SequelObject.
+This one is already serializable and charged with hooks.
 ```Ruby
   class Apple < Rubee::SequelObject
     attr_accessor :id, :colour, :weight
@@ -131,7 +134,6 @@ However, you can simply turn it to ORM object by extending database class.
 ```
 
 So in the controller you would need to query your target object now.
-
 ```ruby
   #ApplesController
 
@@ -276,10 +278,8 @@ irb(main):010>  .then { |dataset| Comment.serialize(dataset) }
 This is recommended when you want to run one query and serialize it back to Rubee object only once.
 So it may safe some resources.
 
-
-
 ## Views
-View in ruBee is just a plain html/erb file that can be rendered from the controller.
+View in ruBee is just a plain html/erb/react file that can be rendered from the controller.
 
 ## Templates over erb
 
@@ -369,7 +369,7 @@ end
 # app/controllers/api/user_controller.rb
 class Api::UserController < Rubee::BaseController
   def index
-    response_with object: User.all
+    response_with object: User.all, type: :json
   end
 end
 ```
@@ -379,7 +379,7 @@ end
 // app/views/app.tsx
 <Router>
   <Routes>
-    <Route path="/users" element={<Home />} />
+    <Route path="/users" element={<Users />} />
     <Route path="*" element={<NotFound />} />
   </Routes>
 </Router>
@@ -508,6 +508,8 @@ end
 ```bash
 rubee start # start the server
 rubee start_dev # start the server in dev mode, which restart server on changes
+rubee react prepare # install react dependencies
+rubee react watch # dev mode for react, works together with start_dev
 rubee stop # stop the server
 rubee restart # restart the server
 ```
@@ -519,6 +521,7 @@ rubee generate get /apples # generate controller view, model and migration if se
 
 ## Migraiton commands
 ```bash
+rubee db run:all # run all migrations
 rubee db run:create_apples # where create_apples is the name of the migration file, located in /db folder
 rubee db structure # generate migration file for the database structure
 ```
@@ -526,6 +529,7 @@ rubee db structure # generate migration file for the database structure
 ## Rubee console
 ```bash
 rubee console # start the console
+# you can reload the console by typing reload, so it will pick up latest changes
 ```
 
 ## Testing
@@ -533,6 +537,7 @@ rubee console # start the console
 rubee test # run all tests
 rubee test auth_tokenable_test.rb # run specific tests
 ```
+
 If you want to run any ruBee command within a specific ENV make sure you added it before a command.
 For instance if you want to run console in test environment you need to run the following command
 
@@ -616,30 +621,11 @@ TestAsyncRunnner.new.perform_async(options: {"email"=> "new@new.com", "password"
 
 ### Contributing
 
-You are more than welcome to contribute to ruBee! To do so, please follow these steps:
+If you are interested in contributing to ruBee,
+please read the [Contributing](https://github.com/nucleom42/rubee/blob/main/CONTRIBUTING.md) guide.
+Also feel free to open an [issue](https://github.com/nucleom42/rubee/issues) if you apot one.
+Have an idea or you wnat to discuss something?
+Please open a [discussion](https://github.com/nucleom42/rubee/discussions)
 
-1. Fork the repository by clicking the "Fork" button on the GitHub page.
-
-2. Clone your fork:
-```bash
-git clone https://github.com/your-username/rubee.git
-```
-
-3. Create a new branch for your feature or bug fix:
-```bash
-git checkout -b feature/your-feature-name
-```
-
-4. Make your changes and commit them with descriptive messages:
-```bash
-git commit -m "Add feature: [brief description of feature]"
-```
-
-5. Push your changes to your fork:
-```bash
-git push origin feature/your-feature-name
-```
-
-6. Submit a pull request to the main branch of the original repository.
-
-Let's make it shine even brighter!
+## License
+This project is released under the MIT License.
