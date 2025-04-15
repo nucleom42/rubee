@@ -348,7 +348,7 @@ module Rubee
         decimal: "BigDecimal #{name}",
         foreign_key: "foreign_key #{name}, :#{table}",
         index: "index #{name}",
-        unique: "unique #{name}"
+        unique: "unique #"
       }
 
       statement = lookup_hash[type.to_sym]
