@@ -215,7 +215,7 @@ module Rubee
   class Generator
     def initialize(model_name, model_attributes, controller_name, action_name, **options)
       @model_name = model_name&.downcase
-      @model_attributes = model_attributes
+      @model_attributes = model_attributes || []
       @plural_name = controller_name.to_s.gsub('Controller', '').downcase.to_s
       @action_name = action_name
       @controller_name = controller_name
