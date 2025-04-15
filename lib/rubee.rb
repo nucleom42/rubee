@@ -34,7 +34,7 @@ module Rubee
       route = Router.route_for(request)
       # if react is the view so we would like to delegate not cauth by rubee routes to it.
       if Rubee::Configuration.react[:on] && !route
-        index = File.read File.join(Rubee::APP_ROOT, Rubee::LIB, 'app/views', 'index.html')
+        index = File.read(File.join(Rubee::APP_ROOT, Rubee::LIB, 'app/views', 'index.html'))
         return [200, { 'content-type' => 'text/html' }, [index]]
       end
       # if not found return 404
@@ -213,9 +213,9 @@ module Rubee
   end
 
   class Generator
-    def initialize(model_name, attributes, controller_name, action_name, **options)
+    def initialize(model_name, model_attributes, controller_name, action_name, **options)
       @model_name = model_name&.downcase
-      @attributes = attributes
+      @model_attributes = model_attributes
       @plural_name = controller_name.to_s.gsub('Controller', '').downcase.to_s
       @action_name = action_name
       @controller_name = controller_name
@@ -240,7 +240,7 @@ module Rubee
 
       content = <<~RUBY
         class #{@model_name.capitalize} < Rubee::SequelObject
-          attr_accessor #{@attributes.map { |hash| ":#{hash[:name]}" }.join(', ')}
+          attr_accessor #{@model_attributes.map { |hash| ":#{hash[:name]}" }.join(', ')}
         end
       RUBY
 
@@ -271,17 +271,17 @@ module Rubee
       if @react[:view_name]
         view_file = File.join(Rubee::APP_ROOT, Rubee::LIB, "app/views/#{@react[:view_name]}")
         content = <<~JS
-        import React, { useEffect, useState } from "react";
-        // 1. Add your logic that fetches data
-        // 2. Do not forget to add respective react route
-        export function User() {
+          import React, { useEffect, useState } from "react";
+          // 1. Add your logic that fetches data
+          // 2. Do not forget to add respective react route
+          export function User() {
 
-          return (
-            <div>
-              <h2>#{@react[:view_name]} view</h2>
-            </div>
-          );
-        }
+            return (
+              <div>
+                <h2>#{@react[:view_name]} view</h2>
+              </div>
+            );
+          }
         JS
       else
         view_file = File.join(Rubee::APP_ROOT, Rubee::LIB, "app/views/#{@plural_name}_#{@action_name}.erb")
@@ -314,7 +314,7 @@ module Rubee
             return if Rubee::SequelObject::DB.tables.include?(:#{@plural_name})
 
             Rubee::SequelObject::DB.create_table(:#{@plural_name}) do
-              #{@attributes.map{ |attr| generate_sequel_schema(attr) }.join("\n\t\t\t")}
+              #{@model_attributes.map { |attribute| generate_sequel_schema(attribute) }.join("\n\t\t\t")}
             end
           end
         end
@@ -324,34 +324,37 @@ module Rubee
       color_puts("DB file for #{@plural_name} created", color: :green)
     end
 
-
     def generate_sequel_schema(attribute)
-      
-
       type = attribute[:type]
-      name = attribute[:name]
-      options = attribute[:options] ? attribute[:options] : {}
+      name = if attribute[:name].is_a?(Array)
+        attribute[:name].map { |nom| ":#{nom}" }.join(", ").prepend('[') + ']'
+      else
+        ":#{attribute[:name]}"
+      end
+      table = attribute[:table] || 'put_table_name'
 
-      lookupHash = {
-        primary: "primary_key",
-        string: "String",
-        text: "String",
-        integer: "Integer",
-        date: "Date",
-        datetime: "DateTime",
-        time: "Time",
-        boolean: "TrueClass",
-        bigint: "Bignum",
-        decimal: "BigDecimal"
+      options = attribute[:options] || {}
+
+      lookup_hash = {
+        primary: "primary_key #{name}",
+        string: "String #{name}",
+        text: "String #{name}, text: true",
+        integer: "Integer #{name}",
+        date: "Date #{name}",
+        datetime: "DateTime #{name}",
+        time: "Time #{name}",
+        boolean: "TrueClass #{name}",
+        bigint: "Bignum #{name}",
+        decimal: "BigDecimal #{name}",
+        foreign_key: "foreign_key #{name}, :#{table}",
+        index: "index #{name}",
+        unique: "unique #{name}"
       }
 
-      statement = lookupHash[type.to_sym]
-
-      statement += " :#{name}"
-      statement += ", text: true" if type == :text
+      statement = lookup_hash[type.to_sym]
 
       options.keys.each do |key|
-        statement += ", #{key.to_s}: #{options[key]}"
+        statement += ", #{key}: #{options[key]}"
       end
 
       statement
