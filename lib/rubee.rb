@@ -331,8 +331,7 @@ module Rubee
       else
         ":#{attribute[:name]}"
       end
-      table = attribute[:table] || 'put_table_name'
-
+      table = attribute[:table] || 'replace_with_table_name'
       options = attribute[:options] || {}
 
       lookup_hash = {
@@ -354,7 +353,7 @@ module Rubee
       statement = lookup_hash[type.to_sym]
 
       options.keys.each do |key|
-        statement += ", #{key}: #{options[key]}"
+        statement += ", #{key}: '#{options[key]}'"
       end
 
       statement
