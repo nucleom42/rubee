@@ -240,7 +240,7 @@ module Rubee
 
       content = <<~RUBY
         class #{@model_name.capitalize} < Rubee::SequelObject
-          #{'attr_accessor' + @model_attributes.map { |hash| ":#{hash[:name]}" }.join(', ') if @model_attributes.length > 0}
+          #{'attr_accessor' + @model_attributes.map { |hash| ":#{hash[:name]}" }.join(', ') unless @model_attributes.empty?}
         end
       RUBY
 
@@ -347,7 +347,7 @@ module Rubee
         decimal: "BigDecimal #{name}",
         foreign_key: "foreign_key #{name}, :#{table}",
         index: "index #{name}",
-        unique: "unique #"
+        unique: "unique #",
       }
 
       statement = lookup_hash[type.to_sym]
