@@ -240,7 +240,7 @@ module Rubee
 
       content = <<~RUBY
         class #{@model_name.capitalize} < Rubee::SequelObject
-          #{'attr_accessor ' + @model_attributes.map { |hash| ":#{hash[:name]}" }.join(', ') if @model_attributes.length > 0}
+          #{'attr_accessor' + @model_attributes.map { |hash| ":#{hash[:name]}" }.join(', ') if @model_attributes.length > 0}
         end
       RUBY
 
