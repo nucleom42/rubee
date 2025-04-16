@@ -16,7 +16,7 @@ describe 'Rubee::Generator' do
       _(text).must_equal('String :something')
     end
 
-    it 'for string with just name' do
+    it 'for string name and options' do
       generator = Rubee::Generator.new(nil, nil, nil, nil)
 
       attribute = { name: 'something', type: :string, options: { curse: 'squirrel' } }
