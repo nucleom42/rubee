@@ -107,6 +107,23 @@ describe 'Rubee::Generator' do
       _(lines.include?(':blue_and_shoe_join_tb')).must_equal true
       _(lines.include?('end')).must_equal true
     end
+
+    it 'with a model with a foreign_key without table' do
+      generator = Rubee::Generator.new('apple', [{ name: 'blue_id', type: :foreign_key }], 'apples', nil)
+      generator.call
+
+      _(File.exist?('lib/db/create_apples.rb')).must_equal true
+
+      lines = File.readlines('lib/db/create_apples.rb').map(&:chomp).join("\n")
+
+      _(lines.include?('class CreateApples')).must_equal true
+      _(lines.include?('def call')).must_equal true
+      _(lines.include?('return if Rubee::SequelObject::DB.tables.include?(:apples)')).must_equal true
+      _(lines.include?('Rubee::SequelObject::DB.create_table(:apples) do')).must_equal true
+      _(lines.include?('foreign_key :blue_id')).must_equal true
+      _(lines.include?(':replace_with_table_name')).must_equal true
+      _(lines.include?('end')).must_equal true
+    end
   end
 
   describe 'generates Model file' do
