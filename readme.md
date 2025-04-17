@@ -72,33 +72,39 @@ rubee test
 
 ## Create API contract and generate files from the routes
 1. Add the routes to the routes.rb
-```bash
-Rubee::Router.draw do |router|
-  ...
-  # draw the contract
-  router.get "/apples", to: "apples#index",
-    model: {
-      name: "apple",
-      attributes: [
-        { name: 'id', type: :integer },
-        { name: 'colour', type: :string },
-        { name: 'weight', type: :integer }
-      ]
-    }
-end
-```
-2. genrate the files
-```bash
-rubee generate get /apples
-```
-3. This will generate the following files
-```bash
-./app/controllers/apples_controller.rb # Controller with respective action
-./app/models/apple.rb # Model that acts as ORM
-./app/views/apples_index.erb # ERB view that is rendered by the controller right away
-./db/create_items.rb # Database migration file needed for creating repsective table
-```
-4. Fill those files with the logic you need and run the server again!
+    ```ruby
+    Rubee::Router.draw do |router|
+      ...
+      # draw the contract
+      router.get "/apples", to: "apples#index",
+        model: {
+          name: "apple",
+          attributes: [
+            { name: 'id', type: :primary },
+            { name: 'colour', type: :string },
+            { name: 'weight', type: :integer }
+          ]
+        }
+    end
+    ```
+2. generate the files
+    ```bash
+    rubee generate get /apples
+    ```
+- This will generate the following files
+  ```bash
+  ./app/controllers/apples_controller.rb # Controller with respective action
+  ./app/views/apples_index.erb # ERB view that is rendered by the controller right away
+  ./app/models/apple.rb # Model that acts as ORM
+  ./db/create_apples.rb # Database migration file needed for creating repsective table
+  ```
+
+3. Run the initial db migration
+    ```bash
+    rubee db run:all
+    ``` 
+
+5. Fill the generated files with the logic you need and run the server again!
 
 ## Model
 Model in ruBee is just simple ruby object that can be serilalized in the view
@@ -277,6 +283,136 @@ irb(main):010>  .then { |dataset| Comment.serialize(dataset) }
 ```
 This is recommended when you want to run one query and serialize it back to Rubee object only once.
 So it may safe some resources.
+
+## Routing
+Rubee uses explicit routes. In the routes.rb yout can define routes for any of the main HTTP methods. You can also add any matched parameter denoted by a pair of `{ }` in the path of the route. Eg. `/path/to/{a_key}/somewhere`
+
+### Routing methods
+``` ruby
+Rubee::Router.draw do |router|
+  router.get '/posts', to: 'posts#index'
+  router.post '/posts', to: 'posts#create'
+  router.patch '/posts/{id}', to: 'posts#update'
+  router.put '/posts/{id}', to: 'posts#update'
+  router.delete '/posts/{id}', to: 'posts#delete'
+  router.head '/posts', to: 'posts#index'
+  router.connect '/posts', to: 'posts#index'
+  router.options '/posts', to: 'posts#index'
+  router.trace '/posts', to: 'posts#index'
+end
+```
+
+As you see above every route is set up as:\
+`route.http_method path, to: "controller#action", model { ...optional }`
+
+### Defining Model attributes in routes
+One of Rubee's unique traits is where we can define our models for generation. You've seen above one possible way you can set up.
+
+```ruby
+Rubee::Router.draw do |router|
+  ...
+  # draw the contract
+  router.get "/apples", to: "apples#index",
+    model: {
+      name: "apple",
+      attributes: [
+        { name: 'id', type: :primary },
+        { name: 'colour', type: :string },
+        { name: 'weight', type: :integer }
+      ]
+    }
+end
+```
+
+There are many other keys supported by us and Sequel to help generate your initial db files. Other supported attribute key types are:
+``` ruby
+[
+  { name: 'key1', type: :primary},
+  { name: 'key2', type: :string },
+  { name: 'key3', type: :text },
+  { name: 'key4', type: :integer },
+  { name: 'key5', type: :date },
+  { name: 'key6', type: :datetime },
+  { name: 'key7', type: :time },
+  { name: 'key8', type: :boolean },
+  { name: 'key9', type: :bigint },
+  { name: 'key10', type: :decimal },
+  { name: 'key11', type: :foreign_key },
+  { name: 'key12', type: :index },
+  { name: 'key13', type: :unique }
+]
+```
+Every attribute can have a set of options passed based on their related [Sequel schema definition](https://github.com/jeremyevans/sequel/blob/master/doc/schema_modification.rdoc).
+
+An example of this would be for the type string: \
+`{name: 'key', type: :string, options: { size: 50, fixed: true } }`
+
+Gets translated to:\
+`String :key, size: 50, fixed: true`
+
+### Generation from routes
+As long as you have a `{ model: 'something' }` passed to your given route you can use it to generate your initial model files. If only a `path` and a `to:` are defined will only generate a controller and a corresponding view.
+
+To generate based on a get route for the path /apples:\
+`rubee generate get /apples` or `rubee gen get /apples`\
+
+To generate base on a patch request for the path /apples/{id}:\
+`rubee generate patch /apples/{id}` or `rubee gen patch /apples/{id}`
+
+
+Example:
+```ruby
+Rubee::Router.draw do |router|
+  ...
+  # draw the contract
+  router.get "/apples", to: "apples#index"
+end
+```
+Will Generate:
+```bash
+./app/controllers/apples_controller.rb # Controller with respective action
+./app/views/apples_index.erb # ERB view that is rendered by the controller right away
+```
+
+Example 2:
+```ruby
+Rubee::Router.draw do |router|
+  ...
+  # draw the contract
+  router.get "/apples", to: "apples#index", model: { name: 'apple' }
+end
+```
+Will generate:
+```bash
+./app/controllers/apples_controller.rb # Controller with respective action
+./app/views/apples_index.erb # ERB view that is rendered by the controller right away
+./app/models/apple.rb # Model that acts as ORM
+```
+
+Example 3:
+```ruby
+Rubee::Router.draw do |router|
+  ...
+  # draw the contract
+  router.get "/apples", to: "apples#index", 
+    model: { 
+      name: 'apple', 
+      attributes: [
+        { name: 'id', type: :primary },
+        { name: 'colour', type: :string },
+        { name: 'weight', type: :integer }
+      ]
+    }
+end
+```
+
+Will generate:
+```bash
+./app/controllers/apples_controller.rb # Controller with respective action
+./app/models/apple.rb # Model that acts as ORM
+./app/views/apples_index.erb # ERB view that is rendered by the controller right away
+./db/create_items.rb # Database migration file needed for creating repsective table
+```
 
 ## Views
 View in ruBee is just a plain html/erb/react file that can be rendered from the controller.
