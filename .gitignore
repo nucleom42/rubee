@@ -7,4 +7,5 @@ lib/js/bundle.js
 lib/js/bundle.js.map
 lib/js/app.js.map
 
+# Test coverage report
 coverage/
