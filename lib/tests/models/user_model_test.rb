@@ -1,6 +1,5 @@
 require_relative '../test_helper'
 
-
 describe 'User model' do
   describe '.create' do
     after do
@@ -255,7 +254,6 @@ describe 'User model' do
       User.destroy_all(cascade: true)
     end
     describe 'when there is one associated account' do
-
       it 'cannot add more than one address' do
         skip "This is an idea that can be implemented later"
         user = User.new(email: 'bleh@example.com', password: '123')

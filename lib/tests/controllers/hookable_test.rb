@@ -32,7 +32,7 @@ class TestHookable
   around :around_after_before, :set_around
   after :around_after_before, :set_glue
   before :around_after_before, :set_value
-  
+
   after :after_around_before, :set_glue
   around :after_around_before, :set_around
   before :after_around_before, :set_value
@@ -40,8 +40,6 @@ class TestHookable
   after :after_before_around, :set_glue
   before :after_before_around, :set_value
   around :after_before_around, :set_around
-
-
 
   # With responder conditions
   after :set_if_condition, :set_glue, if: TestResponder.new
@@ -56,21 +54,28 @@ class TestHookable
   before :prep_unless_condition, :set_value
   after :set_unless_condition, :set_glue, unless: :value_red
 
-  
   def after_around_before; end
+
   def before_around_after; end
+
   def around_before_after; end
+
   def after_before_around; end
+
   def before_after_around; end
+
   def around_after_before; end
 
   def prep_if_condition; end
+
   def set_if_condition; end
 
   def prep_unless_condition; end
+
   def set_unless_condition; end
 
   def failed_around; end
+
   def success_around; end
 
   def value_red
@@ -155,7 +160,6 @@ describe 'Hookable Controller' do
       _(hookable.glue).must_equal('white')
       _(hookable.varty).must_equal('something')
     end
-
   end
 
   describe 'conditions' do
@@ -192,7 +196,6 @@ describe 'Hookable Controller' do
 
       _(hookable.value).must_equal('red')
     end
-
 
     it 'checks around for failure' do
       hookable = TestHookable.new

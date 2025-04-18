@@ -17,7 +17,7 @@ describe 'Serializable Model' do
     end
 
     it 'does not exist not settable' do
-      _{TestSerialized.new(blue: 'hello')}.must_raise(NoMethodError)
+      _ { TestSerialized.new(blue: 'hello') }.must_raise(NoMethodError)
     end
   end
 
@@ -33,5 +33,4 @@ describe 'Serializable Model' do
       _(@cerealed.to_json).must_be_instance_of(String)
     end
   end
-
 end

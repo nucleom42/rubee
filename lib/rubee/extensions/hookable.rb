@@ -38,11 +38,11 @@ module Rubee
         hooks = Module.new do
           define_method(method) do |*args, &block|
             if conditions_met?(options[:if], options[:unless])
-              result = super(*args, &block)
-              if handler.respond_to?(:call)
-                result = handler.call { super(*args, &block) }
+              super(*args, &block)
+              result = if handler.respond_to?(:call)
+                handler.call { super(*args, &block) }
               else
-                result = send(handler) { super(*args, &block) }
+                send(handler) { super(*args, &block) }
               end
 
               result
