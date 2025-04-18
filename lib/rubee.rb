@@ -14,6 +14,7 @@ module Rubee
   LIB = PROJECT_NAME == 'rubee' ? 'lib/' : '' unless defined?(LIB)
   IMAGE_DIR = File.join(APP_ROOT, LIB, 'images') unless defined?(IMAGE_DIR)
   JS_DIR = File.join(APP_ROOT, LIB, 'js') unless defined?(JS_DIR)
+  CSS_DIR = File.join(APP_ROOT, LIB, 'css') unless defined?(CSS_DIR)
   VERSION = '1.4.0'
 
   class Application
