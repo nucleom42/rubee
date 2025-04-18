@@ -10,9 +10,11 @@ end
 
 module Rubee
   APP_ROOT = File.expand_path(Dir.pwd) unless defined?(APP_ROOT)
-  IMAGE_DIR = File.join(APP_ROOT, 'images') unless defined?(IMAGE_DIR)
   PROJECT_NAME = File.basename(APP_ROOT) unless defined?(PROJECT_NAME)
-  VERSION = '1.3.3'
+  LIB = PROJECT_NAME == 'rubee' ? 'lib/' : '' unless defined?(LIB)
+  IMAGE_DIR = File.join(APP_ROOT, LIB, 'images') unless defined?(IMAGE_DIR)
+  JS_DIR = File.join(APP_ROOT, LIB, 'js') unless defined?(JS_DIR)
+  VERSION = '1.4.0'
 
   class Application
     include Singleton
@@ -23,12 +25,21 @@ module Rubee
       # register images paths
       request = Rack::Request.new(env)
       # Add default path for images
-      Router.draw { |route| route.get('/images/{path}', to: 'base#image', namespace: 'Rubee') }
+      Router.draw do |route|
+        route.get('/images/{path}', to: 'base#image', namespace: 'Rubee')
+        route.get('/js/{path}', to: 'base#js', namespace: 'Rubee')
+        route.get('/css/{path}', to: 'base#css', namespace: 'Rubee')
+      end
       # define route
       route = Router.route_for(request)
-      # init controller class
+      # if react is the view so we would like to delegate not cauth by rubee routes to it.
+      if Rubee::Configuration.react[:on] && !route
+        index = File.read(File.join(Rubee::APP_ROOT, Rubee::LIB, 'app/views', 'index.html'))
+        return [200, { 'content-type' => 'text/html' }, [index]]
+      end
+      # if not found return 404
       return [404, { 'content-type' => 'text/plain' }, ['Route not found']] unless route
-
+      # init controller class
       controller_class = if route[:namespace]
         "#{route[:namespace]}::#{route[:controller].capitalize}Controller"
       else
@@ -66,6 +77,15 @@ module Rubee
 
       def async_adapter=(args)
         @configuraiton[args[:env].to_sym][:async_adapter] = args[:async_adapter]
+      end
+
+      def react=(args)
+        @configuraiton[args[:env].to_sym][:react] ||= { on: false }
+        @configuraiton[args[:env].to_sym][:react].merge!(on: args[:on])
+      end
+
+      def react
+        @configuraiton[ENV['RACK_ENV']&.to_sym || :development][:react] || {}
       end
 
       def method_missing(method_name, *_args)
@@ -152,9 +172,8 @@ module Rubee
           require_relative file unless black_list.include?("#{file}.rb")
         end
         # app config and routes
-        lib = PROJECT_NAME == 'rubee' ? 'lib/' : ''
         unless black_list.include?('base_configuration.rb')
-          require_relative File.join(APP_ROOT, lib,
+          require_relative File.join(APP_ROOT, LIB,
                                      'config/base_configuration')
         end
         # This is necessary prerequisitedb init step
@@ -164,7 +183,7 @@ module Rubee
           end
         end
 
-        require_relative File.join(APP_ROOT, lib, 'config/routes') unless black_list.include?('routes.rb')
+        require_relative File.join(APP_ROOT, LIB, 'config/routes') unless black_list.include?('routes.rb')
         # rubee extensions
         Dir[File.join(root_directory, 'rubee/extensions/**', '*.rb')].each do |file|
           require_relative file unless black_list.include?("#{file}.rb")
@@ -194,12 +213,13 @@ module Rubee
   end
 
   class Generator
-    def initialize(model_name, attributes, controller_name, action_name)
+    def initialize(model_name, model_attributes, controller_name, action_name, **options)
       @model_name = model_name&.downcase
-      @attributes = attributes
+      @model_attributes = model_attributes || []
       @plural_name = controller_name.to_s.gsub('Controller', '').downcase.to_s
       @action_name = action_name
       @controller_name = controller_name
+      @react = options[:react] || {}
     end
 
     def call
@@ -212,7 +232,7 @@ module Rubee
     private
 
     def generate_model
-      model_file = File.join("app/models/#{@model_name}.rb")
+      model_file = File.join(Rubee::APP_ROOT, Rubee::LIB, "app/models/#{@model_name}.rb")
       if File.exist?(model_file)
         puts "Model #{@model_name} already exists. Remove it if you want to regenerate"
         return
@@ -220,7 +240,7 @@ module Rubee
 
       content = <<~RUBY
         class #{@model_name.capitalize} < Rubee::SequelObject
-          attr_accessor #{@attributes.map { |hash| ":#{hash[:name]}" }.join(', ')}
+          #{'attr_accessor' + @model_attributes.map { |hash| ":#{hash[:name]}" }.join(', ') unless @model_attributes.empty?}
         end
       RUBY
 
@@ -229,7 +249,7 @@ module Rubee
     end
 
     def generate_controller
-      controller_file = File.join("app/controllers/#{@plural_name}_controller.rb")
+      controller_file = File.join(Rubee::APP_ROOT, Rubee::LIB, "app/controllers/#{@plural_name}_controller.rb")
       if File.exist?(controller_file)
         puts "Controller #{@plural_name} already exists. Remove it if you want to regenerate"
         return
@@ -248,22 +268,41 @@ module Rubee
     end
 
     def generate_view
-      view_file = File.join("app/views/#{@plural_name}_#{@action_name}.erb")
+      if @react[:view_name]
+        view_file = File.join(Rubee::APP_ROOT, Rubee::LIB, "app/views/#{@react[:view_name]}")
+        content = <<~JS
+          import React, { useEffect, useState } from "react";
+          // 1. Add your logic that fetches data
+          // 2. Do not forget to add respective react route
+          export function User() {
+
+            return (
+              <div>
+                <h2>#{@react[:view_name]} view</h2>
+              </div>
+            );
+          }
+        JS
+      else
+        view_file = File.join(Rubee::APP_ROOT, Rubee::LIB, "app/views/#{@plural_name}_#{@action_name}.erb")
+        content = <<~ERB
+          <h1>#{@plural_name}_#{@action_name} View</h1>
+        ERB
+      end
+
+      name = @react[:view_name] || "#{@plural_name}_#{@action_name}"
+
       if File.exist?(view_file)
-        puts "View #{@plural_name}_#{@action_name} already exists. Remove it if you want to regenerate"
+        puts "View #{name} already exists. Remove it if you want to regenerate"
         return
       end
 
-      content = <<~ERB
-        <h1>#{@plural_name}_#{@action_name} View</h1>
-      ERB
-
       File.open(view_file, 'w') { |file| file.write(content) }
-      color_puts("View #{@plural_name}_#{@action_name} created", color: :green)
+      color_puts("View #{name} created", color: :green)
     end
 
     def generate_db_file
-      db_file = File.join("db/create_#{@plural_name}.rb")
+      db_file = File.join(Rubee::APP_ROOT, Rubee::LIB, "db/create_#{@plural_name}.rb")
       if File.exist?(db_file)
         puts "DB file for #{@plural_name} already exists. Remove it if you want to regenerate"
         return
@@ -272,12 +311,52 @@ module Rubee
       content = <<~RUBY
         class Create#{@plural_name.capitalize}
           def call
+            return if Rubee::SequelObject::DB.tables.include?(:#{@plural_name})
+
+            Rubee::SequelObject::DB.create_table(:#{@plural_name}) do
+              #{@model_attributes.map { |attribute| generate_sequel_schema(attribute) }.join("\n\t\t\t")}
+            end
           end
         end
       RUBY
 
       File.open(db_file, 'w') { |file| file.write(content) }
       color_puts("DB file for #{@plural_name} created", color: :green)
+    end
+
+    def generate_sequel_schema(attribute)
+      type = attribute[:type]
+      name = if attribute[:name].is_a?(Array)
+        attribute[:name].map { |nom| ":#{nom}" }.join(", ").prepend('[') + ']'
+      else
+        ":#{attribute[:name]}"
+      end
+      table = attribute[:table] || 'replace_with_table_name'
+      options = attribute[:options] || {}
+
+      lookup_hash = {
+        primary: "primary_key #{name}",
+        string: "String #{name}",
+        text: "String #{name}, text: true",
+        integer: "Integer #{name}",
+        date: "Date #{name}",
+        datetime: "DateTime #{name}",
+        time: "Time #{name}",
+        boolean: "TrueClass #{name}",
+        bigint: "Bignum #{name}",
+        decimal: "BigDecimal #{name}",
+        foreign_key: "foreign_key #{name}, :#{table}",
+        index: "index #{name}",
+        unique: "unique #",
+      }
+
+      statement = lookup_hash[type.to_sym]
+
+      options.keys.each do |key|
+        statement += ", #{key}: '#{options[key]}'"
+      end
+
+      statement
     end
   end
 end

@@ -24,13 +24,13 @@ All greaet features are yet to come!
 - **Contract driven**: Define your API contracts in a simple, declarative manner. And generate the files for you.
 - **Fast**: Optimized for speed, providing a quick response to requests. Everything is relative, I know!
 - **Rack**: Rack backed. All Rack api is available for integration.
-- **Router**: Router driven - generates all required files from the routes.
 - **Databases**: Sqlite3, Postgres, Mysql and many more supported by sequel gem.
-- **Views**: Json, ERB and plain HTML
+- **Views**: Json, ERB and plain HTML and ..
+- **React** is supported out of the box as a rubee view
 - **Bundlable** Charge your ruBee with any gem you need and update your project with bundle.
 - **ORM** All models are natively ORM objects, however you can use it as a blueurpint for any datasources.
 - **Authentificatable** Add JWT authentification easily to any controller action.
-- **Hooks** Add logic before, after and around any action.
+- **Hooks** Addlogic before, after and around any action.
 - **Test** Run all or selected tests witin minitest.
 - **Asyncable** Add async adapter and pick any popular background job queue enginee
 
@@ -50,8 +50,7 @@ cd my_project
 3. Install dependencies
 
 ***Prerequisites***<br />
-**ruBee** is using **Sqlite** as a default database. However you can pick up any other database supported by sequel gem.
-Aside that, make sure:
+Make sure:
 **Ruby** language (3+) is installed
 **Bundler** is installed
 
@@ -66,35 +65,46 @@ rubee start
 
 5. Open your browser and go to http://localhost:7000
 
+## Run the tests
+```bash
+rubee test
+```
+
 ## Create API contract and generate files from the routes
 1. Add the routes to the routes.rb
-```bash
-Rubee::Router.draw do |router|
-  ...
-  # draw the contract
-  router.get "/apples", to: "apples#index",
-    model: {
-      name: "apple",
-      attributes: [
-        { name: 'id', type: :integer },
-        { name: 'colour', type: :string },
-        { name: 'weight', type: :integer }
-      ]
-    }
-end
-```
-2. genrate the files
-```bash
-rubee generate get /apples
-```
-3. This will generate the following files
-```bash
-./app/controllers/apples_controller.rb # Controller with respective action
-./app/models/apple.rb # Model that acts as ORM
-./app/views/apples_index.erb # ERB view that is rendered by the controller right away
-./db/create_items.rb # Database migration file needed for creating repsective table
-```
-4. Fill those files with the logic you need and run the server again!
+    ```ruby
+    Rubee::Router.draw do |router|
+      ...
+      # draw the contract
+      router.get "/apples", to: "apples#index",
+        model: {
+          name: "apple",
+          attributes: [
+            { name: 'id', type: :primary },
+            { name: 'colour', type: :string },
+            { name: 'weight', type: :integer }
+          ]
+        }
+    end
+    ```
+2. generate the files
+    ```bash
+    rubee generate get /apples
+    ```
+- This will generate the following files
+  ```bash
+  ./app/controllers/apples_controller.rb # Controller with respective action
+  ./app/views/apples_index.erb # ERB view that is rendered by the controller right away
+  ./app/models/apple.rb # Model that acts as ORM
+  ./db/create_apples.rb # Database migration file needed for creating repsective table
+  ```
+
+3. Run the initial db migration
+    ```bash
+    rubee db run:all
+    ``` 
+
+5. Fill the generated files with the logic you need and run the server again!
 
 ## Model
 Model in ruBee is just simple ruby object that can be serilalized in the view
@@ -106,8 +116,8 @@ Here below is a simple example on how it can be used by rendering json from in m
   #ApplesController
 
   def show
-    # in memory example
-apples = [Apple.new(colour: 'red', weight: '1lb'), Apple.new(colour: 'green', weight: '1lb')]
+    # In memory example
+    apples = [Apple.new(colour: 'red', weight: '1lb'), Apple.new(colour: 'green', weight: '1lb')]
     apple = apples.find { |apple| apple.colour = params[:colour] }
 
     response_with object: apple, type: :json
@@ -121,8 +131,8 @@ Just make sure Serializable module included in the target class.
     attr_accessor :id, :colour, :weight
   end
 ```
-However, you can simply turn it to ORM object by extending database class.
-
+However, you can simply turn it to ORM object by extending database class Rubee::SequelObject.
+This one is already serializable and charged with hooks.
 ```Ruby
   class Apple < Rubee::SequelObject
     attr_accessor :id, :colour, :weight
@@ -130,7 +140,6 @@ However, you can simply turn it to ORM object by extending database class.
 ```
 
 So in the controller you would need to query your target object now.
-
 ```ruby
   #ApplesController
 
@@ -275,10 +284,138 @@ irb(main):010>  .then { |dataset| Comment.serialize(dataset) }
 This is recommended when you want to run one query and serialize it back to Rubee object only once.
 So it may safe some resources.
 
+## Routing
+Rubee uses explicit routes. In the routes.rb yout can define routes for any of the main HTTP methods. You can also add any matched parameter denoted by a pair of `{ }` in the path of the route. Eg. `/path/to/{a_key}/somewhere`
 
+### Routing methods
+``` ruby
+Rubee::Router.draw do |router|
+  router.get '/posts', to: 'posts#index'
+  router.post '/posts', to: 'posts#create'
+  router.patch '/posts/{id}', to: 'posts#update'
+  router.put '/posts/{id}', to: 'posts#update'
+  router.delete '/posts/{id}', to: 'posts#delete'
+  router.head '/posts', to: 'posts#index'
+  router.connect '/posts', to: 'posts#index'
+  router.options '/posts', to: 'posts#index'
+  router.trace '/posts', to: 'posts#index'
+end
+```
+
+As you see above every route is set up as:\
+`route.http_method path, to: "controller#action", model { ...optional }`
+
+### Defining Model attributes in routes
+One of Rubee's unique traits is where we can define our models for generation. You've seen above one possible way you can set up.
+
+```ruby
+Rubee::Router.draw do |router|
+  ...
+  # draw the contract
+  router.get "/apples", to: "apples#index",
+    model: {
+      name: "apple",
+      attributes: [
+        { name: 'id', type: :primary },
+        { name: 'colour', type: :string },
+        { name: 'weight', type: :integer }
+      ]
+    }
+end
+```
+
+There are many other keys supported by us and Sequel to help generate your initial db files. Other supported attribute key types are:
+``` ruby
+[
+  { name: 'key1', type: :primary},
+  { name: 'key2', type: :string },
+  { name: 'key3', type: :text },
+  { name: 'key4', type: :integer },
+  { name: 'key5', type: :date },
+  { name: 'key6', type: :datetime },
+  { name: 'key7', type: :time },
+  { name: 'key8', type: :boolean },
+  { name: 'key9', type: :bigint },
+  { name: 'key10', type: :decimal },
+  { name: 'key11', type: :foreign_key },
+  { name: 'key12', type: :index },
+  { name: 'key13', type: :unique }
+]
+```
+Every attribute can have a set of options passed based on their related [Sequel schema definition](https://github.com/jeremyevans/sequel/blob/master/doc/schema_modification.rdoc).
+
+An example of this would be for the type string: \
+`{name: 'key', type: :string, options: { size: 50, fixed: true } }`
+
+Gets translated to:\
+`String :key, size: 50, fixed: true`
+
+### Generation from routes
+As long as you have a `{ model: 'something' }` passed to your given route you can use it to generate your initial model files. If only a `path` and a `to:` are defined will only generate a controller and a corresponding view.
+
+To generate based on a get route for the path /apples:\
+`rubee generate get /apples` or `rubee gen get /apples`\
+
+To generate base on a patch request for the path /apples/{id}:\
+`rubee generate patch /apples/{id}` or `rubee gen patch /apples/{id}`
+
+
+Example:
+```ruby
+Rubee::Router.draw do |router|
+  ...
+  # draw the contract
+  router.get "/apples", to: "apples#index"
+end
+```
+Will Generate:
+```bash
+./app/controllers/apples_controller.rb # Controller with respective action
+./app/views/apples_index.erb # ERB view that is rendered by the controller right away
+```
+
+Example 2:
+```ruby
+Rubee::Router.draw do |router|
+  ...
+  # draw the contract
+  router.get "/apples", to: "apples#index", model: { name: 'apple' }
+end
+```
+Will generate:
+```bash
+./app/controllers/apples_controller.rb # Controller with respective action
+./app/views/apples_index.erb # ERB view that is rendered by the controller right away
+./app/models/apple.rb # Model that acts as ORM
+```
+
+Example 3:
+```ruby
+Rubee::Router.draw do |router|
+  ...
+  # draw the contract
+  router.get "/apples", to: "apples#index", 
+    model: { 
+      name: 'apple', 
+      attributes: [
+        { name: 'id', type: :primary },
+        { name: 'colour', type: :string },
+        { name: 'weight', type: :integer }
+      ]
+    }
+end
+```
+
+Will generate:
+```bash
+./app/controllers/apples_controller.rb # Controller with respective action
+./app/models/apple.rb # Model that acts as ORM
+./app/views/apples_index.erb # ERB view that is rendered by the controller right away
+./db/create_items.rb # Database migration file needed for creating repsective table
+```
 
 ## Views
-View in ruBee is just a plain html/erb file that can be rendered from the controller.
+View in ruBee is just a plain html/erb/react file that can be rendered from the controller.
 
 ## Templates over erb
 
@@ -311,6 +448,107 @@ end
     <p><%= locals[:object][:message] %></p> # displaying, passed in the controller object
 </div>
 ```
+
+## React as a view
+
+React is supported out of the box in the rubee view.
+Make react as a view representation layer is easy.
+
+Prerequisites: Node and NPM are required
+
+1. Make sure after creating project and bundling you have installed react dependencies by
+
+```bash
+rubee react prepare # this will install react related node modules
+```
+2. Make sure you have configured react in the configuration file
+
+```ruby
+# config/base_configuration/rb
+Rubee::Configuration.setup(env = :development) do |config|
+  config.database_url = { url: 'sqlite://db/development.db', env: }
+
+  # this line registers react as a view
+  config.react = { on: true, env: }
+end
+```
+
+3. Start server by
+
+```bash
+rubee start
+```
+
+3. Open your browser and navigate to http://localhost:3000/home
+
+4. You will see the react app running in the browser.
+
+5. For development purposes make sure you run `rubee start_dev` and in other terminal window run `rubee react watch`.
+So that will ensure all cahnges applying instantly.
+
+6. You can generate react view from the route by indicating the view name explicitly
+
+```ruby
+# config/routes.rb
+Rubee::Router.draw do |router|
+  router.get('/', to: 'welcome#show') # override it for your app
+
+  router.get('/api/users', to: 'user#index', react: { view_name: 'users.tsx' })
+  # Please note /api/users is the backend endpoint
+  # For rendering generated /app/views/users.tsx file, you need to update react routes
+end
+```
+
+7. Add logic to generated api controller
+
+```ruby
+# app/controllers/api/user_controller.rb
+class Api::UserController < Rubee::BaseController
+  def index
+    response_with object: User.all, type: :json
+  end
+end
+```
+8. Register path in react routes
+
+```javascript
+// app/views/app.tsx
+<Router>
+  <Routes>
+    <Route path="/users" element={<Users />} />
+    <Route path="*" element={<NotFound />} />
+  </Routes>
+</Router>
+```
+9. Fetch data from the backend in the users.tsx react component and display it in the browser http://localhost:3000/users
+
+```javascript
+# app/views/users.tsx
+import { useState, useEffect } from 'react';
+
+function Users() {
+  const [users, setUsers] = useState([]);
+
+  useEffect(() => {
+    fetch('/api/users')
+      .then(response => response.json())
+      .then(data => setUsers(data));
+  }, []);
+
+  return (
+    <div>
+      <h1>Users</h1>
+      <ul>
+        {users.map(user => (
+          <li key={user.id}>id: {user.id}: {user.name}</li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+```
+
 ## Object hooks
 
 In ruBee by extending Hookable module any Ruby object can be charged with hooks (logic),
@@ -406,6 +644,8 @@ end
 ```bash
 rubee start # start the server
 rubee start_dev # start the server in dev mode, which restart server on changes
+rubee react prepare # install react dependencies
+rubee react watch # dev mode for react, works together with start_dev
 rubee stop # stop the server
 rubee restart # restart the server
 ```
@@ -417,6 +657,7 @@ rubee generate get /apples # generate controller view, model and migration if se
 
 ## Migraiton commands
 ```bash
+rubee db run:all # run all migrations
 rubee db run:create_apples # where create_apples is the name of the migration file, located in /db folder
 rubee db structure # generate migration file for the database structure
 ```
@@ -424,6 +665,7 @@ rubee db structure # generate migration file for the database structure
 ## Rubee console
 ```bash
 rubee console # start the console
+# you can reload the console by typing reload, so it will pick up latest changes
 ```
 
 ## Testing
@@ -431,6 +673,7 @@ rubee console # start the console
 rubee test # run all tests
 rubee test auth_tokenable_test.rb # run specific tests
 ```
+
 If you want to run any ruBee command within a specific ENV make sure you added it before a command.
 For instance if you want to run console in test environment you need to run the following command
 
@@ -514,30 +757,11 @@ TestAsyncRunnner.new.perform_async(options: {"email"=> "new@new.com", "password"
 
 ### Contributing
 
-You are more than welcome to contribute to ruBee! To do so, please follow these steps:
+If you are interested in contributing to ruBee,
+please read the [Contributing](https://github.com/nucleom42/rubee/blob/main/CONTRIBUTING.md) guide.
+Also feel free to open an [issue](https://github.com/nucleom42/rubee/issues) if you apot one.
+Have an idea or you wnat to discuss something?
+Please open a [discussion](https://github.com/nucleom42/rubee/discussions)
 
-1. Fork the repository by clicking the "Fork" button on the GitHub page.
-
-2. Clone your fork:
-```bash
-git clone https://github.com/your-username/rubee.git
-```
-
-3. Create a new branch for your feature or bug fix:
-```bash
-git checkout -b feature/your-feature-name
-```
-
-4. Make your changes and commit them with descriptive messages:
-```bash
-git commit -m "Add feature: [brief description of feature]"
-```
-
-5. Push your changes to your fork:
-```bash
-git push origin feature/your-feature-name
-```
-
-6. Submit a pull request to the main branch of the original repository.
-
-Let's make it shine even brighter!
+## License
+This project is released under the MIT License.
