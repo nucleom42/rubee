@@ -14,7 +14,8 @@ module Rubee
   LIB = PROJECT_NAME == 'rubee' ? 'lib/' : '' unless defined?(LIB)
   IMAGE_DIR = File.join(APP_ROOT, LIB, 'images') unless defined?(IMAGE_DIR)
   JS_DIR = File.join(APP_ROOT, LIB, 'js') unless defined?(JS_DIR)
-  VERSION = '1.4.0'
+  CSS_DIR = File.join(APP_ROOT, LIB, 'css') unless defined?(CSS_DIR)
+  VERSION = '1.5.1'
 
   class Application
     include Singleton
@@ -216,20 +217,37 @@ module Rubee
     def initialize(model_name, model_attributes, controller_name, action_name, **options)
       @model_name = model_name&.downcase
       @model_attributes = model_attributes || []
-      @plural_name = controller_name.to_s.gsub('Controller', '').downcase.to_s
+      @base_name = controller_name.to_s.gsub('Controller', '').downcase.to_s
+      color_puts("base_name: #{@base_name}", color: :gray)
+      @plural_name = plural?(@base_name) ? @base_name : pluralize(@base_name)
       @action_name = action_name
-      @controller_name = controller_name
       @react = options[:react] || {}
     end
 
     def call
       generate_model if @model_name
       generate_db_file if @model_name
-      generate_controller if @controller_name && @action_name
-      generate_view if @controller_name
+      generate_controller if @base_name && @action_name
+      generate_view if @base_name
     end
 
     private
+
+    # TODO DRY me
+    def pluralize(word)
+      if word.end_with?('y') && !%w[a e i o u].include?(word[-2])
+        "#{word[0..-2]}ies" # Replace "y" with "ies"
+      elsif word.end_with?('s', 'x', 'z', 'ch', 'sh')
+        "#{word}es" # Add "es" for certain endings
+      else
+        "#{word}s" # Default to adding "s"
+      end
+    end
+
+    def plural?(word)
+      # TODO fix me use case when end with s but not plural
+      word.end_with?('s') || word.end_with?('es') || word.end_with?('ies')
+    end
 
     def generate_model
       model_file = File.join(Rubee::APP_ROOT, Rubee::LIB, "app/models/#{@model_name}.rb")
@@ -240,7 +258,7 @@ module Rubee
 
       content = <<~RUBY
         class #{@model_name.capitalize} < Rubee::SequelObject
-          #{'attr_accessor' + @model_attributes.map { |hash| ":#{hash[:name]}" }.join(', ') unless @model_attributes.empty?}
+          #{'attr_accessor ' + @model_attributes.map { |hash| ":#{hash[:name]}" }.join(', ') unless @model_attributes.empty?}
         end
       RUBY
 
@@ -249,14 +267,14 @@ module Rubee
     end
 
     def generate_controller
-      controller_file = File.join(Rubee::APP_ROOT, Rubee::LIB, "app/controllers/#{@plural_name}_controller.rb")
+      controller_file = File.join(Rubee::APP_ROOT, Rubee::LIB, "app/controllers/#{@base_name}_controller.rb")
       if File.exist?(controller_file)
-        puts "Controller #{@plural_name} already exists. Remove it if you want to regenerate"
+        puts "Controller #{@base_name} already exists. Remove it if you want to regenerate"
         return
       end
 
       content = <<~RUBY
-        class #{@plural_name.capitalize}Controller < Rubee::BaseController
+        class #{@base_name.capitalize}Controller < Rubee::BaseController
           def #{@action_name}
             response_with
           end
@@ -264,7 +282,7 @@ module Rubee
       RUBY
 
       File.open(controller_file, 'w') { |file| file.write(content) }
-      color_puts("Controller #{@plural_name} created", color: :green)
+      color_puts("Controller #{@base_name} created", color: :green)
     end
 
     def generate_view
@@ -274,7 +292,7 @@ module Rubee
           import React, { useEffect, useState } from "react";
           // 1. Add your logic that fetches data
           // 2. Do not forget to add respective react route
-          export function User() {
+          export function #{@react[:view_name].gsub(/\.(.*)+$/, '').capitalize}() {
 
             return (
               <div>

@@ -165,7 +165,7 @@ elsif command == 'project'
   color_puts "Project #{project_name} created successfully at #{target_dir}", color: :green
 
 elsif command == 'version'
-  color_puts "ru.Bee v#{Rubee::VERSION}", color: :yellow
+  color_puts "ruBee v#{Rubee::VERSION}", color: :yellow
 elsif command == 'routes'
   file = Rubee::PROJECT_NAME == 'rubee' ? File.join('/lib', 'config/routes.rb') : 'config/routes.rb'
   routes = eval(File.read(file))
