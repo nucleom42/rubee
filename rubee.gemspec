@@ -1,6 +1,6 @@
 Gem::Specification.new do |spec|
   spec.name          = 'ru.Bee'
-  spec.version       = '1.4.0'
+  spec.version       = '1.5.0'
   spec.authors       = ['Oleg Saltykov']
   spec.email         = ['oleg.saltykov@gmail.com']
   spec.summary       = 'Fast and lightweight Ruby application server designed for minimalism and flexibility'
