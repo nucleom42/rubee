@@ -387,6 +387,7 @@ Will generate:
 ./app/controllers/apples_controller.rb # Controller with respective action
 ./app/views/apples_index.erb # ERB view that is rendered by the controller right away
 ./app/models/apple.rb # Model that acts as ORM
+./db/create_apples.rb # Database migration file needed for creating repsective table
 ```
 
 Example 3:
@@ -411,7 +412,7 @@ Will generate:
 ./app/controllers/apples_controller.rb # Controller with respective action
 ./app/models/apple.rb # Model that acts as ORM
 ./app/views/apples_index.erb # ERB view that is rendered by the controller right away
-./db/create_items.rb # Database migration file needed for creating repsective table
+./db/create_apples.rb # Database migration file needed for creating repsective table
 ```
 
 ## Views
