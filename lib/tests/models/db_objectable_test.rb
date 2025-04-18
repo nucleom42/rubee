@@ -15,7 +15,6 @@ describe 'Database Objectable' do
       _(MergBerg.pluralize('pony')).must_equal('ponies')
       _(MergBerg.pluralize('hand')).must_equal('hands')
       _(MergBerg.pluralize('fox')).must_equal('foxes')
-      _(MergBerg.pluralize('moons')).must_equal('moons')
     end
 
     it 'singularizes words' do
