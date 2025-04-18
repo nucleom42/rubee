@@ -113,7 +113,9 @@ elsif command == 'project'
 
   # create tests dir and copy test_helper.rb and user_model_test.rb
   FileUtils.mkdir_p("#{target_dir}/tests")
-  FileUtils.cp("#{source_dir}/tests/user_model_test.rb", "#{target_dir}/tests/user_model_test.rb")
+  FileUtils.mkdir_p("#{target_dir}/tests/models")
+  FileUtils.mkdir_p("#{target_dir}/tests/controllers")
+  FileUtils.cp("#{source_dir}/tests/models/user_model_test.rb", "#{target_dir}/tests/models/user_model_test.rb")
 
   # create db dir
   FileUtils.mkdir_p("#{target_dir}/db")
