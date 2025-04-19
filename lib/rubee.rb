@@ -80,6 +80,10 @@ module Rubee
         @configuraiton[args[:env].to_sym][:async_adapter] = args[:async_adapter]
       end
 
+      def thread_pool_limit=(args)
+        @configuraiton[args[:env].to_sym][:thread_pool_limit] = args[:thread_pool_limit]
+      end
+
       def react=(args)
         @configuraiton[args[:env].to_sym][:react] ||= { on: false }
         @configuraiton[args[:env].to_sym][:react].merge!(on: args[:on])
