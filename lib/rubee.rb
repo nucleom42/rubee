@@ -15,7 +15,7 @@ module Rubee
   IMAGE_DIR = File.join(APP_ROOT, LIB, 'images') unless defined?(IMAGE_DIR)
   JS_DIR = File.join(APP_ROOT, LIB, 'js') unless defined?(JS_DIR)
   CSS_DIR = File.join(APP_ROOT, LIB, 'css') unless defined?(CSS_DIR)
-  VERSION = '1.5.1'
+  VERSION = '1.5.3'
 
   class Application
     include Singleton
@@ -214,12 +214,14 @@ module Rubee
   end
 
   class Generator
+    require_relative 'inits/charged_string'
+    using ChargedString
     def initialize(model_name, model_attributes, controller_name, action_name, **options)
       @model_name = model_name&.downcase
       @model_attributes = model_attributes || []
       @base_name = controller_name.to_s.gsub('Controller', '').downcase.to_s
       color_puts("base_name: #{@base_name}", color: :gray)
-      @plural_name = plural?(@base_name) ? @base_name : pluralize(@base_name)
+      @plural_name = @base_name.plural? ? @base_name : @base_name.pluralize
       @action_name = action_name
       @react = options[:react] || {}
     end
@@ -232,22 +234,6 @@ module Rubee
     end
 
     private
-
-    # TODO DRY me
-    def pluralize(word)
-      if word.end_with?('y') && !%w[a e i o u].include?(word[-2])
-        "#{word[0..-2]}ies" # Replace "y" with "ies"
-      elsif word.end_with?('s', 'x', 'z', 'ch', 'sh')
-        "#{word}es" # Add "es" for certain endings
-      else
-        "#{word}s" # Default to adding "s"
-      end
-    end
-
-    def plural?(word)
-      # TODO fix me use case when end with s but not plural
-      word.end_with?('s') || word.end_with?('es') || word.end_with?('ies')
-    end
 
     def generate_model
       model_file = File.join(Rubee::APP_ROOT, Rubee::LIB, "app/models/#{@model_name}.rb")

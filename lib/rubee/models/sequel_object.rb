@@ -1,6 +1,7 @@
 module Rubee
   class SequelObject
     include Rubee::DatabaseObjectable
+    using ChargedString
 
     def destroy(cascade: false, **_options)
       if cascade
@@ -11,7 +12,7 @@ module Rubee
         # destroy related records
         tables_with_fk.each do |table|
           fk_name ||= "#{self.class.name.to_s.downcase}_id".to_sym
-          target_klass = Object.const_get(self.class.singularize(table.to_s).capitalize)
+          target_klass = Object.const_get(table.to_s.singularize.capitalize)
           target_klass.where(fk_name => id).map(&:destroy)
         end
       end
@@ -22,7 +23,7 @@ module Rubee
       args = to_h.dup&.transform_keys(&:to_sym)
       if args[:id]
         begin
-          update(args)
+          udpate(args)
         rescue StandardError => _e
           return false
         end
@@ -81,7 +82,7 @@ module Rubee
       # > user.comments
       # > [<comment1>, <comment2>]
       def owns_many(assoc, fk_name: nil, over: nil, **_options)
-        singularized_assoc_name = singularize(assoc.to_s)
+        singularized_assoc_name = assoc.to_s.singularize
         fk_name ||= "#{name.to_s.downcase}_id"
 
         define_method(assoc) do
@@ -101,8 +102,8 @@ module Rubee
       # owns_one :user
       # > comment.user
       # > <user>
-      def owns_one(assoc, _options = {})
-        # Sequel::Model.one_to_one(assoc, **options)
+      def owns_one(assoc, options = {})
+        Sequel::Model.one_to_one(assoc, **options)
         fk_name ||= "#{name.to_s.downcase}_id"
         define_method(assoc) do
           Object.const_get(assoc.capitalize).where(fk_name.to_sym => id)&.first
@@ -175,7 +176,7 @@ module Rubee
       def serialize(suquel_dataset, klass = nil)
         klass ||= self
         suquel_dataset.map do |record_hash|
-          target_klass_fields = DB[pluralize(klass.name.downcase).to_sym].columns
+          target_klass_fields = DB[klass.name.pluralize.downcase.to_sym].columns
           klass_attributes = record_hash.filter { target_klass_fields.include?(_1) }
           klass.new(**klass_attributes)
         end
