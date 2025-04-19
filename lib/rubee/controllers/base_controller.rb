@@ -28,6 +28,16 @@ module Rubee
       end
     end
 
+    def css
+      css_path = File.join(CSS_DIR, @request.path.sub('/css/', ''))
+
+      if File.exist?(css_path) && File.file?(css_path)
+        response_with(object: File.read(css_path), type: :css)
+      else
+        response_with(object: 'Css file is not found', type: :text)
+      end
+    end
+
     def response_with type: nil, object: nil, status: 200, mime_type: nil, render_view: nil, headers: {}, to: nil,
       file: nil, filename: nil, **options
       case type&.to_sym
@@ -38,6 +48,8 @@ module Rubee
         [status, headers.merge('content-type' => mime_type), [object]]
       in :js
         [status, headers.merge('content-type' => 'application/javascript'), [object]]
+      in :css
+        [status, headers.merge('content-type' => 'text/css'), [object]]
       in :file
         [
           status,
