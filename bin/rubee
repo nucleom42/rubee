@@ -60,8 +60,8 @@ elsif command == 'react'
       exec('npm run watch')
     end
   else
-    color_puts "Unknown command: #{command}", color: :red
-    exit 1
+    color_puts("Unknown command: #{command}", color: :red)
+    exit(1)
   end
 elsif command == 'project'
   project_name = ARGV[1]

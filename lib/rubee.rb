@@ -15,7 +15,7 @@ module Rubee
   IMAGE_DIR = File.join(APP_ROOT, LIB, 'images') unless defined?(IMAGE_DIR)
   JS_DIR = File.join(APP_ROOT, LIB, 'js') unless defined?(JS_DIR)
   CSS_DIR = File.join(APP_ROOT, LIB, 'css') unless defined?(CSS_DIR)
-  VERSION = '1.5.1'
+  VERSION = '1.5.3'
 
   class Application
     include Singleton
