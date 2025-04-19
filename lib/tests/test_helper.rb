@@ -1,6 +1,13 @@
 require 'bundler/setup'
 Bundler.require(:test)
 
+require 'simplecov'
+SimpleCov.start do
+  add_filter %r{^/lib/db/}
+  add_filter %r{^/lib/inits/}
+  add_filter %r{^/lib/tests/}
+end
+
 require 'minitest/autorun'
 require 'rack/test'
 require_relative '../../lib/rubee'

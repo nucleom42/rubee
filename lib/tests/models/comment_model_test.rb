@@ -1,4 +1,4 @@
-require_relative 'test_helper'
+require_relative '../test_helper'
 
 describe 'Comment model' do
   describe 'owns_many :users, over: :posts' do
@@ -30,6 +30,18 @@ describe 'Comment model' do
 
         _(result.first.text).must_equal('test')
       end
+    end
+  end
+
+  describe 'method' do
+    it 'updates existing model' do
+      comment = Comment.new(text: 'test 1')
+      comment.save
+
+      comment.text = 'test 2'
+      comment.save
+
+      _(Comment.find(comment.id).text).must_equal('test 2')
     end
   end
 end
