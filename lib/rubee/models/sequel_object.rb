@@ -1,8 +1,7 @@
-using ChargedString
-
 module Rubee
   class SequelObject
     include Rubee::DatabaseObjectable
+    using ChargedString
 
     def destroy(cascade: false, **_options)
       if cascade

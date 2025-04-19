@@ -1,7 +1,6 @@
-using ChargedString
-
 module Rubee
   module DatabaseObjectable
+    using ChargedString
     def self.included(base)
       base.extend(ClassMethods)
       base.include(InstanceMethods)
