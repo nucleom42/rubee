@@ -37,15 +37,13 @@ module Rubee
       def around(method, handler, **options)
         hooks = Module.new do
           define_method(method) do |*args, &block|
+            super(*args, &block)
             if conditions_met?(options[:if], options[:unless])
-              super(*args, &block)
-              result = if handler.respond_to?(:call)
-                handler.call { super(*args, &block) }
+              if handler.respond_to?(:call)
+                handler.call { block }
               else
-                send(handler) { super(*args, &block) }
+                send(handler) { block }
               end
-
-              result
             end
           end
         end
