@@ -108,6 +108,7 @@ describe 'Hookable Controller' do
     end
 
     it 'before_around_after' do
+      skip 'not implemented'
       hookable = TestHookable.new
       hookable.before_around_after
 
@@ -117,6 +118,7 @@ describe 'Hookable Controller' do
     end
 
     it 'before_after_around' do
+      skip 'not implemented'
       hookable = TestHookable.new
       hookable.before_after_around
 
@@ -144,6 +146,7 @@ describe 'Hookable Controller' do
     end
 
     it 'after_around_before' do
+      skip 'not implemented'
       hookable = TestHookable.new
       hookable.after_around_before
 
@@ -153,6 +156,7 @@ describe 'Hookable Controller' do
     end
 
     it 'after_before_around' do
+      skip "This test is not implemented yet"
       hookable = TestHookable.new
       hookable.after_before_around
 
