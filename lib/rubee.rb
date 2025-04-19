@@ -2,8 +2,6 @@ require 'singleton'
 require 'bundler/setup'
 require 'bundler'
 
-
-
 begin
   Bundler.require(:default)
 rescue StandardError
