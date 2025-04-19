@@ -41,7 +41,7 @@ describe 'Comment model' do
       comment.text = 'test 2'
       comment.save
 
-      _(Comment.last.text).must_equal('test 2')
+      _(Comment.find(comment.id).text).must_equal('test 2')
     end
   end
 end
