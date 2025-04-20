@@ -1,0 +1,357 @@
+:root{
+  --primary-color: #FDF6A5;
+  --alt-primary-color: #CFC447;
+  --code-font:  "Kode Mono", monospace;
+  --font-family: "Klee One", cursive;
+  --font-size: 16px;
+  --font-color: black;
+
+  --code-background: #4E4E4E;
+  --code-border-color: #CFC447;
+  --code-font-color: white;
+
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+@view-transition{
+  navigation: auto;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  font-family: var(--font-family);
+  font-size: var(--font-size);
+  color: var(--font-color);
+}
+
+.ruBee-layout{
+  display: grid;
+  grid-template-areas: 
+    "aside header"
+    "aside main";
+
+  grid-template-columns: auto 1fr;
+  grid-template-rows: 100px 1fr;
+
+  .menu-button{
+    background: transparent;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+  }
+
+  aside{
+    grid-area: aside;
+    background-color: var(--primary-color);
+    padding: 20px;
+    position: relative;
+    transition: left 0.3s ease-in-out;
+    width: 250px;
+
+    *{
+      position: relative;
+      z-index: 2;
+    }
+
+    input{
+      padding: 0.5rem;
+      width: 100%;
+      border: 2px solid var(--alt-primary-color);
+      font-family: var(--font-family);
+    }
+
+    button.close-button{
+      position: absolute;
+      top: 4.2rem;
+      left: 17.5rem;
+      z-index: 5;
+      display: none;
+    }
+
+    &::before{
+      content: '';
+      position: absolute;
+      top: 0;
+      right: -155px;
+      height: 300px;
+      width: 200px;
+      background-image: url('images/menu-left-top-comb.svg');
+      z-index: 1;
+      background-repeat: no-repeat;
+    }
+
+    &::after{
+      content: '';
+      position: absolute;
+      bottom: 0;
+      right: -150px;
+      height: 300px;
+      width: 200px;
+      background-image: url('images/menu-left-bottom-comb.svg');
+      background-position: bottom;
+      z-index: 1;
+      background-repeat: no-repeat;
+    }
+
+    @media (max-width: 900px) {
+      position: absolute;
+      height: 100%;
+      left: -100%;
+
+      button.close-button{
+        display: block;
+      }
+
+      &.open{
+        left: 0;
+        z-index: 999;
+        filter: drop-shadow(5px 2px 5px rgba(0, 0, 0, 0.35));
+      }
+    }
+
+    @media (max-width: 786px) {
+      position: absolute;
+      width: 100%;
+      top: 7rem;
+      height: calc(100% - 7rem);
+      left: -100%;
+
+      &:before, &:after{
+        background-image: none;
+        height: 0px;
+        width: 0px;
+        top: unset;
+        bottom: unset;
+        left: unset;
+      }
+
+      &.open{
+        left: 0;
+        filter: drop-shadow(0px -5px 10px rgba(0, 0, 0, 0.35));
+      }
+
+      button.close-button{
+        display: none;
+      }
+    }
+
+    
+  }
+
+  header{
+    grid-area: header;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 15rem;
+    padding-inline: 1.7rem;
+    padding-top: 1rem;
+
+    .logo{
+      height: 50px;
+    }
+
+    .menu-button{
+      display: none;
+    }
+
+    .close-button{
+      display: none;
+    }
+
+    @media (max-width: 900px) {
+      .menu-button{
+        display: block;
+        position: absolute;
+        top: 2rem;
+        left: 2rem;
+      }
+
+      .close-button{
+        display: none;
+      }
+    }
+
+    @media (max-width: 786px) {
+      padding-inline: 1rem;
+      gap: 1.5rem;
+      justify-content: center;
+
+      h1{
+        margin-left: -1.5rem;
+      }
+
+      .menu-button{
+        display: block;
+        justify-self: flex-end;
+        position: relative;
+        top: unset;
+        left: unset;
+        translate: 1.8rem;
+
+        &.hide{
+          display: none;
+        }
+      }
+
+      .close-button{
+        display: none;
+        &.show{
+          display: block;
+        }
+      }
+    }    
+  }
+
+  main{
+    grid-area: main;
+    padding: 1rem;
+    background: rgba(255, 255, 255, 0.5);
+    margin: 2rem;
+    max-height: 100%;
+    overflow-y: auto;
+    position: relative;
+    z-index: 2;
+    view-transition-name: main;
+  }
+
+  code {
+    font-family: var(--code-font);
+    background-color: var(--code-background);
+    color: var(--code-font-color);
+    padding: 0.75rem 1.2rem;
+    border-radius: 5px;
+    border: 1px solid var(--code-border-color);
+    margin-bottom: 0.5rem;
+    display: block;
+    width: fit-content;
+  }
+
+  .background-right{
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+
+    .mobile-top-comb{
+      display: none;
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-5rem);
+      z-index: -1;
+    }
+
+    .mobile-bottom-right-comb{
+      display: none;
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      z-index: -1;
+    }
+
+    .mobile-bottom-left-comb{
+      display: none;
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      z-index: -1;
+    }
+
+    .top-right-comb{
+      position: absolute;
+      top: 0;
+      right: 0;
+      z-index: -1;
+    }
+
+    .bottom-right-comb{
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      z-index: -1;
+    }
+
+    .bottom-left-comb{
+      position: absolute;
+      bottom: 0;
+      left: -40px;
+      z-index: -1;
+    }
+
+    .top-left-comb{
+      position: absolute;
+      top: 0;
+      left: -40px;
+      z-index: -1;
+    }
+
+    @media (max-width: 786px) {
+      .top-right-comb, .bottom-right-comb, .top-left-comb, .bottom-left-comb{
+        display: none;
+      }
+
+      .mobile-top-comb, .mobile-bottom-left-comb, .mobile-bottom-right-comb{
+        display: block;
+      }
+    }
+  }
+
+  @media (max-width: 900px) {
+    grid-template-areas: 
+      "header header"
+      "main main";
+    grid-template-columns: 1fr;
+    grid-template-rows: 100px 1fr;
+  }
+
+  .material-symbols-outlined {
+    font-size: 40px;
+  }
+}
+
+
+::view-transition-old(main),
+::view-transition-new(main) {
+  animation-duration: 0.5s;
+}
+
+@keyframes move-out {
+  from {
+      opacity: 0;
+  }
+
+  to {
+      opacity: 0;
+  }
+}
+
+@keyframes move-in {
+  from {
+      transform: translateY(10%);
+      opacity: 0;
+  }
+
+  to {
+      transform: translateY(0%);
+      opacity: 1;
+  }
+}
+
+/* Apply the custom animation to the old and new page states */
+
+::view-transition-old(main) {
+  animation: 0.4s ease-in both move-out;
+
+}
+
+::view-transition-new(main) {
+  animation: 0.4s ease-in both move-in;
+}

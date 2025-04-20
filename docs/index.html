@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ruBee</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+  <script src="script.js" defer></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Klee+One&family=Kode+Mono:wght@400..700&display=swap" rel="stylesheet">
+</head>
+<body class="ruBee-layout">
+  <header>
+    <h1>ruBee</h1>
+    <img src="images/rubee.svg" alt="ruBee Logo" class="logo">
+    <button class="menu-button open" onclick="toggleMenu()"><span class="material-symbols-outlined">
+      menu
+      </span></button>
+    <button class="close-button menu-button" onclick="toggleMenu()">
+      <span class="material-symbols-outlined">
+        close
+      </span>
+    </button>
+  </header>
+  <aside>
+    <div>
+      <input name="search" type="text" placeholder="Search...">
+    </div>
+    <ul>
+      <li><a href='/docs/'>Home</a></li>
+      <li><a href='/docs/getting_started.html'>Getting Started</a></li>
+    </ul>
+    <button class="close-button menu-button" onclick="toggleMenu()">
+      <span class="material-symbols-outlined">
+        close
+      </span>
+    </button>
+  </aside>
+  <main>
+    <h2>ruBee</h2>
+    <p>ruBee is a simple, fast, and efficient way to create and manage your own Ruby-based projects.</p>
+    <p>It provides a set of tools and libraries that make it easy to get started with Ruby development.</p>
+    <p>Whether you're a beginner or an experienced developer, ruBee has something for everyone.</p>
+    <p>Check out the <a href='getting_started.html'>Getting Started</a> guide to learn more!</p>
+  </main>
+  <div class="background-right">
+    <img src="images/top-right-comb.svg" alt="" class="top-right-comb">
+    <img src="images/bottom-right-comb.svg" alt="" class="bottom-right-comb">
+    <img src="images/menu-left-bottom-comb.svg" alt="" class="bottom-left-comb">
+    <img src="images/menu-left-top-comb.svg" alt="" class="top-left-comb">
+    <img src="images/mobile-top-comb.svg" alt="" class="mobile-top-comb">
+    <img src="images/mobile-bottom-left-comb.svg" alt="" class="mobile-bottom-left-comb">
+    <img src="images/mobile-bottom-right-comb.svg" alt="" class="mobile-bottom-right-comb">
+  </div>
+</body>
+</html>
