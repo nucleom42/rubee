@@ -19,7 +19,7 @@ describe 'TestAsyncRunnner' do
 
     subject do
       5.times do |n|
-        TestAsyncRunnner.new.perform_async(options: {"email"=> "new#{n}@new.com", "password"=> "123"})
+        TestAsyncRunnner.new.perform_async(options: { "email" => "new#{n}@new.com", "password" => "123" })
       end
     end
 
@@ -34,4 +34,3 @@ describe 'TestAsyncRunnner' do
     end
   end
 end
-

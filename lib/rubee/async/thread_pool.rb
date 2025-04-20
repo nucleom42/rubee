@@ -37,7 +37,11 @@ module Rubee
 
             # pull more to fill the chunk
             FIBERS_LIMIT.times do
-              next_task = @tasks.pop(true) rescue nil
+              next_task = begin
+                            @tasks.pop(true)
+                          rescue
+                            nil
+                          end
               fiber_queue.add(*next_task) if next_task
             end
 
@@ -49,4 +53,3 @@ module Rubee
     end
   end
 end
-

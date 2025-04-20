@@ -17,7 +17,6 @@ def assert_difference(expression, difference = 1)
   after = expression.call
   actual_diff = after - before
 
-  assert_equal difference, actual_diff,
-    "Expected change of #{difference}, but got #{actual_diff}"
+  assert_equal(difference, actual_diff,
+    "Expected change of #{difference}, but got #{actual_diff}")
 end
-

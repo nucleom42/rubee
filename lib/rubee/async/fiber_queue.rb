@@ -10,11 +10,9 @@ class FiberQueue
   def fan_out!
     @job_queue.reject! do |task, args|
       fiber = Fiber.new do
-        begin
-          task.new.perform(**args)
-        rescue => e
-          puts "Fiber Error: #{e.message}"
-        end
+        task.new.perform(**args)
+      rescue => e
+        puts "Fiber Error: #{e.message}"
       end
       fiber.resume
       true # remove after running
@@ -25,4 +23,3 @@ class FiberQueue
     @job_queue.empty?
   end
 end
-
