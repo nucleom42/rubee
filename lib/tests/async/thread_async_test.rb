@@ -1,5 +1,7 @@
 require_relative '../test_helper'
 
+require 'timeout'
+
 class TestAsyncRunnner
   include Rubee::Asyncable
 
@@ -22,15 +24,14 @@ describe 'TestAsyncRunnner' do
     end
 
     it 'creates 5 users' do
-      assert_difference(-> { User.count }, 5) do
-        subject
-        # This is needed to let the threads finish
-        sleep(0.1)
-      end
-    end
+      subject
 
-    it 'does it async' do
-      # TODO
+      Timeout.timeout(1) do
+        sleep(0.05) until User.count == 5
+      end
+
+      assert_equal 5, User.count
     end
   end
 end
+
