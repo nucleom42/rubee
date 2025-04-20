@@ -80,12 +80,12 @@ module Rubee
         @configuraiton[args[:env].to_sym][:async_adapter] = args[:async_adapter]
       end
 
-      def thread_pool_limit=(args)
-        @configuraiton[args[:env].to_sym][:thread_pool_limit] = args[:thread_pool_limit]
+      def threads_limit=(args)
+        @configuraiton[args[:env].to_sym][:thread_pool_limit] = args[:value]
       end
 
-      def fiber_pool_limit=(args)
-        @configuraiton[args[:env].to_sym][:fiber_pool_limit] = args[:fiber_pool_limit]
+      def fibers_limit=(args)
+        @configuraiton[args[:env].to_sym][:fiber_pool_limit] = args[:value]
       end
 
       def react=(args)
