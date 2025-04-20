@@ -22,7 +22,11 @@ describe 'TestAsyncRunnner' do
     end
 
     it 'creates 5 users' do
-      assert_difference(-> { User.count }, 5) { subject }
+      assert_difference(-> { User.count }, 5) do
+        subject
+        # This is needed to let the threads finish
+        sleep(0.1)
+      end
     end
 
     it 'does it async' do
