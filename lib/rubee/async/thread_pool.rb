@@ -30,7 +30,7 @@ module Rubee
     private
 
     def run_next
-      @fibers.each do |fiber|
+      @workers.each do |fiber|
         fiber.resume if fiber.alive? && !@queue.empty?
       end
     end

@@ -8,7 +8,7 @@ class TestAsyncRunnner
   end
 end
 
-describe 'ThreadAsyncWorker' do
+describe 'TestAsyncRunnner' do
   describe 'async' do
     after do
       Rubee::ThreadPool.instance.shutdown
@@ -22,9 +22,7 @@ describe 'ThreadAsyncWorker' do
     end
 
     it 'creates 5 users' do
-      subject
-
-      expect(User.count).to eq(5)
+      assert_difference(-> { User.count }, 5) { subject }
     end
 
     it 'does it async' do
