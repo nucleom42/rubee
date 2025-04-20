@@ -3,48 +3,50 @@ require 'singleton'
 module Rubee
   class ThreadPool
     include Singleton
-    THREADS_LIMIT = 4 # adjust as needed
+    THREADS_LIMIT = Rubee::Configuration.get_threads_limit || 4
+    FIBERS_LIMIT = Rubee::Configuration.get_fibers_limit || 4
 
     def initialize
-      @queue = Queue.new
-      @workers = []
+      @tasks = Queue.new
+      @threads = []
       @running = true
-      @mutex = Mutex.new
+
       spawn_workers
     end
 
-    def enqueue(task, args)
-      @queue << { task: task, args: args }
-    end
-
-    def bulk_enqueue(tasks)
-      @queue << tasks
+    def enqueue(task, args = {})
+      @tasks << [task, args]
     end
 
     def shutdown
       @running = false
-      THREADS_LIMIT.times { @queue << { task: :stop, args: nil } }
-      @workers.each(&:join)
+      THREADS_LIMIT.times { @tasks << :shutdown } # Unblock threads
+      @threads.each(&:join)
     end
 
     private
 
     def spawn_workers
       THREADS_LIMIT.times do
-        @workers << Thread.new do
-          while @running
-            task_hash = @mutex.synchronize { @queue.pop }
-            if task_hash
-              task = task_hash[:task]
-              args = task_hash[:args]
-            end
-            break if task == :stop
+        @threads << Thread.new do
+          while (task = @tasks.pop)
+            break if task == :shutdown
 
-            begin
-              task.new.perform(**args)
-            rescue StandardError => e
-              puts "ThreadPool Error: #{e.message}"
+            fiber_queue = FiberQueue.new
+            fiber_queue.add(*task)
+
+            # pull more to fill the chunk
+            FIBERS_LIMIT.times do
+              next_task = begin
+                            @tasks.pop(true)
+                          rescue
+                            nil
+                          end
+              fiber_queue.add(*next_task) if next_task
             end
+
+            fiber_queue.fan_out! unless fiber_queue.done?
+            sleep(0.1)
           end
         end
       end

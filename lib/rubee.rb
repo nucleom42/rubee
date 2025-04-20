@@ -15,7 +15,7 @@ module Rubee
   IMAGE_DIR = File.join(APP_ROOT, LIB, 'images') unless defined?(IMAGE_DIR)
   JS_DIR = File.join(APP_ROOT, LIB, 'js') unless defined?(JS_DIR)
   CSS_DIR = File.join(APP_ROOT, LIB, 'css') unless defined?(CSS_DIR)
-  VERSION = '1.5.3'
+  VERSION = '1.5.4'
 
   class Application
     include Singleton
@@ -78,6 +78,14 @@ module Rubee
 
       def async_adapter=(args)
         @configuraiton[args[:env].to_sym][:async_adapter] = args[:async_adapter]
+      end
+
+      def threads_limit=(args)
+        @configuraiton[args[:env].to_sym][:thread_pool_limit] = args[:value]
+      end
+
+      def fibers_limit=(args)
+        @configuraiton[args[:env].to_sym][:fiber_pool_limit] = args[:value]
       end
 
       def react=(args)
