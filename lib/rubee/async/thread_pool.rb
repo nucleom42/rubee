@@ -3,10 +3,10 @@ require 'singleton'
 module Rubee
   class ThreadPool
     include Singleton
-    THREAD_POOL_LIMIT = Rubee::Configuration.get_thread_pool_limit || 10 # adjust as needed
+    THREAD_POOL_LIMIT = Rubee::Configuration.get_thread_pool_limit || 10
 
     def initialize
-      @queue = Queue.new
+      @queue = []
       @workers = []
       @running = true
       spawn_workers
@@ -14,12 +14,17 @@ module Rubee
 
     def enqueue(task, args)
       @queue << { task: task, args: args }
-      run_next
     end
 
     def bulk_enqueue(tasks)
-      @queue << tasks
-      run_next
+      @queue.concat(tasks)
+    end
+
+    def tick
+      # Run each fiber once if it's alive
+      @workers.each do |fiber|
+        fiber.resume if fiber.alive? && @queue.any?
+      end
     end
 
     def shutdown
@@ -29,25 +34,18 @@ module Rubee
 
     private
 
-    def run_next
-      @workers.each do |fiber|
-        fiber.resume if fiber.alive? && !@queue.empty?
-      end
-    end
-
     def spawn_workers
       THREAD_POOL_LIMIT.times do
         fiber = Fiber.new do
           loop do
-            Fiber.yield unless @running
-            job = @queue.shift
-            break unless job
+            Fiber.yield
+            break unless @running
 
-            task = job[:task]
-            args = job[:args]
+            job = @queue.shift
+            next unless job
 
             begin
-              task.new.perform(**args)
+              job[:task].new.perform(**job[:args])
             rescue => e
               puts "ThreadPool Error: #{e.message}"
             end
@@ -59,3 +57,4 @@ module Rubee
     end
   end
 end
+
