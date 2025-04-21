@@ -53,6 +53,18 @@ html, body {
     transition: left 0.3s ease-in-out;
     width: 250px;
 
+    ul{
+      list-style-image: url('images/list-comb.svg');
+      font-size: var(--font-size);
+      li{
+        padding: 0.5rem;
+        &.active{
+          list-style-image: url('images/active-list-comb.svg');
+        }
+      }
+
+    }
+
     *{
       position: relative;
       z-index: 2;
