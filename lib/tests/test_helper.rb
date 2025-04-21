@@ -10,3 +10,13 @@ Rubee::Configuration.setup(env = :test) do |config|
   config.database_url = { url: 'sqlite://lib/tests/test.db', env: }
 end
 Rubee::SequelObject.reconnect!
+
+def assert_difference(expression, difference = 1)
+  before = expression.call
+  yield
+  after = expression.call
+  actual_diff = after - before
+
+  assert_equal(difference, actual_diff,
+    "Expected change of #{difference}, but got #{actual_diff}")
+end
