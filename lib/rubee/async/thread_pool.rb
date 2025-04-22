@@ -46,7 +46,7 @@ module Rubee
               fiber_queue.add(*next_task) if next_task
             end
 
-            untill fiber_queue.done? { fiber_queue.fan_out! }
+            while !fiber_queue.done? { fiber_queue.fan_out! }
             sleep(0.05)
           end
         end
