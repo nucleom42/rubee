@@ -1,25 +1,27 @@
 class FiberQueue
   def initialize
-    @job_queue = []
+    @fibers = []
   end
 
   def add(task, args = {})
-    @job_queue << [task, args]
+    fiber = Fiber.new do
+      task.new.perform(**args)
+    rescue => e
+      puts "Fiber Error: #{e.message}"
+    end
+    @fibers << fiber
   end
 
   def fan_out!
-    @job_queue.reject! do |task, args|
-      fiber = Fiber.new do
-        task.new.perform(**args)
-      rescue => e
-        puts "Fiber Error: #{e.message}"
+    while @fibers.any?(&:alive?)
+      @fibers.each do |fiber|
+        fiber.resume if fiber.alive?
       end
-      fiber.resume
-      true # remove after running
     end
   end
 
   def done?
-    @job_queue.empty?
+    @fibers.none?(&:alive?)
   end
 end
+
