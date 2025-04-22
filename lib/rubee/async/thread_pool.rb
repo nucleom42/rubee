@@ -47,7 +47,7 @@ module Rubee
             end
 
             fiber_queue.fan_out! unless fiber_queue.done?
-            sleep(0.1)
+            sleep(0.05)
           end
         end
       end
