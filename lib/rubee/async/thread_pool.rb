@@ -30,7 +30,7 @@ module Rubee
     def spawn_workers
       THREADS_LIMIT.times do
         @threads << Thread.new do
-          while (task = @mutex.synchronize { @tasks.pop } && @running)
+          while @running && (task = @tasks.pop)
             break if task == :shutdown
 
             fiber_queue = FiberQueue.new
