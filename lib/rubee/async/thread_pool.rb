@@ -10,6 +10,7 @@ module Rubee
       @tasks = Queue.new
       @threads = []
       @running = true
+      @mutex = Mutex.new
 
       spawn_workers
     end
@@ -29,7 +30,7 @@ module Rubee
     def spawn_workers
       THREADS_LIMIT.times do
         @threads << Thread.new do
-          while (task = @tasks.pop)
+          while (task = @mutex.syncronize { @tasks.pop } && @running)
             break if task == :shutdown
 
             fiber_queue = FiberQueue.new
@@ -38,7 +39,7 @@ module Rubee
             # pull more to fill the chunk
             FIBERS_LIMIT.times do
               next_task = begin
-                            @tasks.pop(true)
+                            @mutex.syncronize { @tasks.pop(true) }
                           rescue
                             nil
                           end
