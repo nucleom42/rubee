@@ -1,7 +1,7 @@
 module Rubee
-  include Singleton
-
   class Logger
+    include Singleton
+
     def warn(message, options = {}, &block)
       log(:warn, message, options, &block)
     end

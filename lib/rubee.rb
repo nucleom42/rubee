@@ -18,6 +18,7 @@ module Rubee
   VERSION = '1.6.0'
 
   require_relative 'rubee/router'
+  require_relative 'rubee/logger'
   require_relative 'rubee/generator'
   require_relative 'rubee/autoload'
   require_relative 'rubee/configuration'
