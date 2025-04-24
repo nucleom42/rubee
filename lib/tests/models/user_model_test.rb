@@ -1,4 +1,4 @@
-require_relative 'test_helper'
+require_relative '../test_helper'
 
 describe 'User model' do
   describe '.create' do
@@ -245,6 +245,37 @@ describe 'User model' do
         account = Account.new(user_id: user.id, addres: 'test')
         account.save
         _(user.accounts.count).must_equal(1)
+      end
+    end
+  end
+
+  describe 'owns_one' do
+    after do
+      User.destroy_all(cascade: true)
+    end
+    describe 'when there is one associated account' do
+      it 'cannot add more than one address' do
+        skip "This is an idea that can be implemented later"
+        user = User.new(email: 'bleh@example.com', password: '123')
+        user.save
+
+        address = Address.new(user_id: user.id, street: '1234 ble ave', apt: '', city: 'NY', state: 'NY', zip: '555555')
+        address.save
+
+        address_two = Address.new(user_id: user.id, street: '1234 ble ave', apt: '', city: 'NY', state: 'NY',
+zip: '555555')
+
+        _ { address_two.save }.must_raise(Rubee::OwnsOneError)
+      end
+
+      it 'returns the single address' do
+        user = User.new(email: 'bleh@example.com', password: '123')
+        user.save
+
+        address = Address.new(user_id: user.id, street: '1234 ble ave', apt: '', city: 'NY', state: 'NY', zip: '555555')
+        address.save
+
+        _(user.address.id).must_equal(address.id)
       end
     end
   end
