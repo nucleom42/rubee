@@ -2,26 +2,42 @@ module Rubee
   include Singleton
 
   class Logger
-    def log(message, options={}, &block)
-      out.send(:color_puts, message, color: :gray)
-
-      block&.call if block_given?
+    def warn(message, options = {}, &block)
+      log(:warn, message, options, &block)
     end
 
-    def warn(message, options={}, &block)
-
+    def error(message, options = {}, &block)
+      log(:error, message, options, &block)
     end
 
-    def error(message, options={}, &block)
-
+    def info(message, options = {}, &block)
+      log(:info, message, options, &block)
     end
 
-    def info(message, options={}, &block)
+    def log(severity, message, options = {}, &block)
+      @out.send(severity, message, options)
 
+      block&.call(message, options) if block_given?
     end
 
     def out
-      @out ||= (Rubee::Configuration.get_logger || $stdout)
+      @out ||= Rubee::Configuration.get_logger || Stdout
+    end
+  end
+
+  class Stdout
+    class << self
+      def error(message, options = {})
+        color_puts(message, color: :red)
+      end
+
+      def info(message, options = {})
+        color_puts(message, color: :blue)
+      end
+
+      def warn(message, options = {})
+        color_puts(message, color: :yellow)
+      end
     end
   end
 end
