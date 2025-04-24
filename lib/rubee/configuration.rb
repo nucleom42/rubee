@@ -24,6 +24,14 @@ module Rubee
         @configuraiton[args[:env].to_sym][:async_adapter] = args[:async_adapter]
       end
 
+      def threads_limit=(args)
+        @configuraiton[args[:env].to_sym][:thread_pool_limit] = args[:value]
+      end
+
+      def fibers_limit=(args)
+        @configuraiton[args[:env].to_sym][:fiber_pool_limit] = args[:value]
+      end
+
       def react=(args)
         @configuraiton[args[:env].to_sym][:react] ||= { on: false }
         @configuraiton[args[:env].to_sym][:react].merge!(on: args[:on])

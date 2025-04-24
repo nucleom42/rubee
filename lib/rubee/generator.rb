@@ -1,6 +1,6 @@
 module Rubee
   class Generator
-    require_relative File.expand_path(File.join(__dir__, '..', '/inits/charged_string'))
+    require_relative '../inits/charged_string'
     using ChargedString
     def initialize(model_name, model_attributes, controller_name, action_name, **options)
       @model_name = model_name&.downcase
