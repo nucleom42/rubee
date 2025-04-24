@@ -70,6 +70,10 @@ module Rubee
         nil
       end
 
+      def count
+        dataset.count
+      end
+
       def first
         found_hash = dataset.order(:id).first
         return new(**found_hash) if found_hash
