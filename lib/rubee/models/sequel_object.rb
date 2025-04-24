@@ -23,7 +23,7 @@ module Rubee
       args = to_h.dup&.transform_keys(&:to_sym)
       if args[:id]
         begin
-          udpate(args)
+          update(args)
         rescue StandardError => _e
           return false
         end
@@ -107,7 +107,6 @@ module Rubee
       # > comment.user
       # > <user>
       def owns_one(assoc, options = {})
-        Sequel::Model.one_to_one(assoc, **options)
         fk_name ||= "#{name.to_s.downcase}_id"
         define_method(assoc) do
           Object.const_get(assoc.capitalize).where(fk_name.to_sym => id)&.first
