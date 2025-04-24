@@ -114,12 +114,12 @@ elsif command == 'project'
   FileUtils.mkdir_p("#{target_dir}/tests")
   FileUtils.mkdir_p("#{target_dir}/tests/models")
   FileUtils.mkdir_p("#{target_dir}/tests/controllers")
-  FileUtils.cp("#{source_dir}/tests/models/user_model_test.rb", "#{target_dir}/tests/models/user_model_test.rb")
+  # FileUtils.cp("#{source_dir}/tests/models/user_model_test.rb", "#{target_dir}/tests/models/user_model_test.rb")
 
   # create db dir
   FileUtils.mkdir_p("#{target_dir}/db")
-  FileUtils.cp("#{source_dir}/db/structure.rb", "#{target_dir}/db/structure.rb")
-  FileUtils.cp("#{source_dir}/db/create_users.rb", "#{target_dir}/db/create_users.rb")
+  # FileUtils.cp("#{source_dir}/db/structure.rb", "#{target_dir}/db/structure.rb")
+  # FileUtils.cp("#{source_dir}/db/create_users.rb", "#{target_dir}/db/create_users.rb")
 
   # create a gemfile context
   gemfile = <<~GEMFILE
