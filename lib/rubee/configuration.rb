@@ -32,6 +32,11 @@ module Rubee
         @configuraiton[args[:env].to_sym][:fiber_pool_limit] = args[:value]
       end
 
+      def logger=(args)
+        @configuraiton[args[:env].to_sym][:logger] = args[:logger]
+      end
+
+
       def react=(args)
         @configuraiton[args[:env].to_sym][:react] ||= { on: false }
         @configuraiton[args[:env].to_sym][:react].merge!(on: args[:on])

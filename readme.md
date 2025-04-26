@@ -766,8 +766,9 @@ Rubee::Configuration.setup(env=:development) do |config|
   config.logger = { logger: MyLogger, env: }
 end
 ```
-Or you can use the default logger
 
+Or you can use the default logger.
+Let's consider example with welcome controller and around hook:
 ```ruby
 # app/controllers/welcome_controller.rb
 class WelcomeController < Rubee::BaseController
@@ -793,11 +794,11 @@ end
 When you trigger the controller action, the logs will look like this:
 
 ```bash
-🐝 [2025-04-26 12:32:33] WARN [method: show][class_name: WelcomeController] This is a warning message
-🐝 [2025-04-26 12:32:33] ERROR [class_name: WelcomeController] This is a warning message
-🐝 [2025-04-26 12:32:33] CRITICAL We are on fire!
-🐝 [2025-04-26 12:32:33] INFO [method: show][class_name: WelcomeController] Execution Time: 0.000655 seconds
-🐝 [2025-04-26 12:32:33] DEBUG [method: show][class_name: WelcomeController] #<User:0x000000012c5c63e0 @id=4545, @email="ok@op.com", @password="123">
+[2025-04-26 12:32:33] WARN [method: show][class_name: WelcomeController] This is a warning message
+[2025-04-26 12:32:33] ERROR [class_name: WelcomeController] This is a warning message
+[2025-04-26 12:32:33] CRITICAL We are on fire!
+[2025-04-26 12:32:33] INFO [method: show][class_name: WelcomeController] Execution Time: 0.000655 seconds
+[2025-04-26 12:32:33] DEBUG [method: show][class_name: WelcomeController] #<User:0x000000012c5c63e0 @id=4545, @email="ok@op.com", @password="123">
 ```
 
 ### Contributing
