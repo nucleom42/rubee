@@ -102,7 +102,7 @@ rubee test
 3. Run the initial db migration
     ```bash
     rubee db run:all
-    ``` 
+    ```
 
 5. Fill the generated files with the logic you need and run the server again!
 
@@ -395,9 +395,9 @@ Example 3:
 Rubee::Router.draw do |router|
   ...
   # draw the contract
-  router.get "/apples", to: "apples#index", 
-    model: { 
-      name: 'apple', 
+  router.get "/apples", to: "apples#index",
+    model: {
+      name: 'apple',
       attributes: [
         { name: 'id', type: :primary },
         { name: 'colour', type: :string },
@@ -754,6 +754,50 @@ class TestAsyncRunnner
 end
 
 TestAsyncRunnner.new.perform_async(options: {"email"=> "new@new.com", "password"=> "123"})
+```
+### Logger
+
+You can use your own logger by setting it in the /config/base_configuration.rb.
+
+```ruby
+# config/base_configuration.rb
+Rubee::Configuration.setup(env=:development) do |config|
+  config.database_url = { url: "sqlite://db/development.db", env: }
+  config.logger = { logger: MyLogger, env: }
+end
+```
+Or you can use the default logger
+
+```ruby
+# app/controllers/welcome_controller.rb
+class WelcomeController < Rubee::BaseController
+  around :show, ->(&target_method) do
+    start = Time.now
+    Rubee::Logger.warn(message: 'This is a warning message', method: :show, class_name: 'WelcomeController')
+    Rubee::Logger.error(message: 'This is a warning message', class_name: 'WelcomeController')
+    Rubee::Logger.critical(message: 'We are on fire!')
+    target_method.call
+    Rubee::Logger.info(
+      message: "Execution Time: #{Time.now - start} seconds",
+      method: :show,
+      class_name: 'WelcomeController'
+    )
+    Rubee::Logger.debug(object: User.last, method: :show, class_name: 'WelcomeController')
+  end
+
+  def show
+    response_with
+  end
+end
+```
+When you trigger the controller action, the logs will look like this:
+
+```bash
+🐝 [2025-04-26 12:32:33] WARN [method: show][class_name: WelcomeController] This is a warning message
+🐝 [2025-04-26 12:32:33] ERROR [class_name: WelcomeController] This is a warning message
+🐝 [2025-04-26 12:32:33] CRITICAL We are on fire!
+🐝 [2025-04-26 12:32:33] INFO [method: show][class_name: WelcomeController] Execution Time: 0.000655 seconds
+🐝 [2025-04-26 12:32:33] DEBUG [method: show][class_name: WelcomeController] #<User:0x000000012c5c63e0 @id=4545, @email="ok@op.com", @password="123">
 ```
 
 ### Contributing

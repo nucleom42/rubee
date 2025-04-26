@@ -27,3 +27,12 @@ def assert_difference(expression, difference = 1)
   assert_equal(difference, actual_diff,
     "Expected change of #{difference}, but got #{actual_diff}")
 end
+
+def capture_stdout
+  old_stdout = $stdout
+  $stdout = StringIO.new
+  yield
+  $stdout.string
+ensure
+  $stdout = old_stdout
+end
