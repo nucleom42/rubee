@@ -10,6 +10,8 @@ end
 
 require 'minitest/autorun'
 require 'rack/test'
+require 'stringio'
+
 require_relative '../../lib/rubee'
 
 Rubee::Autoload.call

@@ -1,10 +1,9 @@
 require_relative 'test_helper'
-require 'stringio'
 
 describe 'Rubee::Logger' do
   describe 'logger' do
     it 'exists' do
-      _(Rubee::Logger.logger).wont_be_nil
+      _(Rubee::Logger).wont_be_nil
     end
   end
 
@@ -12,7 +11,7 @@ describe 'Rubee::Logger' do
     it 'output message' do
       output = capture_stdout { Rubee::Logger.warn(message: 'test') }
 
-      _(output).must_equal("test\n")
+      assert_includes(output, "WARN test")
     end
   end
 
@@ -20,7 +19,7 @@ describe 'Rubee::Logger' do
     it 'output message' do
       output = capture_stdout { Rubee::Logger.info(message: 'test') }
 
-      _(output).must_equal("test\n")
+      assert_includes(output, "INFO test")
     end
   end
 
@@ -28,7 +27,7 @@ describe 'Rubee::Logger' do
     it 'output message' do
       output = capture_stdout { Rubee::Logger.error(message: 'test') }
 
-      _(output).must_equal("test\n")
+      assert_includes(output, "ERROR test")
     end
   end
 
@@ -36,15 +35,15 @@ describe 'Rubee::Logger' do
     it 'output message' do
       output = capture_stdout { Rubee::Logger.critical(message: 'test') }
 
-      _(output).must_equal("test\n")
+      assert_includes(output, "CRITICAL test")
     end
   end
 
   describe '.debug' do
     it 'output message' do
-      output = capture_stdout { Rubee::Logger.debug(object: User.new) }
+      output = capture_stdout { Rubee::Logger.debug(object: User.new(email: 'ok@ok.com', password: 123)) }
 
-      _(output).must_equal("test\n")
+      assert_includes(output, "DEBUG #<User:")
     end
   end
 end

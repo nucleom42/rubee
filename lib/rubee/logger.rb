@@ -22,12 +22,11 @@ module Rubee
       end
 
       def log(severity, message, options = {}, &block)
-        bee = options[:no_bee] ? '' : '🐝 '
         time = Time.now.strftime('%Y-%m-%d %H:%M:%S')
         if options.any?
           message = options.map { |k, v| "[#{k}: #{v}]" }.join << " #{message}"
         end
-        out.send(severity, "#{bee}[#{time}] #{severity.upcase} #{message}")
+        out.send(severity, "[#{time}] #{severity.upcase} #{message}")
 
         block&.call(message, options) if block_given?
       end
