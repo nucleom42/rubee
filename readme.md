@@ -16,7 +16,7 @@ Want to get a quick API server up and runing? You can do it for real quick!
 <br />
 [![Video Title](https://img.youtube.com/vi/ko7H70s7qq0/0.jpg)](https://www.youtube.com/watch?v=ko7H70s7qq0)
 
-All greaet features are yet to come!
+All great features are yet to come!
 
 ## Content:
 
