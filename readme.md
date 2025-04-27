@@ -18,6 +18,25 @@ Want to get a quick API server up and runing? You can do it for real quick!
 
 All greaet features are yet to come!
 
+## Content:
+
+- [Installation](#Installation)
+- [Run tests](#Run tests)
+- [Draw contract](#Draw contract)
+- [Model](#Model)
+- [Routing](#Routing)
+- [Database](#Database)
+- [Views](#Views)
+- [Hooks](#Hooks)
+- [JWT based authentification](#JWT based authentification)
+- [Rubee commands](#Rubee commands)
+- [Generate commands](#Generate commands)
+- [Migration commands](#Migration commands)
+- [Rubee console](#Rubee console)
+- [Testing](#Testing)
+- [Background jobs](#Background jobs)
+- [Logger](#Logger)
+
 ## Features
 
 - **Lightweight**: A minimal footprint that focuses on serving Ruby applications efficiently.
@@ -33,6 +52,8 @@ All greaet features are yet to come!
 - **Hooks** Addlogic before, after and around any action.
 - **Test** Run all or selected tests witin minitest.
 - **Asyncable** Add async adapter and pick any popular background job queue enginee
+- **Console** Start the interactive console and reload it on the fly
+- **Background jobs** Add async adapter and pick any popular background job queue engine
 
 ## Installation
 
@@ -65,12 +86,12 @@ rubee start
 
 5. Open your browser and go to http://localhost:7000
 
-## Run the tests
+## Run tests
 ```bash
 rubee test
 ```
 
-## Create API contract and generate files from the routes
+## Draw contract
 1. Add the routes to the routes.rb
     ```ruby
     Rubee::Router.draw do |router|
@@ -88,16 +109,16 @@ rubee test
     end
     ```
 2. generate the files
-    ```bash
+```bash
     rubee generate get /apples
-    ```
-- This will generate the following files
-  ```bash
+```
+This will generate the following files
+```bash
   ./app/controllers/apples_controller.rb # Controller with respective action
   ./app/views/apples_index.erb # ERB view that is rendered by the controller right away
   ./app/models/apple.rb # Model that acts as ORM
   ./db/create_apples.rb # Database migration file needed for creating repsective table
-  ```
+```
 
 3. Run the initial db migration
     ```bash
