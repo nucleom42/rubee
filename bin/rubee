@@ -89,7 +89,7 @@ elsif command == 'project'
   # Define blacklist
   blacklist_files = %w[rubee.rb print_colors.rb version.rb config.ru test_helper.rb Gemfile.lock test.yml test.db
                        development.db production.db]
-  blacklist_dirs = %w[rubee tests .git .github .idea node_modules db]
+  blacklist_dirs = %w[rubee tests .git .github .idea node_modules db inits]
 
   # Copy files, excluding blacklisted ones
   Dir.glob("#{source_dir}/**/*", File::FNM_DOTMATCH).each do |file|
@@ -120,6 +120,9 @@ elsif command == 'project'
   FileUtils.mkdir_p("#{target_dir}/db")
   FileUtils.cp("#{source_dir}/db/structure.rb", "#{target_dir}/db/structure.rb")
   FileUtils.cp("#{source_dir}/db/create_users.rb", "#{target_dir}/db/create_users.rb")
+
+  # create inits dir
+  FileUtils.mkdir_p("#{target_dir}/inits")
 
   # create a gemfile context
   gemfile = <<~GEMFILE

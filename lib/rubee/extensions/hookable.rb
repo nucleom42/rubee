@@ -39,9 +39,16 @@ module Rubee
           define_method(method) do |*args, &block|
             if conditions_met?(options[:if], options[:unless])
               if handler.respond_to?(:call)
-                handler.call { super(*args, &block) }
+                result = nil
+                handler.call do
+                  result = super(*args, &block)
+                end
+
+                result
               else
-                send(handler) { super(*args, &block) }
+                return send(handler) do
+                  super(*args, &block)
+                end
               end
             else
               super(*args, &block)

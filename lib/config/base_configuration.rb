@@ -7,6 +7,9 @@ Rubee::Configuration.setup(env = :development) do |config|
 
   # Flag on react as a view
   # config.react = { on: true, env: } # required if you want to use react
+
+  ## configure logger
+  # config.logger = { logger: MyLogger, env: }
 end
 
 Rubee::Configuration.setup(env = :test) do |config|
@@ -18,6 +21,9 @@ Rubee::Configuration.setup(env = :test) do |config|
 
   ## Flag on react as a view
   # config.react = { on: true, env: } # required if you want to use react
+
+  ## configure logger
+  # config.logger = { logger: MyLogger, env: }
 end
 
 Rubee::Configuration.setup(env = :production) do |config|
@@ -29,4 +35,7 @@ Rubee::Configuration.setup(env = :production) do |config|
 
   ## Flag on react as a view
   # config.react = { on: true, env: } # required if you want to use react
+
+  ## configure logger
+  # config.logger = { logger: MyLogger, env: }
 end
