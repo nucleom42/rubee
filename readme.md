@@ -22,19 +22,19 @@ All greaet features are yet to come!
 
 - [Installation](#Installation)
 - [Run tests](#run-tests)
-- [Draw contract](#Draw contract)
+- [Draw contract](#draw-contract)
 - [Model](#Model)
 - [Routing](#Routing)
 - [Database](#Database)
 - [Views](#Views)
 - [Hooks](#Hooks)
-- [JWT based authentification](#JWT based authentification)
-- [Rubee commands](#Rubee commands)
-- [Generate commands](#Generate commands)
-- [Migration commands](#Migration commands)
-- [Rubee console](#Rubee console)
+- [JWT based authentification](#JWT-based-authentification)
+- [Rubee commands](#Rubee-commands)
+- [Generate commands](#Generate-commands)
+- [Migration commands](#Migration-commands)
+- [Rubee console](#Rubee-console)
 - [Testing](#Testing)
-- [Background jobs](#Background jobs)
+- [Background jobs](#Background-jobs)
 - [Logger](#Logger)
 
 ## Features
@@ -67,6 +67,8 @@ gem install ru.Bee
 rubee project my_project
 cd my_project
 ```
+- [Back to content](#Content)
+
 
 3. Install dependencies
 
@@ -90,6 +92,7 @@ rubee start
 ```bash
 rubee test
 ```
+- [Back to content](#Content)
 
 ## Draw contract
 1. Add the routes to the routes.rb
@@ -126,6 +129,7 @@ This will generate the following files
     ```
 
 5. Fill the generated files with the logic you need and run the server again!
+- [Back to content](#Content)
 
 ## Model
 Model in ruBee is just simple ruby object that can be serilalized in the view
@@ -174,6 +178,7 @@ So in the controller you would need to query your target object now.
     end
   end
 ```
+- [Back to content](#Content)
 
 #### Rubee::SequelObject base methods:
 
@@ -304,6 +309,7 @@ irb(main):010>  .then { |dataset| Comment.serialize(dataset) }
 ```
 This is recommended when you want to run one query and serialize it back to Rubee object only once.
 So it may safe some resources.
+- [Back to content](#Content)
 
 ## Routing
 Rubee uses explicit routes. In the routes.rb yout can define routes for any of the main HTTP methods. You can also add any matched parameter denoted by a pair of `{ }` in the path of the route. Eg. `/path/to/{a_key}/somewhere`
@@ -435,6 +441,7 @@ Will generate:
 ./app/views/apples_index.erb # ERB view that is rendered by the controller right away
 ./db/create_apples.rb # Database migration file needed for creating repsective table
 ```
+- [Back to content](#Content)
 
 ## Views
 View in ruBee is just a plain html/erb/react file that can be rendered from the controller.
@@ -570,6 +577,7 @@ function Users() {
 }
 
 ```
+- [Back to content](#Content)
 
 ## Object hooks
 
@@ -612,6 +620,8 @@ after index2
 after log around
 127.0.0.1 - - [17/Feb/2025:11:42:14 -0500] "GET /apples HTTP/1.1" 401 - 0.0359
 ```
+- [Back to content](#Content)
+
 
 ## JWT based authentification
 Charge you rpoject with token based authentification system and customize it for your needs.
@@ -661,6 +671,7 @@ class UsersController < Rubee::BaseController
   end
 end
 ```
+- [Back to content](#Content)
 
 ## Rubee commands
 ```bash
@@ -695,6 +706,8 @@ rubee console # start the console
 rubee test # run all tests
 rubee test auth_tokenable_test.rb # run specific tests
 ```
+- [Back to content](#Content)
+
 
 If you want to run any ruBee command within a specific ENV make sure you added it before a command.
 For instance if you want to run console in test environment you need to run the following command
@@ -776,6 +789,8 @@ end
 
 TestAsyncRunnner.new.perform_async(options: {"email"=> "new@new.com", "password"=> "123"})
 ```
+- [Back to content](#Content)
+
 ### Logger
 
 You can use your own logger by setting it in the /config/base_configuration.rb.
@@ -821,6 +836,7 @@ When you trigger the controller action, the logs will look like this:
 [2025-04-26 12:32:33] INFO [method: show][class_name: WelcomeController] Execution Time: 0.000655 seconds
 [2025-04-26 12:32:33] DEBUG [method: show][class_name: WelcomeController] #<User:0x000000012c5c63e0 @id=4545, @email="ok@op.com", @password="123">
 ```
+- [Back to content](#Content)
 
 ### Contributing
 
