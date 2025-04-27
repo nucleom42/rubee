@@ -21,7 +21,7 @@ All greaet features are yet to come!
 ## Content:
 
 - [Installation](#Installation)
-- [Run tests](#Run tests)
+- [Run tests](#run tests)
 - [Draw contract](#Draw contract)
 - [Model](#Model)
 - [Routing](#Routing)
