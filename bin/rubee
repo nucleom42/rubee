@@ -21,49 +21,29 @@ LOGO
 
 command = ARGV.first
 
-def print_logo
-  puts "\e[36m#{LOGO % Rubee::VERSION}\e[0m" # Cyan color
-end
+Rubee::Autoload.call
 
-if command =~ /^(start)$|^(start:(\d+))$/
-  _, port = ARGV.first&.split(':')
+Rubee::CLI::Command.new(ARGV).call
 
-  port ||= '7000'
-  print_logo
-  color_puts "Starting takeoff of ruBee server on port #{port}...", color: :yellow
-  exec("rackup #{ENV['RACKUP_FILE']} -p #{port}")
-elsif command =~ /^(start_dev)$|^(start_dev:(\d+))$/
-  _, port = ARGV.first&.split(':')
-
-  port ||= '7000'
-  print_logo
-
-  color_puts "Starting takeoff of ruBee server on port #{port} in dev mode...", color: :yellow
-
-  exec("rerun -- rackup --port #{port} #{ENV['RACKUP_FILE']}")
-elsif command == 'stop'
-  exec('pkill -f rubee')
-elsif command == 'status'
-  exec('ps aux | grep rubee')
-elsif command == 'react'
-  case ARGV[1]
-  when 'prepare'
-    if Rubee::PROJECT_NAME == 'rubee'
-      exec('cd ./lib && npm run prepare')
-    else
-      exec('npm run prepare')
-    end
-  when 'watch'
-    if Rubee::PROJECT_NAME == 'rubee'
-      exec('cd ./lib && npm run watch')
-    else
-      exec('npm run watch')
-    end
-  else
-    color_puts("Unknown command: #{command}", color: :red)
-    exit(1)
-  end
-elsif command == 'project'
+# if command == 'react'
+#   case ARGV[1]
+#   when 'prepare'
+#     if Rubee::PROJECT_NAME == 'rubee'
+#       exec('cd ./lib && npm run prepare')
+#     else
+#       exec('npm run prepare')
+#     end
+#   when 'watch'
+#     if Rubee::PROJECT_NAME == 'rubee'
+#       exec('cd ./lib && npm run watch')
+#     else
+#       exec('npm run watch')
+#     end
+#   else
+#     color_puts("Unknown command: #{command}", color: :red)
+#     exit(1)
+#   end
+if command == 'project'
   project_name = ARGV[1]
   if project_name.nil?
     color_puts 'Please indicate project name.', color: :red
