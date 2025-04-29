@@ -16,6 +16,12 @@ module Rubee
           Rubee::CLI::Server
         in /react/
           Rubee::CLI::React
+        in /project/
+          Rubee::CLI::Project
+        in /version/
+          Rubee::CLI::Version
+        in /routes/
+          Rubee::CLI::Routes
         else
           proc { color_puts("Unknown command: #{@command}", color: :red) }
         end
