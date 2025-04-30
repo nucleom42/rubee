@@ -22,6 +22,12 @@ module Rubee
           Rubee::CLI::Version
         in /routes/
           Rubee::CLI::Routes
+        in /test/
+          Rubee::CLI::Test
+        in /generate|gen/
+          Rubee::CLI::Generate
+        in /db/
+          Rubee::CLI::Db
         else
           proc { color_puts("Unknown command: #{@command}", color: :red) }
         end
