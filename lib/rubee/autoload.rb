@@ -8,7 +8,7 @@ module Rubee
         # ensure sequel object is connected
         Rubee::SequelObject.reconnect!
 
-        Dir.glob(File.join(APP_ROOT, '**', '*.rb')).sort.each do |file|
+        Dir.glob(File.join(Rubee::APP_ROOT, '**', '*.rb')).sort.each do |file|
           base_name = File.basename(file)
 
           unless base_name.end_with?('_test.rb') || (black_list + ['rubee.rb', 'test_helper.rb']).include?(base_name)
@@ -23,7 +23,7 @@ module Rubee
           require_relative file unless black_list.include?("#{file}.rb")
         end
         # app inits
-        Dir[File.join(APP_ROOT, 'inits/**', '*.rb')].each do |file|
+        Dir[File.join(Rubee::APP_ROOT, 'inits/**', '*.rb')].each do |file|
           require_relative file unless black_list.include?("#{file}.rb")
         end
         # rubee async
@@ -32,17 +32,17 @@ module Rubee
         end
         # app config and routes
         unless black_list.include?('base_configuration.rb')
-          require_relative File.join(APP_ROOT, LIB,
+          require_relative File.join(Rubee::APP_ROOT, Rubee::LIB,
                                      'config/base_configuration')
         end
         # This is necessary prerequisitedb init step
-        if !defined?(Rubee::SequelObject::DB) && (PROJECT_NAME == 'rubee')
+        if Rubee::PROJECT_NAME == 'rubee'
           Rubee::Configuration.setup(env = :test) do |config|
             config.database_url = { url: 'sqlite://lib/tests/test.db', env: }
           end
         end
 
-        require_relative File.join(APP_ROOT, LIB, 'config/routes') unless black_list.include?('routes.rb')
+        require_relative File.join(Rubee::APP_ROOT, Rubee::LIB, 'config/routes') unless black_list.include?('routes.rb')
         # rubee extensions
         Dir[File.join(root_directory, 'rubee/extensions/**', '*.rb')].each do |file|
           require_relative file unless black_list.include?("#{file}.rb")

@@ -1,6 +1,15 @@
 module Rubee
   module CLI
     class Server
+      LOGO = <<-'LOGO'
+  ____  _    _  ____  _____
+ |  _ \| |  | || __ )| ____|
+ | |_) | |  | ||  _ \|  _|
+ |  _ <| |__| || |_) | |___
+ |_| \_\\____/ |____/|_____|
+ Ver: %s
+LOGO
+
       class << self
         def call(command, argv)
           send(command, argv)
@@ -32,6 +41,10 @@ module Rubee
 
         def status(_argv)
           exec('ps aux | grep rubee')
+        end
+
+        def print_logo
+          puts "\e[36m#{LOGO % Rubee::VERSION}\e[0m" # Cyan color
         end
       end
     end
