@@ -22,6 +22,7 @@ module Rubee
   require_relative 'rubee/generator'
   require_relative 'rubee/autoload'
   require_relative 'rubee/configuration'
+  require_relative 'rubee/websocket'
 
   class Application
     include Singleton
