@@ -15,7 +15,8 @@ module Rubee
   IMAGE_DIR = File.join(APP_ROOT, LIB, 'images') unless defined?(IMAGE_DIR)
   JS_DIR = File.join(APP_ROOT, LIB, 'js') unless defined?(JS_DIR)
   CSS_DIR = File.join(APP_ROOT, LIB, 'css') unless defined?(CSS_DIR)
-  VERSION = '1.6.0'
+  ROOT_PATH = File.expand_path(File.join(__dir__, '..')) unless defined?(ROOT_PATH)
+  VERSION = '1.7.0'
 
   require_relative 'rubee/router'
   require_relative 'rubee/logger'

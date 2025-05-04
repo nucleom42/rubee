@@ -18,7 +18,7 @@ module Rubee
             color_puts("Error: Project 'rubee' is reserved", color: :red)
             exit(1)
           end
-          source_dir = File.join(Dir.pwd, '/lib')
+          source_dir = File.join(Rubee::ROOT_PATH, '/lib')
           target_dir = File.expand_path("./#{project_name}", Dir.pwd)
 
           if Dir.exist?(target_dir)

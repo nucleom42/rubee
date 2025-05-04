@@ -1,9 +1,18 @@
 module Rubee
   class Autoload
     class << self
-      def call(black_list = [])
+      def call(black_list = [], **options)
+        puts "Root path: #{Rubee::ROOT_PATH}"
+        if (white_list_dirs = options[:white_list_dirs])
+          white_list_dirs.each do |dir|
+            Dir[File.join(Rubee::ROOT_PATH, '/lib', "#{dir}/**", '*.rb')].each do |file|
+              require_relative file
+            end
+          end
+          return
+        end
         # autoload all rbs
-        root_directory = File.expand_path(File.join(__dir__, '..',))
+        root_directory = Rubee::ROOT_PATH
         priority_order_require(root_directory, black_list)
         # ensure sequel object is connected
         Rubee::SequelObject.reconnect!

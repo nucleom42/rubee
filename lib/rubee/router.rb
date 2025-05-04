@@ -2,7 +2,7 @@ module Rubee
   class Router
     include Singleton
 
-    HTTP_METHODS = %i[get post put patch delete head connect options trace].freeze
+    HTTP_METHODS = %i[get post put patch delete head connect options trace].freeze unless defined?(HTTP_METHODS)
 
     attr_reader :request, :routes
 

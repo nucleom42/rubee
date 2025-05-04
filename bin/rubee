@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 
 require 'fileutils'
-
+require 'rubygems'
 require_relative '../lib/inits/print_colors'
 require_relative '../lib/rubee'
 
@@ -19,6 +19,10 @@ LOGO = <<-'LOGO'
  Ver: %s
 LOGO
 
-Rubee::Autoload.call
+if ['version', 'react', 'project'].include?(ARGV[0])
+  Rubee::Autoload.call([], white_list_dirs: ['rubee/cli'])
+else
+  Rubee::Autoload.call
+end
 
 Rubee::CLI::Command.new(ARGV).call

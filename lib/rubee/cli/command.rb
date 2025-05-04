@@ -28,8 +28,10 @@ module Rubee
           Rubee::CLI::Generate
         in /db/
           Rubee::CLI::Db
-        in /console|c/
+        in /console|con/
           Rubee::CLI::Console
+        in /attach|att/
+          Rubee::CLI::Attach
         else
           proc { color_puts("Unknown command: #{@command}", color: :red) }
         end
