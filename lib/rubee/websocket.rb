@@ -1,13 +1,11 @@
 require 'socket'
 
 module Rubee
-  class Swarm
+  class Websocket
     def initialize(server = nil)
       @connections = {}
       @server = server
-      @channels = {
-        '/' => []
-      }
+      @clients = []
     end
 
     def listen(port = 2345)
@@ -17,34 +15,44 @@ module Rubee
       loop do
         # Wait for a connection
         Thread.new(@server.accept) do |socket|  
-          next unless open(socket)
+          headers = get_headers(socket)
+          
+          next unless open(socket, headers)
           
           loop do
             message = recieve(socket)
+            broadcast(message, socket) unless message.nil? || message.empty?
 
-            headers = get_headers(socket)
-
-            # Broadcast the message to all clients
-            broadcast(message, socket, headers['Path'])
+          rescue IOError => e
+            close(socket)
+            puts "Error receiving message: #{e.message}"
+            break
           end
         end
       end
     end
     
-    def broadcast(message, socket, channel = '/')
-      puts "Broadcasting to channel: #{channel} the message: #{message}"
+    def broadcast(message, socket)
+      # puts "Broadcasting the message: #{message}"
 
       @clients.each do |client|
         next if client == socket
 
-        output = [0b10000001, message.size, message]
-        # client.send(message, Socket::MSG_OOB)
-        client.write output.pack("CCA#{message.size}")
+        begin
+          frame = construct_frame(message)
+          client.write frame
+        rescue
+          @clients.delete client
+        end
       end
     end
 
     def recieve(socket)
       data = socket.recv(1024)
+
+      if data.nil? || data.empty?
+        return ''
+      end
 
       unpackedData = data.unpack('C*')
 
@@ -62,11 +70,27 @@ module Rubee
         byte ^ mask[i % 4]
       end
 
-      unmasked_data.pack('C*').force_encoding('utf-8').inspect
+      message = unmasked_data.pack('C*').force_encoding('utf-8')
+
+      # Check if the message is a close frame
+      if unpackedData[0] == 0b10000001 && length == 0
+        # Send a close frame back to the client
+        close_frame = [0b10000001, 0].pack('CC')
+        socket.write close_frame
+        close(socket)
+        return ''
+      end
+
+      # Check if message is a close frame
+      if message == "\u0003\xE9"
+        close(socket)
+        return ''
+      end
+
+      message
     end
 
-    def open(socket)
-      headers = get_headers(socket)
+    def open(socket, headers)
 
       return false unless headers["Sec-WebSocket-Key"]
 
@@ -82,10 +106,30 @@ module Rubee
                   "Sec-WebSocket-Accept: #{accept_key}\r\n\r\n"
 
       # Add the socket to the list of clients
-      @channels[headers['Path']] ||= []
-      @channels[headers['Path']] << socket
+      # @channels[headers['Path']] ||= []
+      # @channels[headers['Path']] << socket
+      @clients << socket
+      puts "Client connected: #{socket}"
 
       return true
+    end
+
+    def close(socket)
+      puts "Client disconnected: #{socket}"
+      # Remove the socket from the list of clients
+      @clients.delete(socket)
+
+      # Send a close frame to the client
+      close_frame = [0b10000001, 0].pack('CC')
+      socket.write close_frame
+
+      # Close the socket
+      socket.close
+    end
+
+    def register(room)
+      # Create a new channel if it doesn't exist
+      @channels[room] ||= { clients: [], messages: [] }
     end
     
     private
@@ -100,7 +144,7 @@ module Rubee
       # Parse the request
       headers = {}
 
-      puts http_request
+      # puts http_request
 
       split_request = http_request.split("\r\n")
 
@@ -117,6 +161,19 @@ module Rubee
       headers['Version'] = header_action[2]
 
       headers
+    end
+
+    def construct_frame(message)
+      byte1 = 0b10000001 # FIN bit set, text frame
+      length = message.bytesize
+
+      if length <= 125
+        [byte1, length, message].pack("CCA#{length}")
+      elsif length <= 65535
+        [byte1, 126, [length].pack('n'), message].pack("CCa*")
+      else
+        [byte1, 127, [length].pack('Q>'), message].pack("CCa*")
+      end
     end
   end
 end
