@@ -16,7 +16,26 @@ Want to get a quick API server up and runing? You can do it for real quick!
 <br />
 [![Video Title](https://img.youtube.com/vi/ko7H70s7qq0/0.jpg)](https://www.youtube.com/watch?v=ko7H70s7qq0)
 
-All greaet features are yet to come!
+All great features are yet to come!
+
+## Content:
+
+- [Installation](#Installation)
+- [Run tests](#run-tests)
+- [Draw contract](#draw-contract)
+- [Model](#Model)
+- [Routing](#Routing)
+- [Database](#Database)
+- [Views](#Views)
+- [Hooks](#Hooks)
+- [JWT based authentification](#JWT-based-authentification)
+- [Rubee commands](#Rubee-commands)
+- [Generate commands](#Generate-commands)
+- [Migration commands](#Migration-commands)
+- [Rubee console](#Rubee-console)
+- [Testing](#Testing)
+- [Background jobs](#Background-jobs)
+- [Logger](#Logger)
 
 ## Features
 
@@ -33,6 +52,8 @@ All greaet features are yet to come!
 - **Hooks** Addlogic before, after and around any action.
 - **Test** Run all or selected tests witin minitest.
 - **Asyncable** Add async adapter and pick any popular background job queue enginee
+- **Console** Start the interactive console and reload it on the fly
+- **Background jobs** Add async adapter and pick any popular background job queue engine
 
 ## Installation
 
@@ -46,6 +67,8 @@ gem install ru.Bee
 rubee project my_project
 cd my_project
 ```
+- [Back to content](#Content)
+
 
 3. Install dependencies
 
@@ -65,12 +88,13 @@ rubee start
 
 5. Open your browser and go to http://localhost:7000
 
-## Run the tests
+## Run tests
 ```bash
 rubee test
 ```
+- [Back to content](#Content)
 
-## Create API contract and generate files from the routes
+## Draw contract
 1. Add the routes to the routes.rb
     ```ruby
     Rubee::Router.draw do |router|
@@ -88,23 +112,24 @@ rubee test
     end
     ```
 2. generate the files
-    ```bash
+```bash
     rubee generate get /apples
-    ```
-- This will generate the following files
-  ```bash
+```
+This will generate the following files
+```bash
   ./app/controllers/apples_controller.rb # Controller with respective action
   ./app/views/apples_index.erb # ERB view that is rendered by the controller right away
   ./app/models/apple.rb # Model that acts as ORM
   ./db/create_apples.rb # Database migration file needed for creating repsective table
-  ```
+```
 
 3. Run the initial db migration
     ```bash
     rubee db run:all
-    ``` 
+    ```
 
 5. Fill the generated files with the logic you need and run the server again!
+- [Back to content](#Content)
 
 ## Model
 Model in ruBee is just simple ruby object that can be serilalized in the view
@@ -153,6 +178,7 @@ So in the controller you would need to query your target object now.
     end
   end
 ```
+- [Back to content](#Content)
 
 #### Rubee::SequelObject base methods:
 
@@ -283,6 +309,7 @@ irb(main):010>  .then { |dataset| Comment.serialize(dataset) }
 ```
 This is recommended when you want to run one query and serialize it back to Rubee object only once.
 So it may safe some resources.
+- [Back to content](#Content)
 
 ## Routing
 Rubee uses explicit routes. In the routes.rb yout can define routes for any of the main HTTP methods. You can also add any matched parameter denoted by a pair of `{ }` in the path of the route. Eg. `/path/to/{a_key}/somewhere`
@@ -395,9 +422,9 @@ Example 3:
 Rubee::Router.draw do |router|
   ...
   # draw the contract
-  router.get "/apples", to: "apples#index", 
-    model: { 
-      name: 'apple', 
+  router.get "/apples", to: "apples#index",
+    model: {
+      name: 'apple',
       attributes: [
         { name: 'id', type: :primary },
         { name: 'colour', type: :string },
@@ -414,6 +441,7 @@ Will generate:
 ./app/views/apples_index.erb # ERB view that is rendered by the controller right away
 ./db/create_apples.rb # Database migration file needed for creating repsective table
 ```
+- [Back to content](#Content)
 
 ## Views
 View in ruBee is just a plain html/erb/react file that can be rendered from the controller.
@@ -549,6 +577,7 @@ function Users() {
 }
 
 ```
+- [Back to content](#Content)
 
 ## Object hooks
 
@@ -591,6 +620,8 @@ after index2
 after log around
 127.0.0.1 - - [17/Feb/2025:11:42:14 -0500] "GET /apples HTTP/1.1" 401 - 0.0359
 ```
+- [Back to content](#Content)
+
 
 ## JWT based authentification
 Charge you rpoject with token based authentification system and customize it for your needs.
@@ -640,6 +671,7 @@ class UsersController < Rubee::BaseController
   end
 end
 ```
+- [Back to content](#Content)
 
 ## Rubee commands
 ```bash
@@ -674,6 +706,8 @@ rubee console # start the console
 rubee test # run all tests
 rubee test auth_tokenable_test.rb # run specific tests
 ```
+- [Back to content](#Content)
+
 
 If you want to run any ruBee command within a specific ENV make sure you added it before a command.
 For instance if you want to run console in test environment you need to run the following command
@@ -755,6 +789,54 @@ end
 
 TestAsyncRunnner.new.perform_async(options: {"email"=> "new@new.com", "password"=> "123"})
 ```
+- [Back to content](#Content)
+
+### Logger
+
+You can use your own logger by setting it in the /config/base_configuration.rb.
+
+```ruby
+# config/base_configuration.rb
+Rubee::Configuration.setup(env=:development) do |config|
+  config.database_url = { url: "sqlite://db/development.db", env: }
+  config.logger = { logger: MyLogger, env: }
+end
+```
+
+Or you can use the default logger.
+Let's consider example with welcome controller and around hook:
+```ruby
+# app/controllers/welcome_controller.rb
+class WelcomeController < Rubee::BaseController
+  around :show, ->(&target_method) do
+    start = Time.now
+    Rubee::Logger.warn(message: 'This is a warning message', method: :show, class_name: 'WelcomeController')
+    Rubee::Logger.error(message: 'This is a warning message', class_name: 'WelcomeController')
+    Rubee::Logger.critical(message: 'We are on fire!')
+    target_method.call
+    Rubee::Logger.info(
+      message: "Execution Time: #{Time.now - start} seconds",
+      method: :show,
+      class_name: 'WelcomeController'
+    )
+    Rubee::Logger.debug(object: User.last, method: :show, class_name: 'WelcomeController')
+  end
+
+  def show
+    response_with
+  end
+end
+```
+When you trigger the controller action, the logs will look like this:
+
+```bash
+[2025-04-26 12:32:33] WARN [method: show][class_name: WelcomeController] This is a warning message
+[2025-04-26 12:32:33] ERROR [class_name: WelcomeController] This is a warning message
+[2025-04-26 12:32:33] CRITICAL We are on fire!
+[2025-04-26 12:32:33] INFO [method: show][class_name: WelcomeController] Execution Time: 0.000655 seconds
+[2025-04-26 12:32:33] DEBUG [method: show][class_name: WelcomeController] #<User:0x000000012c5c63e0 @id=4545, @email="ok@op.com", @password="123">
+```
+- [Back to content](#Content)
 
 ### Contributing
 
