@@ -7,22 +7,22 @@ module Rubee
         end
 
         def attach(argv)
-          app_name = argv[1]
+          new_app_name = argv[1]
 
           # create project folde
-          if app_name.nil?
+          if new_app_name.nil?
             color_puts('Please indicate app name.', color: :red)
             exit(1)
           end
 
-          if app_name == 'rubee'
+          if new_app_name == 'rubee'
             color_puts("Error: App 'rubee' name is reserved", color: :red)
             exit(1)
           end
-          target_dir = File.join(Rubee::PROJECT_NAME, app_name)
+          target_dir = File.join(Rubee::APP_ROOT, new_app_name)
 
           if Dir.exist?(target_dir)
-            color_puts("Error: App #{app_name} already exists!", color: :red)
+            color_puts("Error: App #{new_app_name} already exists!", color: :red)
             exit(1)
           end
 
@@ -34,15 +34,15 @@ module Rubee
           end
 
           config_file = <<~CONFIG_FILE
-            Rubee::Configuration.setup(env = :test, app = :#{app_name}) do |config|
+            Rubee::Configuration.setup(env = :test, app = :#{new_app_name}) do |config|
             end
-            Rubee::Configuration.setup(env = :developmenti, app = :#{app_name}) do |config|
+            Rubee::Configuration.setup(env = :developmenti, app = :#{new_app_name}) do |config|
             end
-            Rubee::Configuration.setup(env = :production, app = :#{app_name}) do |config|
+            Rubee::Configuration.setup(env = :production, app = :#{new_app_name}) do |config|
             end
           CONFIG_FILE
 
-          File.open("#{target_dir}/#{app_name}_configuration.rb", 'w') do |file|
+          File.open("#{target_dir}/#{new_app_name}_configuration.rb", 'w') do |file|
             file.puts config_file
           end
 
@@ -52,7 +52,7 @@ module Rubee
             end
           ROUTE_FILE
 
-          File.open("#{target_dir}/#{app_name}_routes.rb", 'w') do |file|
+          File.open("#{target_dir}/#{new_app_name}_routes.rb", 'w') do |file|
             file.puts route_file
           end
         end

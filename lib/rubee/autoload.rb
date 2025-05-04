@@ -2,17 +2,9 @@ module Rubee
   class Autoload
     class << self
       def call(black_list = [], **options)
-        puts "Root path: #{Rubee::ROOT_PATH}"
-        if (white_list_dirs = options[:white_list_dirs])
-          white_list_dirs.each do |dir|
-            Dir[File.join(Rubee::ROOT_PATH, '/lib', "#{dir}/**", '*.rb')].each do |file|
-              require_relative file
-            end
-          end
-          return
-        end
+        load_whitelisted(options[:white_list_dirs]) && return if options[:white_list_dirs]
         # autoload all rbs
-        root_directory = Rubee::ROOT_PATH
+        root_directory = File.join(Rubee::ROOT_PATH, '/lib')
         priority_order_require(root_directory, black_list)
         # ensure sequel object is connected
         Rubee::SequelObject.reconnect!
@@ -21,6 +13,14 @@ module Rubee
           base_name = File.basename(file)
 
           unless base_name.end_with?('_test.rb') || (black_list + ['rubee.rb', 'test_helper.rb']).include?(base_name)
+            require_relative file
+          end
+        end
+      end
+
+      def load_whitelisted(white_list_dirs)
+        white_list_dirs.each do |dir|
+          Dir[File.join(Rubee::ROOT_PATH, '/lib', "#{dir}/**", '*.rb')].each do |file|
             require_relative file
           end
         end
@@ -76,6 +76,10 @@ module Rubee
 
         require_relative File.join(root_directory,
                                    'rubee/models/sequel_object')
+
+        Dir[File.join(root_directory, 'rubee/cli/**', '*.rb')].each do |file|
+          require_relative file
+        end
       end
     end
   end
