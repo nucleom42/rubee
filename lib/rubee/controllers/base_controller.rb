@@ -72,8 +72,9 @@ module Rubee
         erb_file = render_view ? render_view.to_s : "#{view_file_name}_#{@route[:action]}"
         lib = Rubee::PROJECT_NAME == 'rubee' ? 'lib/' : ''
         view = render_template(erb_file, { object:, **(options[:locals] || {}) })
-
-        whole_erb = if File.exist?(layout_path = "#{lib}app/views/#{options[:layout] || 'layout'}.erb")
+        # Since controller sits in the controllers folder we can get parent folder of it and pull out name of the app
+        app_name = File.basename(File.expand_path('..', __dir__))
+        whole_erb = if File.exist?(layout_path = "#{lib}#{app_name}/views/#{options[:layout] || 'layout'}.erb")
           context = Object.new
           context.define_singleton_method(:_yield_template) { view }
           layout = File.read(layout_path)

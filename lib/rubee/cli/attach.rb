@@ -55,6 +55,31 @@ module Rubee
           File.open("#{target_dir}/#{new_app_name}_routes.rb", 'w') do |file|
             file.puts route_file
           end
+
+          # copy views
+          copy_files(
+            File.join(Rubee::ROOT_PATH, '/lib/app/views'),
+            "#{target_dir}/views",
+            %w[welcome_header.erb welcome_show.erb]
+          )
+          color_puts("App #{new_app_name} attached!", color: :green)
+        end
+
+        private
+
+        def copy_files(source_dir, target_dir, blacklist_files = [], blacklist_dirs = [])
+          Dir.glob("#{source_dir}/**/*", File::FNM_DOTMATCH).each do |file|
+            relative_path = file.sub("#{source_dir}/", '')
+            next if blacklist_dirs.any? { |dir| relative_path.split('/').include?(dir) }
+            next if blacklist_files.include?(File.basename(file))
+
+            target_path = File.join(target_dir, relative_path)
+            if File.directory?(file)
+              FileUtils.mkdir_p(target_path)
+            else
+              FileUtils.cp(file, target_path)
+            end
+          end
         end
       end
     end
