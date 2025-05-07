@@ -2,6 +2,7 @@ module Rubee
   class Generator
     require_relative '../inits/charged_string'
     using ChargedString
+
     def initialize(model_name, model_attributes, controller_name, action_name, **options)
       @model_name = model_name&.downcase
       @model_attributes = model_attributes || []
@@ -10,6 +11,7 @@ module Rubee
       @plural_name = @base_name.plural? ? @base_name : @base_name.pluralize
       @action_name = action_name
       @react = options[:react] || {}
+      @app_name = options[:app_name] || :app
     end
 
     def call
@@ -22,7 +24,7 @@ module Rubee
     private
 
     def generate_model
-      model_file = File.join(Rubee::APP_ROOT, Rubee::LIB, "app/models/#{@model_name}.rb")
+      model_file = File.join(Rubee::APP_ROOT, Rubee::LIB, "#{@app_name}/models/#{@model_name}.rb")
       if File.exist?(model_file)
         puts "Model #{@model_name} already exists. Remove it if you want to regenerate"
         return
@@ -39,7 +41,7 @@ module Rubee
     end
 
     def generate_controller
-      controller_file = File.join(Rubee::APP_ROOT, Rubee::LIB, "app/controllers/#{@base_name}_controller.rb")
+      controller_file = File.join(Rubee::APP_ROOT, Rubee::LIB, "#{@app_name}/controllers/#{@base_name}_controller.rb")
       if File.exist?(controller_file)
         puts "Controller #{@base_name} already exists. Remove it if you want to regenerate"
         return
@@ -59,7 +61,7 @@ module Rubee
 
     def generate_view
       if @react[:view_name]
-        view_file = File.join(Rubee::APP_ROOT, Rubee::LIB, "app/views/#{@react[:view_name]}")
+        view_file = File.join(Rubee::APP_ROOT, Rubee::LIB, "#{@app_name}/views/#{@react[:view_name]}")
         content = <<~JS
           import React, { useEffect, useState } from "react";
           // 1. Add your logic that fetches data
@@ -74,7 +76,7 @@ module Rubee
           }
         JS
       else
-        view_file = File.join(Rubee::APP_ROOT, Rubee::LIB, "app/views/#{@plural_name}_#{@action_name}.erb")
+        view_file = File.join(Rubee::APP_ROOT, Rubee::LIB, "#{@app_name}/views/#{@plural_name}_#{@action_name}.erb")
         content = <<~ERB
           <h1>#{@plural_name}_#{@action_name} View</h1>
         ERB
