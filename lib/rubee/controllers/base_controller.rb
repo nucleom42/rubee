@@ -71,10 +71,13 @@ module Rubee
         view_file_name = self.class.name.split('Controller').first.downcase
         erb_file = render_view ? render_view.to_s : "#{view_file_name}_#{@route[:action]}"
         lib = Rubee::PROJECT_NAME == 'rubee' ? 'lib/' : ''
-        view = render_template(erb_file, { object:, **(options[:locals] || {}) })
+        path_parts = self.class.instance_method(@route[:action]).source_location[0].split('/').reverse
+        controller_index = path_parts.find_index { |part| part == 'controllers' }
+        app_name = path_parts[controller_index + 1]
+        view = render_template(erb_file, { object:, **(options[:locals] || {}) }, app_name:)
         # Since controller sits in the controllers folder we can get parent folder of it and pull out name of the app
-        app_name = File.basename(File.expand_path('..', __dir__))
-        whole_erb = if File.exist?(layout_path = "#{lib}#{app_name}/views/#{options[:layout] || 'layout'}.erb")
+        layout_path = "#{lib}#{app_name}/views/#{options[:layout] || 'layout'}.erb"
+        whole_erb = if File.exist?(layout_path)
           context = Object.new
           context.define_singleton_method(:_yield_template) { view }
           layout = File.read(layout_path)
@@ -87,9 +90,9 @@ module Rubee
       end
     end
 
-    def render_template(file_name, locals = {})
+    def render_template(file_name, locals = {}, **options)
       lib = Rubee::PROJECT_NAME == 'rubee' ? 'lib/' : ''
-      path = "#{lib}app/views/#{file_name}.erb"
+      path = "#{lib}#{options[:app_name] || 'app'}/views/#{file_name}.erb"
       erb_template = ERB.new(File.read(path))
 
       erb_template.result(binding)

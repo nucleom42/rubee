@@ -14,7 +14,6 @@ module Rubee
       end
 
       def route_for(request)
-        puts request.request_method
         method = (request.params['_method'] || request.request_method).downcase.to_sym
         @routes.find do |route|
           return route if request.path == route[:path] && request.request_method&.downcase&.to_sym == route[:method]
