@@ -12,6 +12,7 @@ module Rubee
       @action_name = action_name
       @react = options[:react] || {}
       @app_name = options[:app_name] || :app
+      @namespace = @app_name == :app ? '' : "#{@app_name.camelize}::"
     end
 
     def call
@@ -24,14 +25,14 @@ module Rubee
     private
 
     def generate_model
-      model_file = File.join(Rubee::APP_ROOT, Rubee::LIB, "#{@app_name}/models/#{@model_name}.rb")
+      model_file = File.join(Rubee::APP_ROOT, Rubee::LIB, "#{@app_name.to_s.snakeize}/models/#{@model_name}.rb")
       if File.exist?(model_file)
         puts "Model #{@model_name} already exists. Remove it if you want to regenerate"
         return
       end
 
       content = <<~RUBY
-        class #{@model_name.capitalize} < Rubee::SequelObject
+        class #{@namespace}#{@model_name.camelize} < Rubee::SequelObject
           #{'attr_accessor ' + @model_attributes.map { |hash| ":#{hash[:name]}" }.join(', ') unless @model_attributes.empty?}
         end
       RUBY
@@ -48,7 +49,7 @@ module Rubee
       end
 
       content = <<~RUBY
-        class #{@base_name.capitalize}Controller < Rubee::BaseController
+        class #{@namespace}#{@base_name.camelize}Controller < Rubee::BaseController
           def #{@action_name}
             response_with
           end
@@ -60,6 +61,7 @@ module Rubee
     end
 
     def generate_view
+      prefix = @namespace == "" ? "" : "#{@app_name.snakeize}_"
       if @react[:view_name]
         view_file = File.join(Rubee::APP_ROOT, Rubee::LIB, "#{@app_name}/views/#{@react[:view_name]}")
         content = <<~JS
@@ -76,13 +78,16 @@ module Rubee
           }
         JS
       else
-        view_file = File.join(Rubee::APP_ROOT, Rubee::LIB, "#{@app_name}/views/#{@plural_name}_#{@action_name}.erb")
+        view_file = File.join(
+          Rubee::APP_ROOT, Rubee::LIB,
+          "#{@app_name}/views/#{prefix}#{@plural_name}_#{@action_name}.erb"
+        )
         content = <<~ERB
-          <h1>#{@plural_name}_#{@action_name} View</h1>
+          <h1>#{prefix}#{@plural_name}_#{@action_name} View</h1>
         ERB
       end
 
-      name = @react[:view_name] || "#{@plural_name}_#{@action_name}"
+      name = @react[:view_name] || "#{prefix}#{@plural_name}_#{@action_name}"
 
       if File.exist?(view_file)
         puts "View #{name} already exists. Remove it if you want to regenerate"
@@ -94,18 +99,19 @@ module Rubee
     end
 
     def generate_db_file
-      db_file = File.join(Rubee::APP_ROOT, Rubee::LIB, "db/create_#{@plural_name}.rb")
+      table_name = @namespace == "" ? @plural_name : "#{@namespace.snakeize}#{@plural_name}"
+      db_file = File.join(Rubee::APP_ROOT, Rubee::LIB, "db/create_#{table_name}.rb")
       if File.exist?(db_file)
-        puts "DB file for #{@plural_name} already exists. Remove it if you want to regenerate"
+        puts "DB file for #{table_name} already exists. Remove it if you want to regenerate"
         return
       end
 
       content = <<~RUBY
-        class Create#{@plural_name.capitalize}
+        class Create#{table_name.camelize}
           def call
-            return if Rubee::SequelObject::DB.tables.include?(:#{@plural_name})
+            return if Rubee::SequelObject::DB.tables.include?(:#{table_name})
 
-            Rubee::SequelObject::DB.create_table(:#{@plural_name}) do
+            Rubee::SequelObject::DB.create_table(:#{table_name}) do
               #{@model_attributes.map { |attribute| generate_sequel_schema(attribute) }.join("\n\t\t\t")}
             end
           end
@@ -113,7 +119,7 @@ module Rubee
       RUBY
 
       File.open(db_file, 'w') { |file| file.write(content) }
-      color_puts("DB file for #{@plural_name} created", color: :green)
+      color_puts("DB file for #{table_name} created", color: :green)
     end
 
     def generate_sequel_schema(attribute)

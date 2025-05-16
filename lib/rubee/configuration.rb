@@ -1,6 +1,8 @@
 module Rubee
   class Configuration
     include Singleton
+    require_relative '../inits/charged_hash' unless defined?(ChargedHash)
+    using ChargedHash
 
     @configuraiton = {
       app: {
@@ -14,7 +16,18 @@ module Rubee
     }
 
     class << self
-      def setup(_env, _app = :app)
+      def setup(env, app = :app)
+        unless @configuraiton[app.to_sym]
+          @configuraiton[app.to_sym] = {
+            development: {},
+            production: {},
+            test: {},
+          }
+          unless @configuraiton[app.to_sym][env.to_sym]
+            @configuraiton[app.to_sym][env.to_sym] = {}
+          end
+        end
+
         yield(self)
       end
 

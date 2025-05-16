@@ -26,10 +26,12 @@ module Rubee
 
   class Application
     include Singleton
+    using(ChargedString)
 
     def call(env)
       # autoload rb files
       Autoload.call
+
       # register images paths
       request = Rack::Request.new(env)
       # Add default path for images
@@ -49,9 +51,9 @@ module Rubee
       return [404, { 'content-type' => 'text/plain' }, ['Route not found']] unless route
       # init controller class
       controller_class = if route[:namespace]
-        "#{route[:namespace]}::#{route[:controller].capitalize}Controller"
+        "#{route[:namespace].to_s.camelize}::#{route[:controller].camelize}Controller"
       else
-        "#{route[:controller].capitalize}Controller"
+        "#{route[:controller].camelize}Controller"
       end
       # instantiate controller
       controller = Object.const_get(controller_class).new(request, route)

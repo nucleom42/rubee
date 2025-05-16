@@ -1,6 +1,8 @@
 module Rubee
   module CLI
     class Attach
+      using ChargedString
+
       class << self
         def call(command, argv)
           send(command, argv)
@@ -60,14 +62,24 @@ module Rubee
           copy_files(
             File.join(Rubee::ROOT_PATH, '/lib/app/views'),
             "#{target_dir}/views",
-            %w[welcome_header.erb welcome_show.erb]
+            %w[welcome_header.erb welcome_show.erb],
+            %w[utils],
+            app_name: new_app_name
           )
+
+          # create namespace module
+          module_content = <<~RUBY
+            module #{new_app_name.camelize}
+            end
+          RUBY
+
+          File.open("#{target_dir}/#{new_app_name.snakeize}_namespace.rb", 'w') { |file| file.write(module_content) }
           color_puts("App #{new_app_name} attached!", color: :green)
         end
 
         private
 
-        def copy_files(source_dir, target_dir, blacklist_files = [], blacklist_dirs = [])
+        def copy_files(source_dir, target_dir, blacklist_files = [], blacklist_dirs = [], **options)
           Dir.glob("#{source_dir}/**/*", File::FNM_DOTMATCH).each do |file|
             relative_path = file.sub("#{source_dir}/", '')
             next if blacklist_dirs.any? { |dir| relative_path.split('/').include?(dir) }
@@ -79,6 +91,11 @@ module Rubee
             else
               FileUtils.cp(file, target_path)
             end
+          end
+          return unless options[:app_name]
+          # rename copied file with prefixing base name with app_name
+          Dir["#{target_dir}/**/*"].each do |f|
+            File.rename(f, f.gsub(File.basename(f), "#{options[:app_name]}_#{File.basename(f)}"))
           end
         end
       end
