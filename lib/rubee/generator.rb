@@ -68,11 +68,11 @@ module Rubee
           import React, { useEffect, useState } from "react";
           // 1. Add your logic that fetches data
           // 2. Do not forget to add respective react route
-          export function #{@react[:view_name].gsub(/\.(.*)+$/, '').capitalize}() {
+          export function #{@react[:view_name].gsub(/\.(.*)+$/, '').snakeize}() {
 
             return (
               <div>
-                <h2>#{@react[:view_name]} view</h2>
+                <h2>#{@react[:view_name].gsub(/\.(.*)+$/, '').snakeize} view</h2>
               </div>
             );
           }
