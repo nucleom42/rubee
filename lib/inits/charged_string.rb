@@ -20,6 +20,18 @@ module ChargedString
       !plural?
     end
 
+    def camelize
+      self.split('_').map { _1.capitalize }.join
+    end
+
+    def snakeize
+      self.gsub(/::/, '')
+        .gsub(/([A-Z]+)([A-Z][a-z])/, '\1_\2')
+        .gsub(/([a-z\d])([A-Z])/, '\1_\2')
+        .tr('-', '_')
+        .downcase
+    end
+
     def singularize
       if end_with?('ies') && length > 3
         "#{self[0..-4]}y" # Convert "ies" to "y"

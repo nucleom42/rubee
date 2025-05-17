@@ -68,12 +68,18 @@ module Rubee
       in :not_found
         [404, { 'content-type' => 'text/plain' }, ['Route not found']]
       else # rendering erb view is a default behavior
-        view_file_name = self.class.name.split('Controller').first.downcase
+        # TODO: refactor
+        view_file_name = self.class.name.split('Controller').first.gsub('::', '_').downcase
         erb_file = render_view ? render_view.to_s : "#{view_file_name}_#{@route[:action]}"
         lib = Rubee::PROJECT_NAME == 'rubee' ? 'lib/' : ''
-        view = render_template(erb_file, { object:, **(options[:locals] || {}) })
-
-        whole_erb = if File.exist?(layout_path = "#{lib}app/views/#{options[:layout] || 'layout'}.erb")
+        path_parts = self.class.instance_method(@route[:action]).source_location[0].split('/').reverse
+        controller_index = path_parts.find_index { |part| part == 'controllers' }
+        app_name = path_parts[controller_index + 1]
+        view = render_template(erb_file, { object:, **(options[:locals] || {}) }, app_name:)
+        # Since controller sits in the controllers folder we can get parent folder of it and pull out name of the app
+        app_name_prefix = app_name == 'app' ? '' : "#{app_name}_"
+        layout_path = "#{lib}#{app_name}/views/#{app_name_prefix}#{options[:layout] || 'layout'}.erb"
+        whole_erb = if File.exist?(layout_path)
           context = Object.new
           context.define_singleton_method(:_yield_template) { view }
           layout = File.read(layout_path)
@@ -86,9 +92,9 @@ module Rubee
       end
     end
 
-    def render_template(file_name, locals = {})
+    def render_template(file_name, locals = {}, **options)
       lib = Rubee::PROJECT_NAME == 'rubee' ? 'lib/' : ''
-      path = "#{lib}app/views/#{file_name}.erb"
+      path = "#{lib}#{options[:app_name] || 'app'}/views/#{file_name}.erb"
       erb_template = ERB.new(File.read(path))
 
       erb_template.result(binding)
