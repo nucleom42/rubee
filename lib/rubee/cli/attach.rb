@@ -62,7 +62,7 @@ module Rubee
           copy_files(
             File.join(Rubee::ROOT_PATH, '/lib/app/views'),
             "#{target_dir}/views",
-            %w[welcome_header.erb welcome_show.erb],
+            %w[welcome_header.erb welcome_show.erb App.tsx],
             %w[utils],
             app_name: new_app_name
           )
@@ -75,6 +75,21 @@ module Rubee
 
           File.open("#{target_dir}/#{new_app_name.snakeize}_namespace.rb", 'w') { |file| file.write(module_content) }
           color_puts("App #{new_app_name} attached!", color: :green)
+
+          # create react app file
+          react_app_file = <<~REACT_APP_FILE
+            import React from 'react';
+
+            export function #{new_app_name.camelize}App() {
+              return (
+                <h1>#{new_app_name.camelize}App</h1>
+              );
+            }
+          REACT_APP_FILE
+
+          File.open("#{target_dir}/views/#{new_app_name.camelize}App.tsx", 'w') do |file|
+            file.puts react_app_file
+          end
         end
 
         private
@@ -95,7 +110,12 @@ module Rubee
           return unless options[:app_name]
           # rename copied file with prefixing base name with app_name
           Dir["#{target_dir}/**/*"].each do |f|
-            File.rename(f, f.gsub(File.basename(f), "#{options[:app_name]}_#{File.basename(f)}"))
+            ext = File.extname(f).delete('.')
+            if %w[ts tsx js jsx].include?(ext)
+              File.rename(f, f.gsub(File.basename(f), "#{options[:app_name].camelize}#{File.basename(f)}"))
+            else
+              File.rename(f, f.gsub(File.basename(f), "#{options[:app_name].snakeize}_#{File.basename(f)}"))
+            end
           end
         end
       end

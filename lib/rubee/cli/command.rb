@@ -12,25 +12,25 @@ module Rubee
 
       def factory
         case @command
-        in /start|start_dev|stop|status/
+        in /^(start|start_dev|stop|status)$/
           Rubee::CLI::Server
-        in /react/
+        in /^react$/
           Rubee::CLI::React
-        in /project/
+        in /^project$/
           Rubee::CLI::Project
-        in /version/
+        in /^version$/
           Rubee::CLI::Version
-        in /routes/
+        in /^routes$/
           Rubee::CLI::Routes
-        in /test/
+        in /^test$/
           Rubee::CLI::Test
-        in /generate|gen/
+        in /^(generate|gen)$/
           Rubee::CLI::Generate
-        in /db/
+        in /^db$/
           Rubee::CLI::Db
-        in /console|con/
+        in /^(console|c)$/
           Rubee::CLI::Console
-        in /attach|att/
+        in /^(attach|att)$/
           Rubee::CLI::Attach
         else
           proc { color_puts("Unknown command: #{@command}", color: :red) }

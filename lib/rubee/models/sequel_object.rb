@@ -2,6 +2,7 @@ module Rubee
   class SequelObject
     include Rubee::DatabaseObjectable
     using ChargedString
+    using ChargedHash
 
     def destroy(cascade: false, **_options)
       if cascade
@@ -179,7 +180,7 @@ module Rubee
       def serialize(suquel_dataset, klass = nil)
         klass ||= self
         suquel_dataset.map do |record_hash|
-          target_klass_fields = DB[klass.name.pluralize.downcase.to_sym].columns
+          target_klass_fields = DB[klass.name.pluralize.downcase.camelize.to_sym].columns
           klass_attributes = record_hash.filter { target_klass_fields.include?(_1) }
           klass.new(**klass_attributes)
         end

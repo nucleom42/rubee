@@ -34,7 +34,7 @@ module Rubee
 
       # register images paths
       request = Rack::Request.new(env)
-      # Add default path for images
+      # Add default path for assets
       Router.draw do |route|
         route.get('/images/{path}', to: 'base#image', namespace: 'Rubee')
         route.get('/js/{path}', to: 'base#js', namespace: 'Rubee')

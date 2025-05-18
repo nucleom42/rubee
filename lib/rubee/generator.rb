@@ -68,16 +68,16 @@ module Rubee
           import React, { useEffect, useState } from "react";
           // 1. Add your logic that fetches data
           // 2. Do not forget to add respective react route
-          export function #{@react[:view_name].gsub(/\.(.*)+$/, '').snakeize}() {
+          export function #{@react[:view_name].gsub(/\.(.*)+$/, '').camelize}() {
 
             return (
               <div>
-                <h2>#{@react[:view_name].gsub(/\.(.*)+$/, '').snakeize} view</h2>
+                <h2>#{@react[:view_name].gsub(/\.(.*)+$/, '').camelize} view</h2>
               </div>
             );
           }
         JS
-      else
+      else # erb
         view_file = File.join(
           Rubee::APP_ROOT, Rubee::LIB,
           "#{@app_name}/views/#{prefix}#{@plural_name}_#{@action_name}.erb"
@@ -99,7 +99,7 @@ module Rubee
     end
 
     def generate_db_file
-      table_name = @namespace == "" ? @plural_name : "#{@namespace.snakeize}#{@plural_name}"
+      table_name = @namespace == "" ? @plural_name : "#{@namespace.snakeize}_#{@plural_name}"
       db_file = File.join(Rubee::APP_ROOT, Rubee::LIB, "db/create_#{table_name}.rb")
       if File.exist?(db_file)
         puts "DB file for #{table_name} already exists. Remove it if you want to regenerate"

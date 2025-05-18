@@ -35,12 +35,14 @@ All great features are yet to come!
 - [Rubee console](#Rubee-console)
 - [Testing](#Testing)
 - [Background jobs](#Background-jobs)
+- [Modular](#Modular application)
 - [Logger](#Logger)
 
 ## Features
 
 - **Lightweight**: A minimal footprint that focuses on serving Ruby applications efficiently.
-- **Contract driven**: Define your API contracts in a simple, declarative manner. And generate the files for you.
+- **Moduled** A modular approach to application development. Build modular monolith applications with ease by attaching as many subprojects you need.
+- **Contract driven**: Define your API contracts in a simple, declarative manner. Then generate the biolerplate files you need.
 - **Fast**: Optimized for speed, providing a quick response to requests. Everything is relative, I know!
 - **Rack**: Rack backed. All Rack api is available for integration.
 - **Databases**: Sqlite3, Postgres, Mysql and many more supported by sequel gem.
@@ -49,8 +51,8 @@ All great features are yet to come!
 - **Bundlable** Charge your ruBee with any gem you need and update your project with bundle.
 - **ORM** All models are natively ORM objects, however you can use it as a blueurpint for any datasources.
 - **Authentificatable** Add JWT authentification easily to any controller action.
-- **Hooks** Addlogic before, after and around any action.
-- **Test** Run all or selected tests witin minitest.
+- **Hooks** Add logic before, after and around any action.
+- **Test** Run all or selected tests witin fast and beloved minitest.
 - **Asyncable** Add async adapter and pick any popular background job queue enginee
 - **Console** Start the interactive console and reload it on the fly
 - **Background jobs** Add async adapter and pick any popular background job queue engine
@@ -441,6 +443,26 @@ Will generate:
 ./app/views/apples_index.erb # ERB view that is rendered by the controller right away
 ./db/create_apples.rb # Database migration file needed for creating repsective table
 ```
+
+### Modualar application
+
+You can also use ruBee to create modular applications.\
+And attach as many subprojects you need.
+Main philosophy of attach functinality is to keep the main project clean and easy to maintain. It will still\
+share datasources with the main app. So where to define a border between main app and subprojects is up to you.
+
+So if you need to extend your main app with a separate project you can do it easily in ruBee.
+1. Attach new subrpoject
+
+```bash
+rubee attach admin
+```
+This will create a dedicated folder in the project root called admin and all the MVC setup, route and configuraion \
+files will be created there.
+
+2. Add routes
+
+
 - [Back to content](#Content)
 
 ## Views

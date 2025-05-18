@@ -69,9 +69,10 @@ module Rubee
 
       def method_missing(method_name, *args)
         return unless method_name.to_s.start_with?('get_')
-        app_name = args[0] || :app
 
-        @configuraiton[app_name.to_sym][ENV['RACK_ENV']&.to_sym || :development]&.[](method_name.to_s.delete_prefix('get_').to_sym)
+        app_name = args[0] || :app
+        @configuraiton[app_name.to_sym][ENV['RACK_ENV']&.to_sym || :development]
+          &.[](method_name.to_s.delete_prefix('get_').to_sym)
       end
 
       def envs
