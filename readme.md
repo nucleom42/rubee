@@ -449,12 +449,12 @@ Will generate:
 ### Modualar application
 
 You can also use ruBee to create modular applications.\
-And attach as many subprojects you need.
-Main philosophy of attach functinality is to keep the main project clean and easy to maintain. It will still\
-share data with the main app. So where to define a border between main app and subprojects is up to developer.
-Howerver by attching new subproject you will get a new folder and files configured and namespaced respectively.
+And attach as many subprojects you need!
+Main philosophy of attach functinality is to keep the main project clean and easy to maintain. It will\
+share data with the main app, tho. So where to draw a border between main app and subprojects is up to developer.
+However, by attching new subproject you will get a new folder and files configured and namespaced respectively.
 
-So if you need to extend your main app with a separate project you can do it easily in ruBee.
+Let's consider attaching admin subproject.
 1. Attach new subrpoject
 
 ```bash
@@ -481,13 +481,16 @@ Rubee::Router.draw do |router|
                                 namespace: :admin # mandatory option for supporting namespacing
 end
 ```
-3. Run gen command
+3. Run generate command
 
 ```bash
 rubee gen get /admin/cabages app:admin
+# where get is the http method
+# /admin/cabages route
+# app:admin option to define target app
 ```
 
-This will generate the bolierplate files:
+This will generate the namespaced bolierplate files:
 
 ```bash
 ./admin/controllers/cabages_controller.rb
@@ -500,6 +503,7 @@ This will generate the bolierplate files:
 
 ```bash
 rubee db run:create_cabages
+# This will create prefixed table admin_cabages
 ```
 5. Fill the views and controller with the content
 
@@ -517,6 +521,7 @@ end
 ```bash
 rubee start # or rubee start_dev for development
 ```
+7. Hit the route in browser and surface json output.
 
 - [Back to content](#Content)
 
