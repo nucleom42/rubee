@@ -11,12 +11,13 @@
 Rubee is a Ruby-based framework designed to streamline the development of modular monolith applications. \
 It offers a structured approach to building scalable, maintainable, and React-ready projects, \
 making it an ideal choice for developers seeking a balance between monolithic simplicity and modular flexibility.
+
 Want to get a quick API server up and runing? You can do it for real quick!
-
 <br />
-[![Video Title](https://img.youtube.com/vi/ko7H70s7qq0/0.jpg)](https://www.youtube.com/watch?v=ko7H70s7qq0)
+![Video Title](https://img.youtube.com/vi/ko7H70s7qq0/0.jpg)](https://www.youtube.com/watch?v=ko7H70s7qq0)
 
-## Content 📚
+📚
+## Content
 
 - [Installation](#installation)
 - [Run tests](#run-tests)
@@ -36,7 +37,8 @@ Want to get a quick API server up and runing? You can do it for real quick!
 - [Modular](#modualar-application)
 - [Logger](#logger)
 
-## Features 🚀
+🚀
+## Features
 
 - **Lightweight**: A minimal footprint that focuses on serving Ruby applications efficiently.
 - **Moduled** A modular approach to application development. Build modular monolith applications with ease by \
@@ -57,7 +59,8 @@ Then generate the biolerplate files you need.
 - **Console** Start the interactive console and reload it on the fly
 - **Background jobs** Add async adapter and pick any popular background job queue engine
 
-## Installation 📦
+📦
+## Installation
 
 1. Install ruBee
 ```bash
@@ -89,15 +92,17 @@ rubee start # or rubee start_dev for development
 
 5. Open your browser and go to http://localhost:7000
 
-## Run tests 🧪
+🧪
+## Run tests
 ```bash
 rubee test
 # or you can specify specific test file
 rubee test models/user_model_test.rb
 ```
-[Back to content](#Content)
+[Back to content](#content)
 
-## Draw contract 📝
+📝
+## Draw contract
 
 1. Add the routes to the routes.rb
     ```ruby
@@ -135,7 +140,7 @@ This will generate the following files
 
 4. Fill the generated files with the logic you need and run the server again!
 
-[Back to content](#Content)
+[Back to content](#content)
 
 ## Model
 Model in ruBee is just simple ruby object that can be serilalized in the view
@@ -185,9 +190,10 @@ So in the controller you would need to query your target object now.
   end
 ```
 
-[Back to content](#Content)
+[Back to content](#content)
 
-#### Rubee::SequelObject base methods 💾
+💾
+#### Rubee::SequelObject base methods
 
 Initiate new record in memory
 ```Ruby
@@ -317,9 +323,10 @@ irb(main):010>  .then { |dataset| Comment.serialize(dataset) }
 This is recommended when you want to run one query and serialize it back to Rubee object only once.
 So it may safe some resources.
 
-[Back to content](#Content)
+[Back to content](#content)
 
-## Routing 🔀
+🔀
+## Routing
 Rubee uses explicit routes. In the routes.rb yout can define routes for any of the main HTTP methods. \
 You can also add any matched parameter denoted by a pair of `{ }` in the path of the route. \
 Eg. `/path/to/{a_key}/somewhere`
@@ -468,7 +475,8 @@ Will generate:
 ./db/create_apples.rb # Database migration file needed for creating repsective table
 ```
 
-### Modualar application 🧰
+🧰
+### Modualar application
 
 You can also use ruBee to create modular applications.\
 And attach as many subprojects you need.
@@ -542,9 +550,10 @@ end
 rubee start # or rubee start_dev for development
 ```
 
-[Back to content](#Content)
+[Back to content](#content)
 
-## Views 👀
+👀
+## Views
 View in ruBee is just a plain html/erb/react file that can be rendered from the controller.
 
 ## Templates over erb
@@ -579,7 +588,8 @@ end
 </div>
 ```
 
-## React as a view ⚛️
+⚛️
+## React as a view
 
 React is supported out of the box in the rubee view.
 Make react as a view representation layer is easy.
@@ -679,9 +689,10 @@ function Users() {
 }
 
 ```
-[Back to content](#Content)
+[Back to content](#content)
 
-## Object hooks 🧵
+🧵
+## Object hooks
 
 In ruBee by extending Hookable module any Ruby object can be charged with hooks (logic),
 that can be executed before, after and around a specific method execution.
@@ -723,10 +734,10 @@ after log around
 127.0.0.1 - - [17/Feb/2025:11:42:14 -0500] "GET /apples HTTP/1.1" 401 - 0.0359
 ```
 
-[Back to content](#Content)
+[Back to content](#content)
 
-
-## JWT based authentification 🔑
+🔑
+## JWT based authentification
 
 Charge you rpoject with token based authentification system and customize it for your needs.
 include AuthTokenable module to your controller and authentificate any action you need.
@@ -776,9 +787,9 @@ class UsersController < Rubee::BaseController
 end
 ```
 
-[Back to content](#Content)
+[Back to content](#content)
 
-## Rubee commands 💻
+## Rubee commands
 ```bash
 rubee start # start the server
 rubee start_dev # start the server in dev mode, which restart server on changes
@@ -788,30 +799,36 @@ rubee stop # stop the server
 rubee restart # restart the server
 ```
 
-## Generate commands 👷
+👷
+## Generate commands
 ```bash
 rubee generate get /apples # generate controller view, model and migration if set in the routes
 ```
 
-## Migraiton commands 📦
+📦
+## Migraiton commands
 ```bash
 rubee db run:all # run all migrations
 rubee db run:create_apples # where create_apples is the name of the migration file, located in /db folder
 rubee db structure # generate migration file for the database structure
 ```
 
-## Rubee console 🎯
+📖
+## Rubee console
 ```bash
 rubee console # start the console
 # you can reload the console by typing reload, so it will pick up latest changes
 ```
 
-## Testing 🧪
+
+🧪
+## Testing
 ```bash
 rubee test # run all tests
 rubee test auth_tokenable_test.rb # run specific tests
 ```
-- [Back to content](#Content)
+
+[Back to content](#Content)
 
 
 If you want to run any ruBee command within a specific ENV make sure you added it before a command.
@@ -821,10 +838,11 @@ For instance if you want to run console in test environment you need to run the 
 RACK_ENV=test rubee console
 ```
 
-## Background jobs 🛠️
+📨
+## Background jobs
 Set your background job engine with ease!
 
-### Sidekiq engine 🛠️
+### Sidekiq engine
 1. Add sidekiq to your Gemfile
 ```bash
 gem 'sidekiq'
@@ -878,6 +896,7 @@ end
 ```ruby
 TestAsyncRunnner.new.perform_async(options: {"email"=> "new@new.com", "password"=> "123"})
 ```
+
 ### Default engine is ThreadAsync
 However it is not yet recommended for production. Use it with cautions!
 1. Do not define any adapter in the /config/base_configuration.rb file, so default ThreadAsync will be taken.
@@ -896,7 +915,8 @@ TestAsyncRunnner.new.perform_async(options: {"email"=> "new@new.com", "password"
 ```
 - [Back to content](#Content)
 
-### Logger 📝
+📝
+### Logger
 
 You can use your own logger by setting it in the /config/base_configuration.rb.
 
@@ -944,7 +964,8 @@ When you trigger the controller action, the logs will look like this:
 
 [Back to content](#Content)
 
-### Contributing 🙌
+🙌
+### Contributing
 
 If you are interested in contributing to ruBee,
 please read the [Contributing](https://github.com/nucleom42/rubee/blob/main/CONTRIBUTING.md) guide.
@@ -952,5 +973,6 @@ Also feel free to open an [issue](https://github.com/nucleom42/rubee/issues) if 
 Have an idea or you wnat to discuss something?
 Please open a [discussion](https://github.com/nucleom42/rubee/discussions)
 
-## License 📜
+📜
+## License
 This project is released under the MIT License.
