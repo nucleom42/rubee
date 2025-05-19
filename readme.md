@@ -16,7 +16,6 @@ Want to get a quick API server up and runing? You can do it for real quick!
 <br />
 ![Video Title](https://img.youtube.com/vi/ko7H70s7qq0/0.jpg)](https://www.youtube.com/watch?v=ko7H70s7qq0)
 
-📚
 ## Content
 
 - [Installation](#installation)
@@ -37,7 +36,6 @@ Want to get a quick API server up and runing? You can do it for real quick!
 - [Modular](#modualar-application)
 - [Logger](#logger)
 
-🚀
 ## Features
 
 - **Lightweight**: A minimal footprint that focuses on serving Ruby applications efficiently.
@@ -59,7 +57,7 @@ Then generate the biolerplate files you need.
 - **Console** Start the interactive console and reload it on the fly
 - **Background jobs** Add async adapter and pick any popular background job queue engine
 
-📦
+
 ## Installation
 
 1. Install ruBee
@@ -92,7 +90,6 @@ rubee start # or rubee start_dev for development
 
 5. Open your browser and go to http://localhost:7000
 
-🧪
 ## Run tests
 ```bash
 rubee test
@@ -101,7 +98,6 @@ rubee test models/user_model_test.rb
 ```
 [Back to content](#content)
 
-📝
 ## Draw contract
 
 1. Add the routes to the routes.rb
@@ -192,7 +188,6 @@ So in the controller you would need to query your target object now.
 
 [Back to content](#content)
 
-💾
 #### Rubee::SequelObject base methods
 
 Initiate new record in memory
@@ -325,7 +320,6 @@ So it may safe some resources.
 
 [Back to content](#content)
 
-🔀
 ## Routing
 Rubee uses explicit routes. In the routes.rb yout can define routes for any of the main HTTP methods. \
 You can also add any matched parameter denoted by a pair of `{ }` in the path of the route. \
@@ -475,7 +469,7 @@ Will generate:
 ./db/create_apples.rb # Database migration file needed for creating repsective table
 ```
 
-🧰
+
 ### Modualar application
 
 You can also use ruBee to create modular applications.\
@@ -552,7 +546,6 @@ rubee start # or rubee start_dev for development
 
 [Back to content](#content)
 
-👀
 ## Views
 View in ruBee is just a plain html/erb/react file that can be rendered from the controller.
 
@@ -588,7 +581,6 @@ end
 </div>
 ```
 
-⚛️
 ## React as a view
 
 React is supported out of the box in the rubee view.
@@ -691,7 +683,6 @@ function Users() {
 ```
 [Back to content](#content)
 
-🧵
 ## Object hooks
 
 In ruBee by extending Hookable module any Ruby object can be charged with hooks (logic),
@@ -736,7 +727,6 @@ after log around
 
 [Back to content](#content)
 
-🔑
 ## JWT based authentification
 
 Charge you rpoject with token based authentification system and customize it for your needs.
@@ -813,22 +803,19 @@ rubee db run:create_apples # where create_apples is the name of the migration fi
 rubee db structure # generate migration file for the database structure
 ```
 
-📖
 ## Rubee console
 ```bash
 rubee console # start the console
 # you can reload the console by typing reload, so it will pick up latest changes
 ```
 
-
-🧪
 ## Testing
 ```bash
 rubee test # run all tests
 rubee test auth_tokenable_test.rb # run specific tests
 ```
 
-[Back to content](#Content)
+[Back to content](#content)
 
 
 If you want to run any ruBee command within a specific ENV make sure you added it before a command.
@@ -838,7 +825,6 @@ For instance if you want to run console in test environment you need to run the 
 RACK_ENV=test rubee console
 ```
 
-📨
 ## Background jobs
 Set your background job engine with ease!
 
@@ -913,9 +899,8 @@ end
 
 TestAsyncRunnner.new.perform_async(options: {"email"=> "new@new.com", "password"=> "123"})
 ```
-- [Back to content](#Content)
+- [Back to content](#content)
 
-📝
 ### Logger
 
 You can use your own logger by setting it in the /config/base_configuration.rb.
@@ -962,9 +947,8 @@ When you trigger the controller action, the logs will look like this:
 [2025-04-26 12:32:33] DEBUG [method: show][class_name: WelcomeController] #<User:0x000000012c5c63e0 @id=4545, @email="ok@op.com", @password="123">
 ```
 
-[Back to content](#Content)
+[Back to content](#content)
 
-🙌
 ### Contributing
 
 If you are interested in contributing to ruBee,
@@ -973,6 +957,5 @@ Also feel free to open an [issue](https://github.com/nucleom42/rubee/issues) if 
 Have an idea or you wnat to discuss something?
 Please open a [discussion](https://github.com/nucleom42/rubee/discussions)
 
-📜
 ## License
 This project is released under the MIT License.
