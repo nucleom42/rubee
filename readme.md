@@ -37,25 +37,23 @@ Want to get a quick API server up and runing? You can do it for real quick!
 
 ## Features
 
-- **Lightweight**: A minimal footprint that focuses on serving Ruby applications efficiently.
-- **Moduled** A modular approach to application development. Build modular monolith applications with ease by \
-attaching as many subprojects you need.
-- **Contract driven**: Define your API contracts in a simple, declarative manner.\
-Then generate the biolerplate files you need.
-- **Fast**: Optimized for speed, providing a quick response to requests. Everything is relative, I know!
-- **Rack**: Rack backed. All Rack api is available for integration.
-- **Databases**: Sqlite3, Postgres, Mysql and many more supported by sequel gem.
-- **Views**: Json, ERB and plain HTML and ..
-- **React** is supported out of the box as a rubee view
-- **Bundlable** Charge your ruBee with any gem you need and update your project with bundle.
-- **ORM** All models are natively ORM objects, however you can use it as a blueurpint for any datasources.
-- **Authentificatable** Add JWT authentification easily to any controller action.
-- **Hooks** Add logic before, after and around any action.
-- **Test** Run all or selected tests witin fast and beloved minitest.
-- **Asyncable** Add async adapter and pick any popular background job queue enginee
-- **Console** Start the interactive console and reload it on the fly
-- **Background jobs** Add async adapter and pick any popular background job queue engine
-
+🐝 Lightweight – A minimal footprint focused on serving Ruby applications efficiently.
+🧩 Modular – A modular approach to application development. Build modular monoliths with ease by attaching \
+as many subprojects as you need.
+📜 Contract-driven – Define your API contracts in a simple, declarative way, then generate all the boilerplate you need.
+⚡ Fast – Optimized for speed, providing quick responses. (Everything is relative, we know! 😄)
+🧱 Rack-powered – Built on Rack. The full Rack API is available for easy integration.
+🗄️ Databases – Supports SQLite3, PostgreSQL, MySQL, and more via the Sequel gem.
+🖼️ Views – JSON, ERB, and plain HTML out of the box.
+⚛️  React Ready – React is supported as a first-class Rubee view engine.
+📦 Bundlable – Charge your Rubee app with any gem you need. Update effortlessly via Bundler.
+🧬 ORM-agnostic – Models are native ORM objects, but you can use them as blueprints for any data source.
+🔐 Authenticatable – Easily add JWT authentication to any controller action.
+🪝 Hooks – Add logic before, after, or around any controller action.
+🧪 Testable – Run all or selected tests using fast, beloved Minitest.
+👷 Asyncable – Plug in async adapters and use any popular background job engine.
+⌨️  Console – Start an interactive console and reload on the fly.
+⚙️  Background Jobs – Schedule and process background jobs using your preferred async stack.
 
 ## Installation
 
