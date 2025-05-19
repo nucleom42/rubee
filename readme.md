@@ -84,7 +84,7 @@ rubee project my_project
 cd my_project
 ```
 
-[Back to content](#Content)
+[Back to content](#content)
 
 3. Install dependencies
 
