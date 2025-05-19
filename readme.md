@@ -35,7 +35,7 @@ All great features are yet to come!
 - [Rubee console](#Rubee-console)
 - [Testing](#Testing)
 - [Background jobs](#Background-jobs)
-- [Modular](#Modular application)
+- [Modular](#Modular-application)
 - [Logger](#Logger)
 
 ## Features
