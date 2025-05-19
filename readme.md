@@ -470,15 +470,15 @@ files will be created there.
 Rubee::Router.draw do |router|
   ...
   # draw the contract
-    router.get '/admin/cabages', to: 'cabages#index',
-                                   model: {
-                                     name: 'cabage',
-                                     attributes: [
-                                       { name: 'id', type: :primary },
-                                       { name: 'name', type: :string }
-                                     ]
-                                   },
-                                   namespace: :admin # mandatory option for supporting namespacing
+  router.get '/admin/cabages', to: 'cabages#index',
+                               model: {
+                                 name: 'cabage',
+                                 attributes: [
+                                   { name: 'id', type: :primary },
+                                   { name: 'name', type: :string }
+                                 ]
+                                },
+                                namespace: :admin # mandatory option for supporting namespacing
 end
 ```
 3. Run gen command
