@@ -38,3 +38,4 @@ def capture_stdout
 ensure
   $stdout = old_stdout
 end
+

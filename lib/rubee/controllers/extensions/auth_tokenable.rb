@@ -3,8 +3,8 @@ require 'date'
 
 module Rubee
   module AuthTokenable
-    KEY = "secret#{Date.today}".freeze # Feel free to cusomtize it
-    EXPIRE = 3600 # 1 hour
+    KEY = "secret#{Date.today}".freeze unless defined?(KEY) # Feel free to cusomtize it
+    EXPIRE = 3600 unless defined?(EXPIRE)
 
     def self.included(base)
       base.include(Middlewarable)

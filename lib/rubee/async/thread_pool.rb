@@ -3,8 +3,8 @@ require 'singleton'
 module Rubee
   class ThreadPool
     include Singleton
-    THREADS_LIMIT = Rubee::Configuration.get_threads_limit || 4
-    FIBERS_LIMIT = Rubee::Configuration.get_fibers_limit || 4
+    THREADS_LIMIT = Rubee::Configuration.get_threads_limit || 4 unless defined?(THREADS_LIMIT)
+    FIBERS_LIMIT = Rubee::Configuration.get_fibers_limit || 4 unless defined?(FIBERS_LIMIT)
 
     def initialize
       @tasks = Queue.new

@@ -27,7 +27,7 @@ class RubeeAppTest < Minitest::Test
     get('/home')
 
     assert_equal(200, last_response.status)
-    assert_includes(last_response.body, '<div id="app">')
+    assert_includes(last_response.body, '<div id="App">')
     assert_includes(last_response.body, 'bundle.js')
 
     Rubee::Configuration.setup(env = :test) { _1.react = { on: false, env: } }
