@@ -789,13 +789,11 @@ rubee stop # stop the server
 rubee restart # restart the server
 ```
 
-👷
 ## Generate commands
 ```bash
 rubee generate get /apples # generate controller view, model and migration if set in the routes
 ```
 
-📦
 ## Migraiton commands
 ```bash
 rubee db run:all # run all migrations
