@@ -70,7 +70,8 @@ gem install ru.Bee
 rubee project my_project
 cd my_project
 ```
-- [Back to content](#Content)
+
+[Back to content](#Content)
 
 3. Install dependencies
 
@@ -899,7 +900,8 @@ end
 
 TestAsyncRunnner.new.perform_async(options: {"email"=> "new@new.com", "password"=> "123"})
 ```
-- [Back to content](#content)
+
+[Back to content](#content)
 
 ### Logger
 
