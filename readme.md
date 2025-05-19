@@ -41,8 +41,10 @@ All great features are yet to come!
 ## Features
 
 - **Lightweight**: A minimal footprint that focuses on serving Ruby applications efficiently.
-- **Moduled** A modular approach to application development. Build modular monolith applications with ease by attaching as many subprojects you need.
-- **Contract driven**: Define your API contracts in a simple, declarative manner. Then generate the biolerplate files you need.
+- **Moduled** A modular approach to application development. Build modular monolith applications with ease by \
+attaching as many subprojects you need.
+- **Contract driven**: Define your API contracts in a simple, declarative manner.\
+Then generate the biolerplate files you need.
 - **Fast**: Optimized for speed, providing a quick response to requests. Everything is relative, I know!
 - **Rack**: Rack backed. All Rack api is available for integration.
 - **Databases**: Sqlite3, Postgres, Mysql and many more supported by sequel gem.
@@ -449,7 +451,8 @@ Will generate:
 You can also use ruBee to create modular applications.\
 And attach as many subprojects you need.
 Main philosophy of attach functinality is to keep the main project clean and easy to maintain. It will still\
-share datasources with the main app. So where to define a border between main app and subprojects is up to you.
+share data with the main app. So where to define a border between main app and subprojects is up to developer.
+Howerver by attching new subproject you will get a new folder and files configured and namespaced respectively.
 
 So if you need to extend your main app with a separate project you can do it easily in ruBee.
 1. Attach new subrpoject
@@ -462,6 +465,58 @@ files will be created there.
 
 2. Add routes
 
+```ruby
+# admin_routes.rb
+Rubee::Router.draw do |router|
+  ...
+  # draw the contract
+    router.get '/admin/cabages', to: 'cabages#index',
+                                   model: {
+                                     name: 'cabage',
+                                     attributes: [
+                                       { name: 'id', type: :primary },
+                                       { name: 'name', type: :string }
+                                     ]
+                                   },
+                                   namespace: :admin # mandatory option for supporting namespacing
+end
+```
+3. Run gen command
+
+```bash
+rubee gen get /admin/cabages app:admin
+```
+
+This will generate the bolierplate files:
+
+```bash
+./admin/controllers/cabages_controller.rb
+./admin/views/cabages_index.erb
+./admin/models/cabage.rb
+./db/create_cabages.rb
+```
+
+4. Perform migrations
+
+```bash
+rubee db run:create_cabages
+```
+5. Fill the views and controller with the content
+
+```ruby
+# ./admin/controllers/cabages_controller.rb
+class Admin::CabagesController < Rubee::BaseController
+  def index
+    response_with object: Cabage.all, type: :json
+  end
+end
+```
+
+6. Run the rubee server
+
+```bash
+rubee start # or rubee start_dev for development
+```
 
 - [Back to content](#Content)
 
