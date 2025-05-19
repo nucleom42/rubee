@@ -20,23 +20,23 @@ All great features are yet to come!
 
 ## Content:
 
-- [Installation](#Installation)
+- [Installation](#installation)
 - [Run tests](#run-tests)
 - [Draw contract](#draw-contract)
-- [Model](#Model)
-- [Routing](#Routing)
-- [Database](#Database)
-- [Views](#Views)
-- [Hooks](#Hooks)
-- [JWT based authentification](#JWT-based-authentification)
-- [Rubee commands](#Rubee-commands)
-- [Generate commands](#Generate-commands)
-- [Migration commands](#Migration-commands)
-- [Rubee console](#Rubee-console)
-- [Testing](#Testing)
-- [Background jobs](#Background-jobs)
-- [Modular](#Modular-application)
-- [Logger](#Logger)
+- [Model](#model)
+- [Routing](#routing)
+- [Database](#database)
+- [Views](#views)
+- [Hooks](#hooks)
+- [JWT based authentification](#jwt-based-authentification)
+- [Rubee commands](#rubee-commands)
+- [Generate commands](#generate-commands)
+- [Migration commands](#migration-commands)
+- [Rubee console](#rubee-console)
+- [Testing](#testing)
+- [Background jobs](#background-jobs)
+- [Modular](#modualar-application)
+- [Logger](#logger)
 
 ## Features
 
