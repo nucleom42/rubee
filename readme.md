@@ -14,7 +14,7 @@ making it an ideal choice for developers seeking a balance between monolithic si
 
 Want to get a quick API server up and runing? You can do it for real quick!
 <br />
-![Video Title](https://img.youtube.com/vi/ko7H70s7qq0/0.jpg)](https://www.youtube.com/watch?v=ko7H70s7qq0)
+![Video Title](https://img.youtube.com/vi/ko7H70s7qq0/0.jpg)(https://www.youtube.com/watch?v=ko7H70s7qq0)
 
 ## Content
 
