@@ -38,21 +38,36 @@ Want to get a quick API server up and runing? You can do it for real quick!
 ## Features
 
 🐝 Lightweight – A minimal footprint focused on serving Ruby applications efficiently.
+<br>
 🧩 Modular – A modular approach to application development. Build modular monoliths with ease by attaching \
 as many subprojects as you need.
+<br>
 📜 Contract-driven – Define your API contracts in a simple, declarative way, then generate all the boilerplate you need.
+<br>
 ⚡ Fast – Optimized for speed, providing quick responses. (Everything is relative, we know! 😄)
+<br>
 🧱 Rack-powered – Built on Rack. The full Rack API is available for easy integration.
+<br>
 🗄️ Databases – Supports SQLite3, PostgreSQL, MySQL, and more via the Sequel gem.
+<br>
 🖼️ Views – JSON, ERB, and plain HTML out of the box.
+<br>
 ⚛️  React Ready – React is supported as a first-class Rubee view engine.
+<br>
 📦 Bundlable – Charge your Rubee app with any gem you need. Update effortlessly via Bundler.
+<br>
 🧬 ORM-agnostic – Models are native ORM objects, but you can use them as blueprints for any data source.
+<br>
 🔐 Authenticatable – Easily add JWT authentication to any controller action.
+<br>
 🪝 Hooks – Add logic before, after, or around any controller action.
+<br>
 🧪 Testable – Run all or selected tests using fast, beloved Minitest.
+<br>
 👷 Asyncable – Plug in async adapters and use any popular background job engine.
+<br>
 ⌨️  Console – Start an interactive console and reload on the fly.
+<br>
 ⚙️  Background Jobs – Schedule and process background jobs using your preferred async stack.
 
 ## Installation
@@ -65,6 +80,7 @@ gem install ru.Bee
 2. Create your first project
 ```bash
 rubee project my_project
+
 cd my_project
 ```
 
