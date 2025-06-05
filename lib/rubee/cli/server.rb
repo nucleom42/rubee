@@ -37,7 +37,7 @@ LOGO
           color_puts("Starting takeoff of ruBee server on port #{port} in dev mode...", color: :yellow)
           command = "rerun -- #{jit_prefix_dev(jit)}rackup --port #{port} #{ENV['RACKUP_FILE']}"
           color_puts(command, color: :gray)
-          exec("rerun -- ruby --yjit rackup --port #{port} #{ENV['RACKUP_FILE']}")
+          exec(command)
         end
 
         def stop(_argv)
