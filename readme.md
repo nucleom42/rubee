@@ -100,6 +100,23 @@ bundle install
 4. Run ruBee server. Default port is 7000
 ```bash
 rubee start # or rubee start_dev for development
+
+# Starting from veriosn 1.8.0 rubee can be started with yjit jit compiler
+# You just need to add the following parameter
+
+rubee start yjit
+# Same option is available for development mode
+
+rubee start_dev yjit
+
+# Please note to use yjit you have to install rust and recompile you ruby version:
+
+# 1 Install rust
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+
+# 2 Reinstall ruby with yjit
+RUBY_CONFIGURE_OPTS="--enable-yjit" rbenv install 3.4.1
+
 ```
 
 5. Open your browser and go to http://localhost:7000
