@@ -17,22 +17,27 @@ LOGO
 
         def start(argv)
           _, port = argv.first&.split(':')
+          jit = argv[1]
 
           port ||= '7000'
           print_logo
           color_puts("Starting takeoff of ruBee server on port #{port}...", color: :yellow)
-          exec("rackup #{ENV['RACKUP_FILE']} -p #{port}")
+          command = "#{jit_prefix(jit)}rackup #{ENV['RACKUP_FILE']} -p #{port}"
+          color_puts(command, color: :gray)
+          exec(command)
         end
 
         def start_dev(argv)
           _, port = argv.first&.split(':')
+          jit = argv[1]
 
           port ||= '7000'
           print_logo
 
           color_puts("Starting takeoff of ruBee server on port #{port} in dev mode...", color: :yellow)
-
-          exec("rerun -- rackup --port #{port} #{ENV['RACKUP_FILE']}")
+          command = "rerun -- #{jit_prefix_dev(jit)}rackup --port #{port} #{ENV['RACKUP_FILE']}"
+          color_puts(command, color: :gray)
+          exec(command)
         end
 
         def stop(_argv)
@@ -45,6 +50,24 @@ LOGO
 
         def print_logo
           puts "\e[36m#{LOGO % Rubee::VERSION}\e[0m" # Cyan color
+        end
+
+        def jit_prefix(key)
+          case key
+          when 'yjit'
+            "ruby --yjit -S "
+          else
+            ""
+          end
+        end
+
+        def jit_prefix_dev(key)
+          case key
+          when 'yjit'
+            "ruby --yjit -S "
+          else
+            ""
+          end
         end
       end
     end
