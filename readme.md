@@ -976,4 +976,4 @@ Have an idea or you wnat to discuss something?
 Please open a [discussion](https://github.com/nucleom42/rubee/discussions)
 
 ## License
-This project is released under the MIT License.
+This project is released under the [MIT License](https://github.com/nucleom42/rubee/blob/main/LICENSE).
