@@ -55,7 +55,7 @@ LOGO
         def jit_prefix(key)
           case key
           when 'yjit'
-            "ruby --yjit $(which rackup) "
+            "ruby --yjit -S "
           else
             ""
           end
@@ -64,7 +64,7 @@ LOGO
         def jit_prefix_dev(key)
           case key
           when 'yjit'
-            "ruby --yjiti "
+            "ruby --yjit -S "
           else
             ""
           end
