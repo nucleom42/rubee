@@ -100,6 +100,11 @@ bundle install
 4. Run ruBee server. Default port is 7000
 ```bash
 rubee start # or rubee start_dev for development
+
+# You can also start you rubee server with yjit compiler and enjoy speed boost.
+rubee start --yjit
+# Option is available for dev environment too
+rubee start_dev --yjit
 ```
 
 5. Open your browser and go to http://localhost:7000
