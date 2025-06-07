@@ -101,7 +101,7 @@ bundle install
 ```bash
 rubee start # or rubee start_dev for development
 
-# You can also start you rubee server with yjit compiler and enjoy speed boost.
+# Sarting from veriosn 1.8.0, you can also start you rubee server with yjit compiler and enjoy speed boost.
 rubee start --yjit
 # Option is available for dev environment too
 rubee start_dev --yjit
