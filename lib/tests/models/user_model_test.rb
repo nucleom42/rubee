@@ -68,6 +68,25 @@ describe 'User model' do
         _(User.all.count).must_equal(initial_count)
       end
     end
+
+    it 'raises Sequel::DatabaseBusy on insert' do
+      thread = nil
+
+      # Start transaction and hold lock
+      User::DB.transaction do
+        user1 = User.new(email: 'holding-lock@example.com', password: '123')
+        user1.save
+
+        thread = Thread.new do
+          User.reconnect!
+          user2 = User.new(email: 'holding-lock2@example.com', password: '125')
+          user2.save
+        end
+      end
+
+      # The transaction above now finishes and releases the lock
+      thread.join
+    end
   end
 
   describe '.update' do
