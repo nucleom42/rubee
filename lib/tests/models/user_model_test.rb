@@ -1,6 +1,5 @@
 require_relative '../test_helper'
 describe 'User model' do
-  parallelize_me!
   describe '.create' do
     after do
       User.destroy_all(cascade: true)
