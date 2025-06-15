@@ -339,6 +339,18 @@ So it may safe some resources.
 
 [Back to content](#content)
 
+## Mysqlite production ready
+Starting from verison 1.9.0 main issue for using sqlite - write db lock is resolved!
+If you feel comfortable you can play with retry configuration parameters
+
+```ruby
+  ## configure db write retries
+  config.db_max_retries = { env:, value: 3 } # set it to 0 to disable or increase if needed
+  config.db_retry_delay = { env:, value: 0.1 }
+  config.db_busy_timeout = { env:, value: 1000 } # this is busy timeout in ms, before raising bussy error
+```
+[Back to content](#content)
+
 ## Routing
 Rubee uses explicit routes. In the routes.rb yout can define routes for any of the main HTTP methods. \
 You can also add any matched parameter denoted by a pair of `{ }` in the path of the route. \
