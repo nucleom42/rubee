@@ -341,13 +341,20 @@ So it may safe some resources.
 
 ## Mysqlite production ready
 Starting from verison 1.9.0 main issue for using sqlite - write db lock is resolved!
-If you feel comfortable you can play with retry configuration parameters
+If you feel comfortable you can play with retry configuration parameters:
 
 ```ruby
   ## configure db write retries
   config.db_max_retries = { env:, value: 3 } # set it to 0 to disable or increase if needed
   config.db_retry_delay = { env:, value: 0.1 }
   config.db_busy_timeout = { env:, value: 1000 } # this is busy timeout in ms, before raising bussy error
+```
+
+For Rubee model class persist methods create and update retry will be added automatically. However, \
+if you want to do it with Sequel dataset you need to do it yourself:
+
+```ruby
+  Rubee::DBTools.with_retry { User.dataset.insert(email: "test@ok.com", password: "123") }
 ```
 [Back to content](#content)
 

@@ -69,6 +69,10 @@ describe 'User model' do
     end
 
     describe 'locking model' do
+      before do
+        User.destroy_all(cascade: true)
+      end
+
       it 'triggers save two times' do
         t1 = Thread.new do
           User::DB.transaction do
