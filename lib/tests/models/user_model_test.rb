@@ -1,5 +1,4 @@
 require_relative '../test_helper'
-
 describe 'User model' do
   describe '.create' do
     after do
@@ -66,6 +65,32 @@ describe 'User model' do
         end
 
         _(User.all.count).must_equal(initial_count)
+      end
+    end
+
+    describe 'locking model' do
+      before do
+        User.destroy_all(cascade: true)
+      end
+
+      it 'triggers save two times' do
+        t1 = Thread.new do
+          User::DB.transaction do
+            user2 = User.new(email: 'holding-lock2@example.com', password: '125')
+            sleep(0.5)
+            user2.save
+          end
+        end
+        sleep(0.1)
+        t2 = Thread.new do
+          user1 = User.new(email: 'holding-lock@example.com', password: '123')
+          user1.save
+        end
+
+        t1.join
+        t2.join
+
+        _(User.all.count).must_equal(2)
       end
     end
   end

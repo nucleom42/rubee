@@ -50,7 +50,7 @@ module Rubee
     def update(args = {})
       assign_attributes(args)
       found_hash = self.class.dataset.where(id:)
-      return self.class.find(id) if found_hash&.update(**args)
+      return self.class.find(id) if Rubee::DBTools.with_retry { found_hash&.update(**args) }
 
       false
     end
@@ -130,6 +130,10 @@ module Rubee
         return if defined?(DB) && !DB.nil?
 
         const_set(:DB, Sequel.connect(Rubee::Configuration.get_database_url))
+
+        Rubee::DBTools.set_prerequisites!
+
+        true
       end
 
       def dataset
@@ -169,7 +173,7 @@ module Rubee
       end
 
       def create(attrs)
-        out_id = dataset.insert(**attrs)
+        out_id = Rubee::DBTools.with_retry { dataset.insert(**attrs) }
         new(**attrs.merge(id: out_id))
       end
 

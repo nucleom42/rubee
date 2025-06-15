@@ -76,6 +76,10 @@ module Rubee
 
         require_relative File.join(root_directory,
                                    'rubee/models/sequel_object')
+        return if black_list.include?('db_tools.rb')
+
+        require_relative File.join(root_directory,
+                                   'rubee/models/db_tools')
 
         Dir[File.join(root_directory, 'rubee/cli/**', '*.rb')].each do |file|
           require_relative file
