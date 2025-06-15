@@ -1,6 +1,6 @@
 require_relative '../test_helper'
-
 describe 'User model' do
+  parallelize_me!
   describe '.create' do
     after do
       User.destroy_all(cascade: true)
@@ -69,23 +69,26 @@ describe 'User model' do
       end
     end
 
-    it 'raises Sequel::DatabaseBusy on insert' do
-      thread = nil
-
-      # Start transaction and hold lock
-      User::DB.transaction do
-        user1 = User.new(email: 'holding-lock@example.com', password: '123')
-        user1.save
-
-        thread = Thread.new do
-          User.reconnect!
-          user2 = User.new(email: 'holding-lock2@example.com', password: '125')
-          user2.save
+    describe 'locking model' do
+      it 'triggers save two times' do
+        t1 = Thread.new do
+          User::DB.transaction do
+            user2 = User.new(email: 'holding-lock2@example.com', password: '125')
+            sleep(0.5)
+            user2.save
+          end
         end
-      end
+        sleep(0.1)
+        t2 = Thread.new do
+          user1 = User.new(email: 'holding-lock@example.com', password: '123')
+          user1.save
+        end
 
-      # The transaction above now finishes and releases the lock
-      thread.join
+        t1.join
+        t2.join
+
+        _(User.all.count).must_equal(2)
+      end
     end
   end
 

@@ -10,6 +10,11 @@ Rubee::Configuration.setup(env = :development) do |config|
 
   ## configure logger
   # config.logger = { logger: MyLogger, env: }
+
+  ## configure db write retries
+  # config.db_max_retries = { env:, value: 3 }
+  # config.db_retry_delay = { env:, value: 0.1 }
+  # config.db_busy_timeout = { env:, value: 1 }
 end
 
 Rubee::Configuration.setup(env = :test) do |config|
@@ -24,6 +29,11 @@ Rubee::Configuration.setup(env = :test) do |config|
 
   ## configure logger
   # config.logger = { logger: MyLogger, env: }
+
+  ## configure db write retries
+  # config.db_max_retries = { env:, value: 3 }
+  # config.db_retry_delay = { env:, value: 0.1 }
+  # config.db_busy_timeout = { env:, value: 1 }
 end
 
 Rubee::Configuration.setup(env = :production) do |config|
@@ -38,4 +48,9 @@ Rubee::Configuration.setup(env = :production) do |config|
 
   ## configure logger
   # config.logger = { logger: MyLogger, env: }
+
+  ## configure db write retries
+  # config.db_max_retries = { env:, value: 3 }
+  # config.db_retry_delay = { env:, value: 0.1 }
+  # config.db_busy_timeout = { env:, value: 1 }
 end

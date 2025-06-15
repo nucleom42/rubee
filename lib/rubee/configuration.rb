@@ -51,6 +51,21 @@ module Rubee
         @configuraiton[args[:app].to_sym][args[:env].to_sym][:fiber_pool_limit] = args[:value]
       end
 
+      def db_max_retries=(args)
+        args[:app] ||= :app
+        @configuraiton[args[:app].to_sym][args[:env].to_sym][:db_max_retries] = args[:value]
+      end
+
+      def db_retry_delay=(args)
+        args[:app] ||= :app
+        @configuraiton[args[:app].to_sym][args[:env].to_sym][:db_retry_delay] = args[:value]
+      end
+
+      def db_busy_timeout=(args)
+        args[:app] ||= :app
+        @configuraiton[args[:app].to_sym][args[:env].to_sym][:db_busy_timeout] = args[:value]
+      end
+
       def logger=(args)
         args[:app] ||= :app
         @configuraiton[args[:app].to_sym][args[:env].to_sym][:logger] = args[:logger]
