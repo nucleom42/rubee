@@ -11,8 +11,7 @@ module Rubee
           app = argv[3]
           app_name = app.nil? ? :app : app.split(':')[1]
           ENV['RACK_ENV'] ||= 'development'
-          file = Rubee::PROJECT_NAME == 'rubee' ? File.join(Dir.pwd, '/lib', 'config/routes.rb') : 'config/routes.rb'
-          routes = eval(File.read(file))
+          routes = Rubee::Router.instance_variable_get(:@routes)
           route = routes.find { |route| route[:path] == path.to_s && route[:method] == method.to_sym }
 
           color_puts("Route not found with path: #{path} and method: #{method}", color: :red) unless route
