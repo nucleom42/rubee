@@ -1,6 +1,7 @@
 module Rubee
   class BaseController
     include Hookable
+    using ChargedString
 
     def initialize(request, route)
       @request = request
@@ -69,7 +70,7 @@ module Rubee
         [404, { 'content-type' => 'text/plain' }, ['Route not found']]
       else # rendering erb view is a default behavior
         # TODO: refactor
-        view_file_name = self.class.name.split('Controller').first.gsub('::', '_').downcase
+        view_file_name = self.class.name.split('Controller').first.gsub('::', '').snakeize
         erb_file = render_view ? render_view.to_s : "#{view_file_name}_#{@route[:action]}"
         lib = Rubee::PROJECT_NAME == 'rubee' ? 'lib/' : ''
         path_parts = self.class.instance_method(@route[:action]).source_location[0].split('/').reverse

@@ -99,7 +99,8 @@ module Rubee
     end
 
     def generate_db_file
-      table_name = @namespace == "" ? @plural_name : "#{@namespace.snakeize}_#{@plural_name}"
+      prefix = @namespace == "" ? "" : "#{@app_name.snakeize}_"
+      table_name = "#{prefix}#{@plural_name}"
       db_file = File.join(Rubee::APP_ROOT, Rubee::LIB, "db/create_#{table_name}.rb")
       if File.exist?(db_file)
         puts "DB file for #{table_name} already exists. Remove it if you want to regenerate"
