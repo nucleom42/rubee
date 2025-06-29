@@ -16,7 +16,7 @@ module Rubee
   JS_DIR = File.join(APP_ROOT, LIB, 'js') unless defined?(JS_DIR)
   CSS_DIR = File.join(APP_ROOT, LIB, 'css') unless defined?(CSS_DIR)
   ROOT_PATH = File.expand_path(File.join(__dir__, '..')) unless defined?(ROOT_PATH)
-  VERSION = '1.9.5'
+  VERSION = '1.9.6'
 
   require_relative 'rubee/router'
   require_relative 'rubee/logger'

@@ -124,13 +124,15 @@ module Rubee
     end
 
     def generate_sequel_schema(attribute)
+      prefix = @namespace == "" ? "" : "#{@app_name.snakeize}_"
+      table_name = "#{prefix}#{@plural_name}"
       type = attribute[:type]
       name = if attribute[:name].is_a?(Array)
         attribute[:name].map { |nom| ":#{nom}" }.join(", ").prepend('[') + ']'
       else
         ":#{attribute[:name]}"
       end
-      table = attribute[:table] || 'replace_with_table_name'
+      table = attribute[:table] || table_name
       options = attribute[:options] || {}
 
       lookup_hash = {
