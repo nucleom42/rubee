@@ -131,7 +131,7 @@ module Rubee
       else
         ":#{attribute[:name]}"
       end
-      table = attribute[:table] || name.gsub(/_id$/).pluralize
+      table = attribute[:table] || name.gsub(/_id$/, '').gsub(':', '').pluralize
       options = attribute[:options] || {}
 
       lookup_hash = {

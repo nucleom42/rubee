@@ -124,7 +124,6 @@ describe 'Rubee::Generator' do
       _(lines.include?('return if Rubee::SequelObject::DB.tables.include?(:apples)')).must_equal(true)
       _(lines.include?('Rubee::SequelObject::DB.create_table(:apples) do')).must_equal(true)
       _(lines.include?('foreign_key :blue_id')).must_equal(true)
-      _(lines.include?(':replace_with_table_name')).must_equal(true)
       _(lines.include?('end')).must_equal(true)
     end
   end
