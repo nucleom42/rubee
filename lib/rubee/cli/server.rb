@@ -16,8 +16,10 @@ LOGO
         end
 
         def start(argv)
-          _, port = argv.first&.split(':')
-          jit = argv[1]
+          # get params
+          options = argv.select { _1.start_with?('--') }
+          port = options.find { _1.start_with?('--port') }&.split('=')&.last
+          jit = options.find { _1.start_with?('--jit') }&.split('=')&.last
 
           port ||= '7000'
           print_logo
@@ -28,8 +30,9 @@ LOGO
         end
 
         def start_dev(argv)
-          _, port = argv.first&.split(':')
-          jit = argv[1]
+          options = argv.select { _1.start_with?('--') }
+          port = options.find { _1.start_with?('--port') }&.split('=')&.last
+          jit = options.find { _1.start_with?('--jit') }&.split('=')&.last
 
           port ||= '7000'
           print_logo

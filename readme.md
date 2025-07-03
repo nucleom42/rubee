@@ -102,9 +102,9 @@ bundle install
 rubee start # or rubee start_dev for development
 
 # Sarting from veriosn 1.8.0, you can also start you rubee server with yjit compiler and enjoy speed boost.
-rubee start --yjit
+rubee start --jit=yjit
 # Option is available for dev environment too
-rubee start_dev --yjit
+rubee start_dev --jit=yjit
 ```
 
 5. Open your browser and go to http://localhost:7000
@@ -648,6 +648,10 @@ end
 
 ```bash
 rubee start
+# It will start to server on port 7000 (default)
+# You can change it by
+
+rubee start --port=3000
 ```
 
 3. Open your browser and navigate to http://localhost:3000/home
