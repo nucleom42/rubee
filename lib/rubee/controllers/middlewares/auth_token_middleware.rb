@@ -31,12 +31,12 @@ module Rubee
       hash = decode_jwt(token)
       email = hash[:username]
 
-      User.where(email:)&.any? if email
+      ::User.where(email:)&.any? if email
     end
 
     def decode_jwt(token)
       decoded_array = begin
-        JWT.decode(token, AuthTokenable::KEY, true, { algorithm: 'HS256' })
+        ::JWT.decode(token, AuthTokenable::KEY, true, { algorithm: 'HS256' })
                       rescue StandardError
                         []
       end

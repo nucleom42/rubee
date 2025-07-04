@@ -29,7 +29,7 @@ module Rubee
 
       def authentificated_user
         # User model must be created with email and password properties at least
-        @authentificated_user ||= User.where(email: params[:email], password: params[:password]).first
+        @authentificated_user ||= ::User.where(email: params[:email], password: params[:password]).first
       end
 
       def authentificate!
@@ -37,7 +37,7 @@ module Rubee
 
         # Generate token
         payload = { username: params[:email], exp: Time.now.to_i + EXPIRE }
-        @token = JWT.encode(payload, KEY, 'HS256')
+        @token = ::JWT.encode(payload, KEY, 'HS256')
         # Set jwt token to the browser within cookie, so next browser request will include it.
         # make sure it passed to response_with headers options
         @token_header = { 'set-cookie' => "jwt=#{@token}; path=/; httponly; secure" }
