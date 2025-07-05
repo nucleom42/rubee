@@ -73,7 +73,7 @@ module Rubee
         view_file_name = self.class.name.split('Controller').first.gsub('::', '').snakeize
         erb_file = render_view ? render_view.to_s : "#{view_file_name}_#{@route[:action]}"
         lib = Rubee::PROJECT_NAME == 'rubee' ? 'lib/' : ''
-        path_parts = self.class.instance_method(@route[:action]).source_location[0].split('/').reverse
+        path_parts = Module.const_source_location(self.class.name)&.first&.split('/')&.reverse
         controller_index = path_parts.find_index { |part| part == 'controllers' }
         app_name = path_parts[controller_index + 1]
         view = render_template(erb_file, { object:, **(options[:locals] || {}) }, app_name:)
