@@ -29,7 +29,7 @@ module Rubee
 
       def authentificated_user
         # User model must be created with email and password properties at least
-        if !@request.cookies['jwt'] && params[:email] && params[:password]
+        if params[:email] && params[:password]
           @authentificated_user ||= ::User.where(email: params[:email], password: params[:password]).first
         elsif @request.cookies['jwt'] && valid_token?
           token = @request.cookies['jwt']
