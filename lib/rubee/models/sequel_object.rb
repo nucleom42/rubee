@@ -86,15 +86,21 @@ module Rubee
       # owns_many :comments
       # > user.comments
       # > [<comment1>, <comment2>]
-      def owns_many(assoc, fk_name: nil, over: nil, **_options)
+      def owns_many(assoc, fk_name: nil, over: nil, **options)
         singularized_assoc_name = assoc.to_s.singularize
         fk_name ||= "#{name.to_s.downcase}_id"
+        namespace = options[:namespace]
 
         define_method(assoc) do
-          klass = Object.const_get(singularized_assoc_name.capitalize)
+          assoc = if namespace
+            "::#{namespace.to_s.camelize}::#{singularized_assoc_name.camelize}"
+          else
+            singularized_assoc_name.camelize
+          end
+          klass = Object.const_get(assoc)
           if over
             sequel_dataset = klass
-              .join(over.to_sym, "#{singularized_assoc_name}_id".to_sym => :id)
+              .join(over.to_sym, "#{singularized_assoc_name.snakeize}_id".to_sym => :id)
               .where(fk_name.to_sym => id)
             self.class.serialize(sequel_dataset, klass)
           else
@@ -107,10 +113,16 @@ module Rubee
       # owns_one :user
       # > comment.user
       # > <user>
-      def owns_one(assoc, options = {})
+      def owns_one(assoc, fk_name: nil, **options)
         fk_name ||= "#{name.to_s.downcase}_id"
+        namespace = options[:namespace]
         define_method(assoc) do
-          Object.const_get(assoc.capitalize).where(fk_name.to_sym => id)&.first
+          assoc = if namespace
+            "::#{namespace.to_s.camelize}::#{assoc.to_s.camelize}"
+          else
+            assoc.to_s.camelize
+          end
+          Object.const_get(assoc).where(fk_name.to_sym => id)&.first
         end
       end
 
@@ -118,10 +130,16 @@ module Rubee
       # holds :user
       # > account.user
       # > <user>
-      def holds(assoc, fk_name: nil, **_options)
+      def holds(assoc, fk_name: nil, **options)
+        namespace = options[:namespace]
         fk_name ||= "#{assoc.to_s.downcase}_id"
         define_method(assoc) do
-          target_klass = Object.const_get(assoc.capitalize)
+          klass_string = if namespace
+            "::#{namespace.to_s.camelize}::#{assoc.to_s.camelize}"
+          else
+            assoc.to_s.camelize
+          end
+          target_klass = Object.const_get(klass_string)
           target_klass.find(send(fk_name))
         end
       end
@@ -184,7 +202,7 @@ module Rubee
       def serialize(suquel_dataset, klass = nil)
         klass ||= self
         suquel_dataset.map do |record_hash|
-          target_klass_fields = DB[klass.name.pluralize.downcase.camelize.to_sym].columns
+          target_klass_fields = DB[klass.name.pluralize.downcase.to_s.camelize.to_sym].columns
           klass_attributes = record_hash.filter { target_klass_fields.include?(_1) }
           klass.new(**klass_attributes)
         end
