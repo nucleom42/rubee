@@ -6,7 +6,7 @@
 ![GitHub Repo stars](https://img.shields.io/github/stars/nucleom42/rubee?style=social)
 
 
-# <img src="lib/images/rubee.svg" alt="ruBee" height="40"> ... ruBee
+# <img src="lib/images/rubee.svg" alt="RUBEE" height="40"> ... RUBEE
 
 Rubee is a Ruby-based framework designed to streamline the development of modular monolith applications. \
 It offers a structured approach to building scalable, maintainable, and React-ready projects, \
@@ -15,6 +15,36 @@ making it an ideal choice for developers seeking a balance between monolithic si
 Want to get a quick API server up and runing? You can do it for real quick!
 <br />
 [![Watch the demo](https://img.youtube.com/vi/ko7H70s7qq0/hqdefault.jpg)](https://www.youtube.com/watch?v=ko7H70s7qq0)
+
+## Production ready
+
+Take a look on the rubee demo sitei with all documentation stored in there: https://rubee.duckdns.org
+Want to explore how it built? https://github.com/nucleom42/rubee-site
+
+## Stress tested
+
+```bash
+wrk -t4 -c100 -d30s https://rubee.duckdns.org/docs
+Running 30s test @ https://rubee.duckdns.org/docs
+  4 threads and 100 connections
+  Thread Stats   Avg      Stdev     Max   +/- Stdev
+    Latency   304.95ms   33.22ms 551.86ms   90.38%
+    Req/Sec    82.25     42.37   280.00     69.86%
+  9721 requests in 30.02s, 4.11MB read
+Requests/sec:    323.78
+Transfer/sec:    140.07KB
+```
+
+- Short output explanation:
+- Requests/sec: ~324
+- Average latency: ~305 ms
+- Total requests handled: 9,721
+- Hardware: Raspberry Pi 5(8 Gb) (single board computer)
+- Server: Rubee app hosted via Nginx + HTTPS
+
+This demonstrates RUBEE’s efficient architecture and suitability for lightweight deployments — even on low-power hardware.
+
+
 ## Content
 
 - [Installation](#installation)
@@ -35,44 +65,46 @@ Want to get a quick API server up and runing? You can do it for real quick!
 - [Modular](#modualar-application)
 - [Logger](#logger)
 
+<details>
+<summary id="content">Documentation content</summary>
 ## Features
 
-🐝 Lightweight – A minimal footprint focused on serving Ruby applications efficiently.
+Lightweight – A minimal footprint focused on serving Ruby applications efficiently.
 <br>
-🧩 Modular – A modular approach to application development. Build modular monoliths with ease by attaching \
+Modular – A modular approach to application development. Build modular monoliths with ease by attaching \
 as many subprojects as you need.
 <br>
-📜 Contract-driven – Define your API contracts in a simple, declarative way, then generate all the boilerplate you need.
+Contract-driven – Define your API contracts in a simple, declarative way, then generate all the boilerplate you need.
 <br>
-⚡ Fast – Optimized for speed, providing quick responses. (Everything is relative, we know! 😄)
+Fast – Optimized for speed, providing quick responses. (Everything is relative, we know! 😄)
 <br>
-🧱 Rack-powered – Built on Rack. The full Rack API is available for easy integration.
+Rack-powered – Built on Rack. The full Rack API is available for easy integration.
 <br>
-🗄️ Databases – Supports SQLite3, PostgreSQL, MySQL, and more via the Sequel gem.
+Databases – Supports SQLite3, PostgreSQL, MySQL, and more via the Sequel gem.
 <br>
-🖼️ Views – JSON, ERB, and plain HTML out of the box.
+Views – JSON, ERB, and plain HTML out of the box.
 <br>
-⚛️  React Ready – React is supported as a first-class Rubee view engine.
+React Ready – React is supported as a first-class Rubee view engine.
 <br>
-📦 Bundlable – Charge your Rubee app with any gem you need. Update effortlessly via Bundler.
+Bundlable – Charge your Rubee app with any gem you need. Update effortlessly via Bundler.
 <br>
-🧬 ORM-agnostic – Models are native ORM objects, but you can use them as blueprints for any data source.
+ORM-agnostic – Models are native ORM objects, but you can use them as blueprints for any data source.
 <br>
-🔐 Authenticatable – Easily add JWT authentication to any controller action.
+Authenticatable – Easily add JWT authentication to any controller action.
 <br>
-🪝 Hooks – Add logic before, after, or around any controller action.
+Hooks – Add logic before, after, or around any controller action.
 <br>
-🧪 Testable – Run all or selected tests using fast, beloved Minitest.
+Testable – Run all or selected tests using fast, beloved Minitest.
 <br>
-👷 Asyncable – Plug in async adapters and use any popular background job engine.
+Asyncable – Plug in async adapters and use any popular background job engine.
 <br>
-⌨️  Console – Start an interactive console and reload on the fly.
+Console – Start an interactive console and reload on the fly.
 <br>
-⚙️  Background Jobs – Schedule and process background jobs using your preferred async stack.
+Background Jobs – Schedule and process background jobs using your preferred async stack.
 
 ## Installation
 
-1. Install ruBee
+1. Install RUBEE
 ```bash
 gem install ru.Bee
 ```
@@ -97,7 +129,7 @@ Make sure:
 bundle install
 ```
 
-4. Run ruBee server. Default port is 7000
+4. Run RUBEE server. Default port is 7000
 ```bash
 rubee start # or rubee start_dev for development
 
@@ -158,7 +190,7 @@ This will generate the following files
 [Back to content](#content)
 
 ## Model
-Model in ruBee is just simple ruby object that can be serilalized in the view
+Model in RUBEE is just simple ruby object that can be serilalized in the view
 in the way it required (ie json).
 Here below is a simple example on how it can be used by rendering json from in memory object
 
@@ -510,13 +542,13 @@ Will generate:
 
 ### Modualar application
 
-You can also use ruBee to create modular applications.\
+You can also use RUBEE to create modular applications.\
 And attach as many subprojects you need.
 Main philosophy of attach functinality is to keep the main project clean and easy to maintain. It will still\
 share data with the main app. So where to define a border between the main app and subprojects is up to developer.
 Howerver by attching new subproject you will get a new folder and files configured and namespaced respectively.
 
-So if you need to extend your main app with a separate project, you can do it easily in ruBee.
+So if you need to extend your main app with a separate project, you can do it easily in RUBEE.
 1. Attach new subrpoject
 
 ```bash
@@ -585,7 +617,7 @@ rubee start # or rubee start_dev for development
 [Back to content](#content)
 
 ## Views
-View in ruBee is just a plain html/erb/react file that can be rendered from the controller.
+View in RUBEE is just a plain html/erb/react file that can be rendered from the controller.
 
 ## Templates over erb
 
@@ -727,7 +759,7 @@ function Users() {
 
 ## Object hooks
 
-In ruBee by extending Hookable module any Ruby object can be charged with hooks (logic),
+In RUBEE by extending Hookable module any Ruby object can be charged with hooks (logic),
 that can be executed before, after and around a specific method execution.
 
 Here below a controller example. However it can be used in any Ruby object, like Model etc.
@@ -858,7 +890,7 @@ rubee test auth_tokenable_test.rb # run specific tests
 [Back to content](#content)
 
 
-If you want to run any ruBee command within a specific ENV make sure you added it before a command.
+If you want to run any RUBEE command within a specific ENV make sure you added it before a command.
 For instance if you want to run console in test environment you need to run the following command
 
 ```bash
@@ -990,9 +1022,11 @@ When you trigger the controller action, the logs will look like this:
 
 [Back to content](#content)
 
+</details>
+
 ### Contributing
 
-If you are interested in contributing to ruBee,
+If you are interested in contributing to RUBEE,
 please read the [Contributing](https://github.com/nucleom42/rubee/blob/main/CONTRIBUTING.md) guide.
 Also feel free to open an [issue](https://github.com/nucleom42/rubee/issues) if you apot one.
 Have an idea or you wnat to discuss something?
