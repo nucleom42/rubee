@@ -66,7 +66,10 @@ This demonstrates RUBEE’s efficient architecture and suitability for lightweig
 - [Logger](#logger)
 
 <details>
-<summary id="content"> Documentation content >> Click to expand!You can read it over demo [site](https://rubee.duckdns.org/docs)</summary>
+<summary id="content">📚 Documentation Content — Click to expand!</summary>
+
+You can read it on the demo [site](https://rubee.duckdns.org/docs).
+
 ## Features
 
 Lightweight – A minimal footprint focused on serving Ruby applications efficiently.
