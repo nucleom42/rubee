@@ -18,7 +18,7 @@ Want to get a quick API server up and runing? You can do it for real quick!
 
 ## Production ready
 
-Take a look on the rubee demo sitei with all documentation stored in there: https://rubee.duckdns.org
+Take a look on the rubee demo site with all documentation stored in there: https://rubee.duckdns.org
 Want to explore how it built? https://github.com/nucleom42/rubee-site
 
 ## Stress tested
