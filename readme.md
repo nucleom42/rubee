@@ -65,9 +65,8 @@ This demonstrates RUBEE’s efficient architecture and suitability for lightweig
 - [Logger](#logger)
 
 You can read it on the demo [site](https://rubee.duckdns.org/docs).
-The doc site is off now. Will be restored shortly. We are working on it.
-Please for the meantime, refer to downbelow documentation.
-Sorry for inconviniences.
+The doc site is on maintenance mode now. We are working on it.
+Please refer to downbelow documentation.
 
 ## Features
 
