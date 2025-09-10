@@ -44,7 +44,6 @@ Transfer/sec:    140.07KB
 
 This demonstrates RUBEE’s efficient architecture and suitability for lightweight deployments — even on low-power hardware.
 
-
 ## Content
 
 - [Installation](#installation)
@@ -65,10 +64,10 @@ This demonstrates RUBEE’s efficient architecture and suitability for lightweig
 - [Modular](#modualar-application)
 - [Logger](#logger)
 
-<details>
-<summary id="content">📚 Documentation Content — Click to expand!</summary>
-
 You can read it on the demo [site](https://rubee.duckdns.org/docs).
+The doc site is off now. Will be restored shortly. We are working on it.
+Please for the meantime, refer to downbelow documentation.
+Sorry for inconviniences.
 
 ## Features
 
@@ -1024,8 +1023,6 @@ When you trigger the controller action, the logs will look like this:
 ```
 
 [Back to content](#content)
-
-</details>
 
 ### Contributing
 
