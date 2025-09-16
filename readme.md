@@ -18,7 +18,7 @@ Want to get a quick API server up and runing? You can do it for real quick!
 
 ## Production ready
 
-Take a look on the rubee demo site with all documentation stored in there: https://rubee.duckdns.org
+Take a look on the rubee demo site with all documentation stored in there: https://rubee.dedyn.io/
 Want to explore how it built? https://github.com/nucleom42/rubee-site
 
 ## Stress tested
@@ -64,9 +64,9 @@ This demonstrates RUBEE’s efficient architecture and suitability for lightweig
 - [Modular](#modualar-application)
 - [Logger](#logger)
 
-You can read it on the demo [site](https://rubee.duckdns.org/docs).
+You can read it on the demo [site](https://rubee.dedyn.io/)
 
-🚧 The doc site is on maintenance mode now. We are working on it.
+🚧 The doc site is on uodate mode now. We are working on it.
 Please refer to downbelow documentation.
 
 ## Features
