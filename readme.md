@@ -697,6 +697,9 @@ So that will ensure all cahnges applying instantly.
 
 6. You can generate react view from the route by indicating the view name explicitly
 
+7. Do not forget to rebuild react app in production by running `rubee react build`. This is unnecessary in development,
+when you use `rubee react watch` tho. So it does rebuild automatically.
+
 ```ruby
 # config/routes.rb
 Rubee::Router.draw do |router|
