@@ -22,6 +22,14 @@ module Rubee
             exec('npm run watch')
           end
         end
+
+        def build(_argv)
+          if Rubee::PROJECT_NAME == 'rubee'
+            exec('cd ./lib && npm run build')
+          else
+            exec('npm run build')
+          end
+        end
       end
     end
   end
