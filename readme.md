@@ -1030,10 +1030,13 @@ When you trigger the controller action, the logs will look like this:
 ### Contributing
 
 If you are interested in contributing to RUBEE,
-please read the [Contributing](https://github.com/nucleom42/rubee/blob/main/CONTRIBUTING.md) guide.
+please read the [Contributing]()https://github.com/nucleom42/rubee/blob/main/contribution.md) guide.
 Also feel free to open an [issue](https://github.com/nucleom42/rubee/issues) if you apot one.
 Have an idea or you wnat to discuss something?
 Please open a [discussion](https://github.com/nucleom42/rubee/discussions)
+
+## Roadmap
+Please refer the [Roadmap](https://github.com/nucleom42/rubee/blob/main/roadmap.md)
 
 ## License
 This project is released under the [MIT License](https://github.com/nucleom42/rubee/blob/main/LICENSE).
