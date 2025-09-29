@@ -6,6 +6,9 @@ class CreatePosts
       primary_key(:id)
       foreign_key(:user_id, :users)
       foreign_key(:comment_id, :comments)
+      # timestamps
+      datetime(:created)
+      datetime(:updated)
     end
 
     Post.create(user_id: User.all.first.id, comment_id: Comment.all.first.id)

@@ -1,4 +1,5 @@
 require_relative '../test_helper'
+
 describe 'User model' do
   describe '.create' do
     after do
@@ -10,6 +11,18 @@ describe 'User model' do
         user = User.create(email: 'ok-test@test.com', password: '123')
 
         _(user.persisted?).must_equal(true)
+      end
+
+      it 'set created field' do
+        user = User.create(email: 'ok-test@test.com', password: '123')
+
+        _(user.created.is_a?(Time)).must_equal(true)
+      end
+
+      it 'set updated field' do
+        user = User.create(email: 'ok-test@test.com', password: '123')
+
+        _(user.updated.is_a?(Time)).must_equal(true)
       end
     end
 
@@ -38,6 +51,15 @@ describe 'User model' do
         user.save
 
         _(user.persisted?).must_equal(true)
+      end
+
+      it 'updates updated field' do
+        user = User.create(email: 'ok-test@test.com', password: '123')
+        after_create_updated = user.updated
+
+        user.email = 'ok-test2@test.com'
+        user.save
+        _(user.updated > after_create_updated).must_equal(true)
       end
     end
 
@@ -107,6 +129,25 @@ describe 'User model' do
         user.update(password: '1234')
 
         _(user.reload.password).must_equal('1234')
+      end
+
+      it 'updates updated field' do
+        user = User.create(email: 'ok-test@test.com', password: '123')
+        after_create_updated = user.updated
+
+        user.update(email: 'ok-test2@test.com')
+        _(user.updated > after_create_updated).must_equal(true)
+      end
+    end
+
+    describe 'when udpate existing user with no argumants' do
+      it 'update updated field' do
+        user = User.new(email: 'ok-test@test.com', password: '123')
+        user.save
+        updated_field_before_update = user.updated
+
+        user.update
+        _(user.updated > updated_field_before_update).must_equal(true)
       end
     end
   end

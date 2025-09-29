@@ -164,7 +164,9 @@ rubee test models/user_model_test.rb
           attributes: [
             { name: 'id', type: :primary },
             { name: 'colour', type: :string },
-            { name: 'weight', type: :integer }
+            { name: 'weight', type: :integer },
+            { name: 'created', type: :datetime },
+            { name: 'updated', type: :datetime },
           ]
         }
     end
@@ -335,19 +337,19 @@ Use complex queries chains and when ready serialize it back to Rubee object.
 ```Ruby
 # user model
 class User < Rubee::SequelObject
-  attr_accessor :id, :email, :password
+  attr_accessor :id, :email, :password, :created, :updated
   owns_many :comments, over: :posts
 end
 
 # comment model
 class Comment < Rubee::SequelObject
-  attr_accessor :id, :text, :user_id
+  attr_accessor :id, :text, :user_id, :created, :updated
   owns_many :users, over: :posts
 end
 
-# join post model
+# join post modenl
 class Post < Rubee::SequelObject
-  attr_accessor :id, :user_id, :comment_id
+  attr_accessor :id, :user_id, :comment_id, :created, :updated
   holds :comment
   holds :user
 end
@@ -362,11 +364,11 @@ irb(main):005> post = Post.new(user_id: user.id, comment_id: comment.id)
 irb(main):006> post.save
 => true
 irb(main):007> comment
-=> #<Comment:0x000000012281a650 @id=21, @text="test">
+=> #<Comment:0x000000012281a650 @id=21, @text="test", @created=2025-09-28 22:03:07.011332 -0400, @updated=2025-09-28 22:03:07.011332 -0400>
 irb(main):008> result = Comment.dataset.join(:posts, comment_id: :id)
 irb(main):009>  .where(comment_id: Comment.where(text: "test").last.id)
 irb(main):010>  .then { |dataset| Comment.serialize(dataset) }
-=> [#<Comment:0x0000000121889998 @id=30, @text="test", @user_id=702>]
+=> [#<Comment:0x0000000121889998 @id=30, @text="test", @user_id=702, @created=2025-09-28 22:03:07.011332 -0400, @updated=2025-09-28 22:03:07.011332 -0400>]
 ```
 This is recommended when you want to run one query and serialize it back to Rubee object only once.
 So it may safe some resources.
@@ -527,7 +529,9 @@ Rubee::Router.draw do |router|
       attributes: [
         { name: 'id', type: :primary },
         { name: 'colour', type: :string },
-        { name: 'weight', type: :integer }
+        { name: 'weight', type: :integer },
+        { name: 'created', type: :datetime },
+        { name: 'updated', type: :datetime },
       ]
     }
 end
@@ -571,7 +575,9 @@ Rubee::Router.draw do |router|
                                  name: 'cabage',
                                  attributes: [
                                    { name: 'id', type: :primary },
-                                   { name: 'name', type: :string }
+                                   { name: 'name', type: :string },
+                                   { name: 'created', type: :datetime },
+                                   { name: 'updated', type: :datetime },
                                  ]
                                },
                                namespace: :admin # mandatory option for supporting namespacing

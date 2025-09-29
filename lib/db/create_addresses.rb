@@ -10,6 +10,9 @@ class CreateAddresses
       String(:street)
       String(:apt)
       foreign_key(:user_id, :users)
+      # timestamps
+      datetime(:created)
+      datetime(:updated)
     end
 
     # Address.create(street: '13th Ave', city: 'NY', state: 'NY', zip: '55555', user_id: User.all.first.id)

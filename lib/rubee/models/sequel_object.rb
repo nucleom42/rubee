@@ -4,6 +4,8 @@ module Rubee
     using ChargedString
     using ChargedHash
 
+    before :save, :update, :set_timestamps
+
     def destroy(cascade: false, **_options)
       if cascade
         # find all tables with foreign key
@@ -41,14 +43,15 @@ module Rubee
       true
     end
 
-    def assign_attributes(args = {})
-      to_h.each_key do |attr|
+    def assign_attributes(args={})
+      self.class.dataset.columns do |attr|
         send("#{attr}=", args[attr.to_sym]) if args[attr.to_sym]
       end
     end
 
-    def update(args = {})
+    def update(args={})
       assign_attributes(args)
+      args.merge!(updated:)
       found_hash = self.class.dataset.where(id:)
       return self.class.find(id) if Rubee::DBTools.with_retry { found_hash&.update(**args) }
 
@@ -61,6 +64,15 @@ module Rubee
 
     def reload
       self.class.find(id)
+    end
+
+    private
+
+    def set_timestamps
+      return unless respond_to?(:created) && respond_to?(:updated)
+
+      self.created ||= Time.now
+      self.updated = Time.now
     end
 
     class << self
@@ -191,6 +203,10 @@ module Rubee
       end
 
       def create(attrs)
+        if dataset.columns.include?(:created) && dataset.columns.include?(:updated)
+          attrs.merge!(created: Time.now, updated: Time.now)
+        end
+
         out_id = Rubee::DBTools.with_retry { dataset.insert(**attrs) }
         new(**attrs.merge(id: out_id))
       end

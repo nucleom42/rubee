@@ -6,6 +6,9 @@ class CreateAccounts
       primary_key(:id)
       String(:addres)
       foreign_key(:user_id, :users)
+      # timestamps
+      datetime(:created)
+      datetime(:updated)
     end
 
     Account.create(addres: '13th Ave, NY', user_id: User.all.first.id)
