@@ -148,6 +148,8 @@ rubee start_dev --jit=yjit
 rubee test
 # or you can specify specific test file
 rubee test models/user_model_test.rb
+# you can run specicfc line in the test file
+rubee test models/user_model_test.rb --line=12
 ```
 [Back to content](#content)
 
