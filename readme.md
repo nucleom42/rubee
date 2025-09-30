@@ -814,6 +814,28 @@ after log around
 127.0.0.1 - - [17/Feb/2025:11:42:14 -0500] "GET /apples HTTP/1.1" 401 - 0.0359
 ```
 
+Starting from ver 1.11 hooks are able to be pinned to class methods.
+
+```ruby
+class AnyClass
+  before :print_world, :print_hello, instance_methods: true # you can useinstance method as a handler
+
+  class << self
+    def print_world
+      puts "world!"
+    end
+
+    def print_hello
+      puts "hello!"
+    end
+  end
+end
+```
+```bash
+hello!
+world!
+```
+
 [Back to content](#content)
 
 ## JWT based authentification

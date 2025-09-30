@@ -14,6 +14,7 @@ This document outlines the planned features and improvements for Rubee.
 - [x] Add Timestamps model (ver. 1.10)
 - [ ] Inner monitoring system
 - [ ] Separate Rubee functionality into detachable gems
+- [x] Make hooks able to handle class methods (ver. 1.11)
 
 ## Documentation & Community
 - [ ] Forum for Rubee doc site

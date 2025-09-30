@@ -54,6 +54,11 @@ class TestHookable
   before :prep_unless_condition, :set_value
   after :set_unless_condition, :set_glue, unless: :value_red
 
+  # Check class methods
+  before :before_print_hello, :print_world, class_methods: true
+  after :after_print_hello, :print_world, class_methods: true
+  around :around_print_hello, :around_print_world, class_methods: true
+
   def after_around_before; end
 
   def before_around_after; end
@@ -80,6 +85,31 @@ class TestHookable
 
   def value_red
     value == 'red'
+  end
+
+  class << self
+    def before_print_hello
+      puts 'hello'
+    end
+
+    def after_print_hello
+      puts 'hello'
+    end
+
+    def around_print_hello
+      puts 'hello'
+    end
+
+    def print_world
+      puts 'world'
+    end
+
+    def around_print_world
+      puts 'world1'
+      res = yield
+      puts 'world2'
+      res
+    end
   end
 
   private
@@ -215,6 +245,32 @@ describe 'Hookable Controller' do
       hookable.success_around
 
       _(hookable.glue).must_be_nil
+    end
+  end
+
+  describe 'class methods' do
+    it 'calls before print hello hook' do
+      output = capture_io do
+        TestHookable.before_print_hello
+      end.first # capture_io returns [stdout, stderr]
+
+      _(output).must_equal("world\nhello\n")
+    end
+
+    it 'calls after print hello hook' do
+      output = capture_io do
+        TestHookable.after_print_hello
+      end.first # capture_io returns [stdout, stderr]
+
+      _(output).must_equal("hello\nworld\n")
+    end
+
+    it 'calls around print hello hook' do
+      output = capture_io do
+        TestHookable.around_print_hello
+      end.first # capture_io returns [stdout, stderr]
+
+      _(output).must_equal("world1\nhello\nworld2\n")
     end
   end
 end

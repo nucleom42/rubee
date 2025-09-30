@@ -7,16 +7,6 @@ module Rubee
 
     module ClassMethods
       def before(*methods, handler, **options)
-        if options[:class_methods]
-          methods.each do |method|
-            define_method(method) do |*args, &block|
-              self.class.send(method, *args, &block)
-            end
-
-            private(method)
-          end
-        end
-
         methods.each do |method|
           hook = Module.new do
             define_method(method) do |*args, &block|
@@ -28,21 +18,11 @@ module Rubee
             end
           end
 
-          prepend(hook)
+          options[:class_methods] ? singleton_class.prepend(hook) : prepend(hook)
         end
       end
 
       def after(*methods, handler, **options)
-        if options[:class_methods]
-          methods.each do |method|
-            define_method(method) do |*args, &block|
-              self.class.send(method, *args, &block)
-            end
-
-            private(method)
-          end
-        end
-
         methods.each do |method|
           hook = Module.new do
             define_method(method) do |*args, &block|
@@ -56,21 +36,11 @@ module Rubee
             end
           end
 
-          prepend(hook)
+          options[:class_methods] ? singleton_class.prepend(hook) : prepend(hook)
         end
       end
 
       def around(*methods, handler, **options)
-        if options[:class_methods]
-          methods.each do |method|
-            define_method(method) do |*args, &block|
-              self.class.send(method, *args, &block)
-            end
-
-            private(method)
-          end
-        end
-
         methods.each do |method|
           hook = Module.new do
             define_method(method) do |*args, &block|
@@ -93,16 +63,8 @@ module Rubee
             end
           end
 
-          prepend(hook)
+          options[:class_methods] ? singleton_class.prepend(hook) : prepend(hook)
         end
-      end
-    end
-
-    module InstanceMethods
-      private
-
-      def handle_class_method
-        self.class.send(name, *args, &block)
       end
 
       def conditions_met?(if_condition = nil, unless_condition = nil)
@@ -126,6 +88,12 @@ module Rubee
           end
 
         if_condition_result && !unless_condition_result
+      end
+    end
+
+    module InstanceMethods
+      def conditions_met?(if_condition = nil, unless_condition = nil)
+        self.class.conditions_met?(if_condition, unless_condition)
       end
     end
   end
