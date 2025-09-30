@@ -818,7 +818,7 @@ Starting from ver 1.11 hooks are able to be pinned to class methods.
 
 ```ruby
 class AnyClass
-  before :print_world, :print_hello, instance_methods: true # you can useinstance method as a handler
+  before :print_world, :print_hello, class_methods: true # you can useinstance method as a handler
 
   class << self
     def print_world
