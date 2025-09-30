@@ -24,7 +24,7 @@ This document outlines the planned features and improvements for Rubee.
 - [ ] Add version enging for migrations so it will keep execution status
 
 ## Testing
-- [x] Add in test CLI ability execute line in file
+- [x] Add in test CLI ability execute line in file (ver. 1.10.1)
 
 ## Templating CLI
 - [ ] Make it able to generate boilerplate code for the list of templates like, blog, forum, chat, etc
