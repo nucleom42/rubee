@@ -253,7 +253,7 @@ irb(main):015> user = User.new(email: "llo@ok.com", password: 543)
 
 Save record in db
 ```Ruby
-=> #<User:0x000000010cda23b8 @email="llo@ok.com", @password=543>
+=> #<User:0x000000010cda23b8 @email="llo@ok.com", @password=543, @created="2025-09-28 22:03:07.011332 -0400", @updated="2025-09-28 22:03:07.011332 -0400">
 irb(main):018> user.save
 => true
 ```
@@ -261,7 +261,7 @@ irb(main):018> user.save
 Update record with new value
 ```Ruby
 irb(main):019> user.update(email: "update@email.com")
-=> #<User:0x000000010c39b298 @email="update@email.com", @id=3, @password="543">
+=> #<User:0x000000010c39b298 @email="update@email.com", @id=3, @password="543" @created="2025-09-28 22:03:07.011332 -0400", @updated="2025-09-28 22:03:07.011332 -0400">
 ```
 
 Check whether it includes id
@@ -275,13 +275,13 @@ irb(main):016> user.persisted?
 Get the record from the database
 ```Ruby
 irb(main):011> user = User.last
-=> #<User:0x000000010ccea178 @email="ok23@ok.com", @id=2, @password="123">
+=> #<User:0x000000010ccea178 @email="ok23@ok.com", @id=2, @password="123", @created="2025-09-28 22:03:07.011332 -0400", @updated="2025-09-28 22:03:07.011332 -0400">
 irb(main):012> user.email = "new@ok.com"
 => "new@ok.com"
 irb(main):013> user
-=> #<User:0x000000010ccea178 @email="new@ok.com", @id=2, @password="123">
+=> #<User:0x000000010ccea178 @email="new@ok.com", @id=2, @password="123", @created="2025-09-28 22:03:07.011332 -0400", @updated="2025-09-28 22:03:07.011332 -0400">
 irb(main):014> user.reload
-=> #<User:0x000000010c488548 @email="ok23@ok.com", @id=2, @password="123"> # not persited data was updated from db
+=> #<User:0x000000010c488548 @email="ok23@ok.com", @id=2, @password="123", @created="2025-09-28 22:03:07.011332 -0400", @updated="2025-09-28 22:03:07.011332 -0400"> # not persited data was updated from db
 ```
 
 Assign attributes without persisiting it to db
@@ -299,24 +299,24 @@ irb(main):005> User.where(email: "ok23@ok.com")
 Get all record
 ```Ruby
 irb(main):001> User.all
-=> [#<User:0x000000010c239a30 @email="ok@ok.com", @id=1, @password="password">]
+=> [#<User:0x000000010c239a30 @email="ok@ok.com", @id=1, @password="password", @created="2025-09-28 22:03:07.011332 -0400", @updated="2025-09-28 22:03:07.011332 -0400">]
 ```
 Find by id
 ```Ruby
 irb(main):002> user = User.find 1
-=> #<User:0x000000010c2f7cd8 @email="ok@ok.com", @id=1, @password="password">
+=> #<User:0x000000010c2f7cd8 @email="ok@ok.com", @id=1, @password="password", @created="2025-09-28 22:03:07.011332 -0400", @updated="2025-09-28 22:03:07.011332 -0400">
 ```
 
 Get last record
 ```Ruby
 irb(main):003> User.last
-=> #<User:0x000000010c2f7cd8 @email="ok@ok.com", @id=1, @password="password">
+=> #<User:0x000000010c2f7cd8 @email="ok@ok.com", @id=1, @password="password", @created="2025-09-28 22:03:07.011332 -0400", @updated="2025-09-28 22:03:07.011332 -0400">
 ```
 
 Create new persited record
 ```Ruby
 irb(main):004> User.create(email: "ok23@ok.com", password: 123)
-=> #<User:0x000000010c393818 @email="ok23@ok.com", @id=2, @password=123>
+=> #<User:0x000000010c393818 @email="ok23@ok.com", @id=2, @password=123, @created="2025-09-28 22:03:07.011332 -0400", @updated="2025-09-28 22:03:07.011332 -0400">
 ```
 
 Destroy record and all related records
@@ -328,7 +328,7 @@ irb(main):021> user.destroy(cascade: true)
 Destroy all records one by one
 ```Ruby
 irb(main):022> User.destroy_all
-=> [#<User:0x000000010d42df98 @email="ok@ok.com", @id=1, @password="password">, #<User:0x000000010d42de80 @email="ok23@ok.com", @id=2, @password="123">
+=> [#<User:0x000000010d42df98 @email="ok@ok.com", @id=1, @password="password", @created="2025-09-28 22:03:07.011332 -0400", @updated="2025-09-28 22:03:07.011332 -0400">, #<User:0x000000010d42de80 @email="ok23@ok.com", @id=2, @password="123", @created="2025-09-28 22:03:07.011332 -0400", @updated="2025-09-28 22:03:07.011332 -0400">>
 irb(main):023> User.all
 => []
 ```
@@ -434,7 +434,9 @@ Rubee::Router.draw do |router|
       attributes: [
         { name: 'id', type: :primary },
         { name: 'colour', type: :string },
-        { name: 'weight', type: :integer }
+        { name: 'weight', type: :integer },
+        { name: 'created', type: :datetime },
+        { name: 'updated', type: :datetime },
       ]
     }
 end
