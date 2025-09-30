@@ -11,7 +11,7 @@ This document outlines the planned features and improvements for Rubee.
 - [ ] Security: DDoS protection
 
 ## Core Functionality
-- [ ] Add Timestamps model
+- [x] Add Timestamps model (ver. 1.10)
 - [ ] Inner monitoring system
 - [ ] Separate Rubee functionality into detachable gems
 
