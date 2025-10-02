@@ -8,7 +8,8 @@
 
 # <img src="lib/images/rubee.svg" alt="RUBEE" height="40"> ... RUBEE
 
-Rubee is a Ruby-based framework designed to streamline the development of modular monolith web applications. \
+Rubee is a Ruby-based web framework designed to streamline the development of modular monolith web applications. \
+Under the hood, it leverages the power of Ruby and Rack backed by Puma, offering a clean, efficient, and flexible architecture. \
 It offers a structured approach to building scalable, maintainable, and React-ready projects, \
 making it an ideal choice for developers seeking a balance between monolithic simplicity and modular flexibility.
 
