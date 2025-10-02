@@ -29,5 +29,7 @@ This document outlines the planned features and improvements for Rubee.
 
 ## Templating CLI
 - [ ] Make it able to generate boilerplate code for the list of templates like, blog, forum, chat, etc
+- [ ] Convert ERD json to entity generator over router
+- [ ] Make a simple ERD designer UI that can scaffold a project straight away
 
 
