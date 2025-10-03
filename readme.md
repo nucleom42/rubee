@@ -46,7 +46,8 @@ Transfer/sec:    140.07KB
 This demonstrates RUBEE’s efficient architecture and suitability for lightweight deployments — even on low-power hardware.
 
 Here below is a short web frameworks comparison so you can compare your choice with RUBEE.
-Disclaimer: The comparison is based on a very generic information and is not a real benchmark. The comparison is aimed to give you a general idea of the differences between the frameworks and not to compare the frameworks directly.
+**Disclaimer:**
+The comparison is based on a very generic information and is not a real benchmark. The comparison is aimed to give you a general idea of the differences between the frameworks and not to compare the frameworks directly.
 
 | Feature / Framework | **Rubee** | Rails | Sinatra | Hanami | Padrino | Grape |
 |---------------------|-----------|-------|---------|--------|---------|-------|
