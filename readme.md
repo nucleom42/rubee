@@ -60,6 +60,7 @@ The comparison is based on a very generic information and is not a real benchmar
 | **Learning curve**  | Simple, explicit, minimal DSL | Steep (lots of conventions & magic) | Very low (DSL fits in one file) | Medium, more concepts (repositories, entities) | Similar to Rails, easier in parts | Low (API-only) |
 | **Customizability** | High (explicit over implicit, hooks & generators) | Limited without monkey-patching | Very high (you control flow) | High, modular architecture | Medium | High (designed for APIs) |
 | **Target use case** | Modern full-stack apps with React frontends or APIs, may be well suite if you prefer modular monolith over microservices | Large, full-stack, mature apps | Small apps, microservices | Modular apps, DDD | Rails-like but modular | APIs & microservices |
+| **Early adopters support** | Personal early adopters support via fast extending and fixing | Not available | Not known | Not known | Not known | Not known |
 
 ## Content
 
