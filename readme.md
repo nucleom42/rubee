@@ -45,6 +45,7 @@ Transfer/sec:    140.07KB
 
 This demonstrates RUBEE’s efficient architecture and suitability for lightweight deployments — even on low-power hardware.
 
+## Comparison
 Here below is a **short web frameworks comparison** built with Ruby, so you can evaluate your choice with RUBEE.
 
 **Disclaimer:**
