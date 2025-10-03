@@ -25,8 +25,8 @@ Want to explore how it built? https://github.com/nucleom42/rubee-site
 ## Stress tested
 
 ```bash
-wrk -t4 -c100 -d30s https://rubee.duckdns.org/docs
-Running 30s test @ https://rubee.duckdns.org/docs
+wrk -t4 -c100 -d30s https://rubee.dedyn.io/docs
+Running 30s test @ https://rubee.dedyn.io/docs
   4 threads and 100 connections
   Thread Stats   Avg      Stdev     Max   +/- Stdev
     Latency   304.95ms   33.22ms 551.86ms   90.38%
@@ -44,6 +44,20 @@ Transfer/sec:    140.07KB
 - Server: Rubee app hosted via Nginx + HTTPS
 
 This demonstrates RUBEE’s efficient architecture and suitability for lightweight deployments — even on low-power hardware.
+
+Here below is a short web frameworks comparison so you can compare your choice with RUBEE.
+Disclaimer: The comparison is based on a very generic information and is not a real benchmark. The comparison is aimed to give you a general idea of the differences between the frameworks and not to compare the frameworks directly.
+
+| Feature / Framework | **Rubee** | Rails | Sinatra | Hanami | Padrino | Grape |
+|---------------------|-----------|-------|---------|--------|---------|-------|
+| **React readiness** | ✅ Built-in React integration (route generator can scaffold React components that fetch data via controllers) | ⚠️ React via webpacker/importmap, but indirect | ❌ No direct React support | ⚠️ Can integrate React, not first-class | ⚠️ Can integrate via JS pipelines | ❌ API-focused, no React support |
+| **Routing style**   | ✅ Explicit, file-based routes with clear JSON/HTML handling | ⚠️ DSL, routes often implicit inside controllers | ✅ Explicit DSL, inline in code | ✅ Declarative DSL | ✅ Rails-like DSL | ✅ API-oriented DSL |
+| **Modularity**      | ✅ Lightweight core, pluggable modules | ❌ Monolithic | ✅ Very modular (small DSL) | ✅ Designed for modularity | ⚠️ Semi-modular, still Rails-like | ✅ Modular (mount APIs) |
+| **Startup / Load speed** | 🚀 Very fast (minimal boot time, designed for modern Ruby) | 🐢 Slow, especially on large apps | ✅ Very fast | ⚠️ Medium (slower than Sinatra, faster than Rails) | 🐢 Similar to Rails (heavier) | ✅ Fast |
+| **Ecosystem**       | 🌱 Early-stage, focused on modern simplicity | 🌍 Huge ecosystem, gems, community | 🌍 Large ecosystem, many gems work | ⚠️ Small, growing | ⚠️ Small, less active | ⚠️ Small, niche |
+| **Learning curve**  | ✅ Simple, explicit, minimal DSL | 🧗‍♂️ Steep (lots of conventions & magic) | ✅ Very low (DSL fits in one file) | ⚠️ Medium, more concepts (repositories, entities) | ⚠️ Similar to Rails, easier in parts | ✅ Low (API-only) |
+| **Customizability** | ✅ High (explicit over implicit, hooks & generators) | ⚠️ Limited without monkey-patching | ✅ Very high (you control flow) | ✅ High, modular architecture | ⚠️ Medium | ✅ High (designed for APIs) |
+| **Target use case** | ⚡ Modern full-stack apps with React frontends or APIs | 🏗️ Large, full-stack, mature apps | 🛠️ Small apps, microservices | 🧩 Modular apps, DDD | 🏛️ Rails-like but modular | 🔌 APIs & microservices |
 
 ## Content
 
