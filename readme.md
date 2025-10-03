@@ -48,7 +48,7 @@ This demonstrates RUBEE’s efficient architecture and suitability for lightweig
 Here below is a **short web frameworks comparison** built with Ruby, so you can evaluate your choice with RUBEE.
 
 **Disclaimer:**
-The comparison is based on a very generic information and is not a real benchmark. The comparison is aimed to give you a general idea of the differences between the frameworks and not to compare the frameworks directly.
+The comparison is based on a very generic and subjective information open in the Internet and is not a real benchmark. The comparison is aimed to give you a general idea of the differences between the frameworks and Rubee and not to compare the frameworks directly.
 
 | Feature / Framework | **Rubee** | Rails | Sinatra | Hanami | Padrino | Grape |
 |---------------------|-----------|-------|---------|--------|---------|-------|
