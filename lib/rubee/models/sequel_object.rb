@@ -4,7 +4,7 @@ module Rubee
     using ChargedString
     using ChargedHash
 
-    before :save, :update, :set_timestamps
+    before :update, :save, :set_timestamps
 
     def destroy(cascade: false, **_options)
       if cascade
@@ -43,13 +43,15 @@ module Rubee
       true
     end
 
-    def assign_attributes(args={})
-      self.class.dataset.columns do |attr|
-        send("#{attr}=", args[attr.to_sym]) if args[attr.to_sym]
+    def assign_attributes(args = {})
+      self.class.dataset.columns.each do |attr|
+        if args[attr.to_sym]
+          send("#{attr}=", args[attr.to_sym])
+        end
       end
     end
 
-    def update(args={})
+    def update(args = {})
       assign_attributes(args)
       args.merge!(updated:)
       found_hash = self.class.dataset.where(id:)

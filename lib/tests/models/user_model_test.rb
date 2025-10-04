@@ -140,14 +140,14 @@ describe 'User model' do
       end
     end
 
-    describe 'when udpate existing user with no argumants' do
+    describe 'when udpate existing user with no arguments' do
       it 'update updated field' do
         user = User.new(email: 'ok-test@test.com', password: '123')
         user.save
         updated_field_before_update = user.updated
 
         user.update
-        _(user.updated > updated_field_before_update).must_equal(true)
+        _(user.reload.updated > updated_field_before_update).must_equal(true)
       end
     end
   end
