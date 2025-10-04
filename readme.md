@@ -83,16 +83,16 @@ The comparison is based on a very generic and subjective information open in the
 - [Modular](#modualar-application)
 - [Logger](#logger)
 
-You can read it on the demo [site](https://rubee.dedyn.io/)
+You can read it on the demo: [site](https://rubee.dedyn.io/)
 
-🚧 The doc site is on uodate mode now. We are working on it.
-Please refer to downbelow documentation.
+🚧 The doc site is on update mode now. We are working on it.
+Please refer to the documentation shown below.
 
 ## Features
 
 Lightweight – A minimal footprint focused on serving Ruby applications efficiently.
 <br>
-Modular – A modular approach to application development. Build modular monoliths with ease by attaching \
+Modular – A modular approach to application development. Build modular monolith app with ease by attaching
 as many subprojects as you need.
 <br>
 Contract-driven – Define your API contracts in a simple, declarative way, then generate all the boilerplate you need.
