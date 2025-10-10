@@ -41,7 +41,7 @@ Transfer/sec:    140.07KB
 - Average latency: ~305 ms
 - Total requests handled: 9,721
 - Hardware: Raspberry Pi 5(8 Gb) (single board computer)
-- Server: Rubee app hosted via Nginx + HTTPS
+- Server: ruBEE app hosted via Nginx + HTTPS
 
 This demonstrates ruBEE’s efficient architecture and suitability for lightweight deployments — even on low-power hardware.
 
@@ -51,7 +51,7 @@ Here below is a **short web frameworks comparison** built with Ruby, so you can 
 **Disclaimer:**
 The comparison is based on a very generic and subjective information open in the Internet and is not a real benchmark. The comparison is aimed to give you a general idea of the differences between the frameworks and Rubee and not to compare the frameworks directly.
 
-| Feature / Framework | **Rubee** | Rails | Sinatra | Hanami | Padrino | Grape |
+| Feature / Framework | **ruBEE** | Rails | Sinatra | Hanami | Padrino | Grape |
 |---------------------|-----------|-------|---------|--------|---------|-------|
 | **React readiness** | Built-in React integration (route generator can scaffold React components that fetch data via controllers) | React via webpacker/importmap, but indirect | No direct React support | Can integrate React | Can integrate via JS pipelines | API-focused, no React support |
 | **Routing style**   | Explicit, file-based routes with clear JSON/HTML handling | DSL, routes often implicit inside controllers | Explicit DSL, inline in code | Declarative DSL | Rails-like DSL | API-oriented DSL |
@@ -106,9 +106,9 @@ Databases – Supports SQLite3, PostgreSQL, MySQL, and more via the Sequel gem.
 <br>
 Views – JSON, ERB, and plain HTML out of the box.
 <br>
-React Ready – React is supported as a first-class Rubee view engine.
+React Ready – React is supported as a first-class ruBEE view engine.
 <br>
-Bundlable – Charge your Rubee app with any gem you need. Update effortlessly via Bundler.
+Bundlable – Charge your ruBEE app with any gem you need. Update effortlessly via Bundler.
 <br>
 ORM-agnostic – Models are native ORM objects, but you can use them as blueprints for any data source.
 <br>
@@ -355,7 +355,7 @@ irb(main):023> User.all
 => []
 ```
 
-Use complex queries chains and when ready serialize it back to Rubee object.
+Use complex queries chains and when ready serialize it back to ruBEE object.
 ```Ruby
 # user model
 class User < Rubee::SequelObject
@@ -392,7 +392,7 @@ irb(main):009>  .where(comment_id: Comment.where(text: "test").last.id)
 irb(main):010>  .then { |dataset| Comment.serialize(dataset) }
 => [#<Comment:0x0000000121889998 @id=30, @text="test", @user_id=702, @created=2025-09-28 22:03:07.011332 -0400, @updated=2025-09-28 22:03:07.011332 -0400>]
 ```
-This is recommended when you want to run one query and serialize it back to Rubee object only once.
+This is recommended when you want to run one query and serialize it back to ruBEE object only once.
 So it may safe some resources.
 
 [Back to content](#content)
@@ -408,7 +408,7 @@ If you feel comfortable you can play with retry configuration parameters:
   config.db_busy_timeout = { env:, value: 1000 } # this is busy timeout in ms, before raising bussy error
 ```
 
-For Rubee model class persist methods create and update retry will be added automatically. However, \
+For ruBEE model class persist methods create and update retry will be added automatically. However, \
 if you want to do it with Sequel dataset you need to do it yourself:
 
 ```ruby
@@ -417,7 +417,7 @@ if you want to do it with Sequel dataset you need to do it yourself:
 [Back to content](#content)
 
 ## Routing
-Rubee uses explicit routes. In the routes.rb yout can define routes for any of the main HTTP methods. \
+ruBEE uses explicit routes. In the routes.rb yout can define routes for any of the main HTTP methods. \
 You can also add any matched parameter denoted by a pair of `{ }` in the path of the route. \
 Eg. `/path/to/{a_key}/somewhere`
 
@@ -443,7 +443,7 @@ route.{http_method} {path}, to: "{controller}#{action}",
 ```
 
 ### Defining Model attributes in routes
-One of Rubee's unique traits is where we can define our models for generation. \
+One of ruBEE's unique traits is where we can define our models for generation. \
 You've seen above one possible way you can set up.
 
 ```ruby
@@ -1004,7 +1004,7 @@ end
 
 [Back to content](#content)
 
-## Rubee commands
+## ruBEE commands
 ```bash
 rubee start # start the server
 rubee start_dev # start the server in dev mode, which restart server on changes
@@ -1026,7 +1026,7 @@ rubee db run:create_apples # where create_apples is the name of the migration fi
 rubee db structure # generate migration file for the database structure
 ```
 
-## Rubee console
+## ruBEE console
 ```bash
 rubee console # start the console
 # you can reload the console by typing reload, so it will pick up latest changes
