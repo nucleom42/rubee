@@ -7,7 +7,7 @@ module Rubee
  | |_) | |  | ||  _ \|  _|
  |  _ <| |__| || |_) | |___
  |_| \_\\____/ |____/|_____|
- Ver: %s
+ Ver: %s        ...bzzz
 LOGO
 
       class << self
@@ -23,7 +23,7 @@ LOGO
 
           port ||= '7000'
           print_logo
-          color_puts("Starting takeoff of ruBee server on port #{port}...", color: :yellow)
+          color_puts("Starting takeoff of ruBee on port: #{port}...", color: :yellow)
           command = "#{jit_prefix(jit)}rackup #{ENV['RACKUP_FILE']} -p #{port}"
           color_puts(command, color: :gray)
           exec(command)
