@@ -914,12 +914,12 @@ First thing you need to do is to add the gem to your Gemfile
 ```bash
 gem 'oauth2'
 ```
-Then add the following code to your controller
+Then use down below code as an example and add yours to your controller
 ```ruby
 class UsersController < Rubee::BaseController
   include Rubee::AuthTokenable
 
-  REDIRECT_URI = 'https://rubee.dedyn.io/admin/users/outh_callback'
+  REDIRECT_URI = 'https://mysite.com/users/outh_callback'
   CLIENT_ID = ENV['GOOGLE_CLIENT_ID']
   CLIENT_SECRET = ENV['GOOGLE_CLIENT_SECRET']
 
