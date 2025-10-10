@@ -6,9 +6,9 @@
 ![GitHub Repo stars](https://img.shields.io/github/stars/nucleom42/rubee?style=social)
 
 
-# <img src="lib/images/rubee.svg" alt="RUBEE" height="40"> ... RUBEE
+# <img src="lib/images/rubee.svg" alt="ruBEE" height="40"> ... ruBEE
 
-Rubee is a Ruby-based web framework designed to streamline the development of modular monolith web applications. \
+ruBEE is a Ruby-based web framework designed to streamline the development of modular monolith web applications. \
 Under the hood, it leverages the power of Ruby and Rack backed by Puma, offering a clean, efficient, and flexible architecture. \
 It offers a structured approach to building scalable, maintainable, and React-ready projects, \
 making it an ideal choice for developers seeking a balance between monolithic simplicity and modular flexibility.
@@ -43,10 +43,10 @@ Transfer/sec:    140.07KB
 - Hardware: Raspberry Pi 5(8 Gb) (single board computer)
 - Server: Rubee app hosted via Nginx + HTTPS
 
-This demonstrates RUBEE’s efficient architecture and suitability for lightweight deployments — even on low-power hardware.
+This demonstrates ruBEE’s efficient architecture and suitability for lightweight deployments — even on low-power hardware.
 
 ## Comparison
-Here below is a **short web frameworks comparison** built with Ruby, so you can evaluate your choice with RUBEE.
+Here below is a **short web frameworks comparison** built with Ruby, so you can evaluate your choice with ruBEE.
 
 **Disclaimer:**
 The comparison is based on a very generic and subjective information open in the Internet and is not a real benchmark. The comparison is aimed to give you a general idea of the differences between the frameworks and Rubee and not to compare the frameworks directly.
@@ -126,7 +126,7 @@ Background Jobs – Schedule and process background jobs using your preferred as
 
 ## Installation
 
-1. Install RUBEE
+1. Install ruBEE
 ```bash
 gem install ru.Bee
 ```
@@ -151,7 +151,7 @@ Make sure:
 bundle install
 ```
 
-4. Run RUBEE server. Default port is 7000
+4. Run ruBEE server. Default port is 7000
 ```bash
 rubee start # or rubee start_dev for development
 
@@ -216,7 +216,7 @@ This will generate the following files
 [Back to content](#content)
 
 ## Model
-Model in RUBEE is just simple ruby object that can be serilalized in the view
+Model in ruBEE is just simple ruby object that can be serilalized in the view
 in the way it required (ie json).
 Here below is a simple example on how it can be used by rendering json from in memory object
 
@@ -572,13 +572,13 @@ Will generate:
 
 ### Modualar application
 
-You can also use RUBEE to create modular applications.\
+You can also use ruBEE to create modular applications.\
 And attach as many subprojects you need.
 Main philosophy of attach functinality is to keep the main project clean and easy to maintain. It will still\
 share data with the main app. So where to define a border between the main app and subprojects is up to developer.
 Howerver by attching new subproject you will get a new folder and files configured and namespaced respectively.
 
-So if you need to extend your main app with a separate project, you can do it easily in RUBEE.
+So if you need to extend your main app with a separate project, you can do it easily in ruBEE.
 1. Attach new subrpoject
 
 ```bash
@@ -649,7 +649,7 @@ rubee start # or rubee start_dev for development
 [Back to content](#content)
 
 ## Views
-View in RUBEE is just a plain html/erb/react file that can be rendered from the controller.
+View in ruBEE is just a plain html/erb/react file that can be rendered from the controller.
 
 ## Templates over erb
 
@@ -794,7 +794,7 @@ function Users() {
 
 ## Object hooks
 
-In RUBEE by extending Hookable module any Ruby object can be charged with hooks (logic),
+In ruBEE by extending Hookable module any Ruby object can be charged with hooks (logic),
 that can be executed before, after and around a specific method execution.
 
 Here below a controller example. However it can be used in any Ruby object, like Model etc.
@@ -1041,7 +1041,7 @@ rubee test auth_tokenable_test.rb # run specific tests
 [Back to content](#content)
 
 
-If you want to run any RUBEE command within a specific ENV make sure you added it before a command.
+If you want to run any ruBEE command within a specific ENV make sure you added it before a command.
 For instance if you want to run console in test environment you need to run the following command
 
 ```bash
@@ -1175,7 +1175,7 @@ When you trigger the controller action, the logs will look like this:
 
 ### Contributing
 
-If you are interested in contributing to RUBEE,
+If you are interested in contributing to ruBEE,
 please read the [Contributing]()https://github.com/nucleom42/rubee/blob/main/contribution.md) guide.
 Also feel free to open an [issue](https://github.com/nucleom42/rubee/issues) if you apot one.
 Have an idea or you wnat to discuss something?
