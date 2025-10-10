@@ -74,6 +74,7 @@ The comparison is based on a very generic and subjective information open in the
 - [Views](#views)
 - [Hooks](#hooks)
 - [JWT based authentification](#jwt-based-authentification)
+- [OAuth2 based authentification](#oauth-authentification)
 - [Rubee commands](#rubee-commands)
 - [Generate commands](#generate-commands)
 - [Migration commands](#migration-commands)
@@ -874,7 +875,7 @@ Feel free to customize it in the /db/create_users.rb file before running migrati
 Then in the controller you can include the AuthTokenable module and use its methods:
 ```ruby
 class UsersController < Rubee::BaseController
-  include AuthTokenable
+  include Rubee::AuthTokenable
   # List methods you want to restrict
   auth_methods :index # unless the user is authentificated it will return unauthentificated
 
@@ -906,6 +907,21 @@ class UsersController < Rubee::BaseController
     response_with object: User.all, type: :json
   end
 end
+```
+## OAuth authentification
+If you want to plug in the OAuth 2.0 authentication, you can use the following code using OAuth2 gem:
+First thing you need to do is to add the gem to your Gemfile
+```bash
+gem 'oauth2'
+```
+Then add the following code to your controller
+```ruby
+class UsersController < Rubee::BaseController
+  include Rubee::AuthTokenable
+
+  REDIRECT_URI = 'https://rubee.dedyn.io/admin/users/outh_callback'
+  CLIENT_ID = ENV['GOOGLE_CLIENT_ID']
+  CLIENT_SECRET = ENV['GOOGLE_CLIENT_SECRET']
 ```
 
 [Back to content](#content)
