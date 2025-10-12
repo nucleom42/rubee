@@ -27,6 +27,8 @@ gem 'rdoc'
 gem 'fileutils'
 # date
 gem 'date'
+# WebSocket
+gem 'websocket'
 
 group :test do
   # testing framework

@@ -111,6 +111,7 @@ GEM
     unicode-display_width (3.2.0)
       unicode-emoji (~> 4.1)
     unicode-emoji (4.1.0)
+    websocket (1.2.11)
 
 PLATFORMS
   aarch64-linux-gnu
@@ -144,6 +145,7 @@ DEPENDENCIES
   sequel
   simplecov
   sqlite3
+  websocket
 
 RUBY VERSION
    ruby 3.4.1p0
