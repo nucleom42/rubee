@@ -31,8 +31,6 @@ module Rubee
     def call(env)
       # autoload rb files
       Autoload.call
-      # intersect websocket request and handle it
-      return Rubee::Websocket.call(env) if env['PATH_INFO'] == '/ws'
       # init rack request
       request = Rack::Request.new(env)
       # Add default path for assets

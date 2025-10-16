@@ -17,7 +17,6 @@ module Rubee
         # --- Perform WebSocket handshake ---
         handshake = WebSocket::Handshake::Server.new
         handshake.from_rack(env)
-
         unless handshake.valid?
           io.write("HTTP/1.1 400 Bad Request\r\n\r\n")
           io.close
@@ -46,7 +45,8 @@ module Rubee
             while frame = incoming.next
               case frame.type
               when :text
-                outgoing.call("Echo: #{frame.data}")
+                out = yield(frame)
+                outgoing.call(out)
               when :close
                 io.write(WebSocket::Frame::Outgoing::Server.new(
                   version: handshake.version,
