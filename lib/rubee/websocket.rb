@@ -22,6 +22,7 @@ module Rubee
           io.close
           return [-1, {}, []]
         end
+        Rubee::Logger.debug(object: handshake)
 
         io.write(handshake.to_s)
 
@@ -45,7 +46,9 @@ module Rubee
             while frame = incoming.next
               case frame.type
               when :text
+                Rubee::Logger.debug(object: { websocket: { incoming: frame.data } })
                 out = yield(frame)
+                Rubee::Logger.debug(object: { websocket: { outgoing: out } })
                 outgoing.call(out)
               when :close
                 io.write(WebSocket::Frame::Outgoing::Server.new(
