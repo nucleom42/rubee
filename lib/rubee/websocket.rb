@@ -56,6 +56,7 @@ module Rubee
                   type: :close
                 ).to_s)
                 io.close
+                Rubee::Logger.debug(object: { websocket: { exit: true } })
                 break
               end
             end
