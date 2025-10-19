@@ -29,6 +29,8 @@ gem 'fileutils'
 gem 'date'
 # WebSocket
 gem 'websocket'
+# Redis
+gem 'redis'
 
 group :test do
   # testing framework
