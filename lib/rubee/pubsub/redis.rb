@@ -4,44 +4,45 @@ module Rubee
       include Singleton
 
       def initialize
-        @con = ::Redis.new
+        @con ||= ConnectionPool::Wrapper.new { ::Redis.new }
+        @mutex ||= Mutex.new
       end
 
       def redis_connection
-        @con ||= ::Redis.new
+        @con ||= ConnectionPool::Wrapper.new { ::Redis.new }
       end
 
       def pub(channel, args = {})
-        message = args[:message]
-        return false if message.nil? || message.empty? || redis_connection.nil?
+        iterable_subscriber_list = redis_connection.get(channel)
+        iterable_subscriber_list = JSON.parse(iterable_subscriber_list)
+        return false unless iterable_subscriber_list
 
-        redis_connection.publish(channel, message)
+        clazzes = retrieve_klasses(iterable_subscriber_list)
+        fan_out(clazzes, args)
 
         true
       end
 
-      def sub(channel)
-        return false if redis_connection.nil?
-
-        Thread.new do
-          redis_connection.subscribe(channel) do |on|
-            on.message do |_ch, msg|
-              on_pub(channel, msg)
-            end
+      def sub(channel, klazz_name)
+        @mutex.synchronize do
+          payload = redis_connection.get(channel)
+          unless payload
+            redis_connection.set(channel, '[]')
           end
-
-          true
-        rescue => e
-          ::Rubee.logger.error(message: e.message, class_name: 'Rubee::PubSub::Redis')
-
-          false
+          payload = JSON.parse(redis_connection.get(channel))
+          redis_connection.set(channel, payload | [klazz_name]) unless payload.include?(klazz_name)
         end
+
+        true
       end
 
-      def unsub(channel, _args = {})
-        return false if redis_connection.nil?
+      def unsub(channel, klazz_name)
+        @mutex.synchronize do
+          return false unless redis_connection.get(channel)
 
-        redis_connection.unsubscribe(channel)
+          payload = JSON.parse(redis_connection.get(channel))
+          redis_connection.set(channel, payload - [klazz_name])
+        end
 
         true
       end
