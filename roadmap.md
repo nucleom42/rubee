@@ -15,6 +15,8 @@ This document outlines the planned features and improvements for Rubee.
 - [ ] Inner monitoring system
 - [ ] Separate Rubee functionality into detachable gems
 - [x] Make hooks able to handle class methods (ver. 1.11)
+- [ ] Add weboscket support based on pub sub
+- [ ] validation for Rubee model
 
 ## Documentation & Community
 - [ ] Forum for Rubee doc site
