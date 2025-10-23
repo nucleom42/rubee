@@ -51,6 +51,8 @@ module Rubee
         [status, headers.merge('content-type' => 'application/javascript'), [object]]
       in :css
         [status, headers.merge('content-type' => 'text/css'), [object]]
+      in :websocket
+        object
       in :file
         [
           status,

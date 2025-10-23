@@ -14,8 +14,6 @@ module Rubee
             Rubee::Configuration.setup(env = :test) do |config|
               config.database_url = { url: 'sqlite://lib/tests/test.db', env: }
             end
-            # Rubee::Autoload.call
-            # Rubee::SequelObject.reconnect!
           end
 
           def reload

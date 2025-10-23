@@ -82,6 +82,16 @@ module Rubee
         @configuraiton[args[:app].to_sym][ENV['RACK_ENV']&.to_sym || :development][:react] || {}
       end
 
+      def pubsub_container=(args)
+        args[:app] ||= :app
+        @configuraiton[args[:app].to_sym][args[:env].to_sym][:pubsub_container] = args[:pubsub_container]
+      end
+
+      def pubsub_container(**args)
+        args[:app] ||= :app
+        @configuraiton[args[:app].to_sym][ENV['RACK_ENV']&.to_sym || :development][:pubsub_container] || ::Rubee::PubSub::Redis.instance
+      end
+
       def method_missing(method_name, *args)
         return unless method_name.to_s.start_with?('get_')
 
