@@ -6,13 +6,14 @@ class WelcomeController < Rubee::BaseController
   end
 
   def websocket
-    incoming = @params[:frame_data]
-    "Hello #{incoming}"
+    incoming = @params['message']
+
+    response_with(object: "Hello #{incoming}", type: :websocket)
   end
 
   def handle_websocket
-    res = Rubee::Websocket.call(@request.env) do |frame|
-      @params = { frame_data: frame.data }
+    res = Rubee::Websocket.call(@request.env) do |payload|
+      @params = payload
       yield
     end
     res
