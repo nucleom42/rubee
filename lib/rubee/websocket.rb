@@ -18,7 +18,6 @@ module Rubee
         env['rack.hijack'].call
         io = env['rack.hijack_io']
 
-        # --- Perform WebSocket handshake ---
         handshake = WebSocket::Handshake::Server.new
         handshake.from_rack(env)
         unless handshake.valid?
@@ -27,80 +26,77 @@ module Rubee
           return [-1, {}, []]
         end
 
-        Rubee::Logger.debug(object: handshake)
         io.write(handshake.to_s)
-
-        # --- WebSocket frames ---
         incoming = WebSocket::Frame::Incoming::Server.new(version: handshake.version)
+
+        # Unique per connection
+        connection_id = SecureRandom.uuid
+        pubsub = Rubee::PubSub::RedisClassic.instance
+
         outgoing = ->(data) do
           frame = WebSocket::Frame::Outgoing::Server.new(
             version: handshake.version,
             type: :text,
-            data: data
+            data: data.to_json
           )
           io.write(frame.to_s)
+        rescue IOError
+          # Socket closed
         end
 
+        # --- Listen to incoming data ---
         Thread.new do
-          loop do
-            data = io.readpartial(1024)
-            incoming << data
+          begin
+            loop do
+              data = io.readpartial(1024)
+              incoming << data
 
-            while (frame = incoming.next)
-              case frame.type
-              when :text
-                payload = begin
-                            JSON.parse(frame.data)
-                          rescue
-                            {}
-                          end
-                action = payload["action"]
-                channel = payload["channel"]
-                message = payload["message"]
+              while (frame = incoming.next)
+                case frame.type
+                when :text
+                  payload = JSON.parse(frame.data) rescue {}
+                  action  = payload["action"]
+                  channel = payload["channel"]
+                  message = payload["message"]
 
-                message = yield(payload)
-
-                case action
-                when "subscribe"
-                  Thread.new do
-                    redis_sub.subscribe(channel) do |on|
-                      on.message do |ch, msg|
-                        outgoing.call(JSON.dump({ channel: ch, message: msg }))
-                      end
+                  case action
+                  when "subscribe"
+                    result = pubsub.subscribe(connection_id, channel) do |ch, msg|
+                      outgoing.call({ channel: ch, message: msg })
                     end
-                  end
-                  outgoing.call(JSON.dump({ system: "subscribed to #{channel}" }))
-                when "publish"
-                  redis_pub.publish(channel, message)
-                else
-                  outgoing.call(JSON.dump({ error: "unknown action" }))
-                end
+                    outgoing.call({ system: result[:status].to_s, channel: channel })
 
-              when :close
-                io.write(WebSocket::Frame::Outgoing::Server.new(
-                  version: handshake.version,
-                  type: :close
-                ).to_s)
-                io.close
-                break
+                  when "unsubscribe"
+                    result = pubsub.unsubscribe(connection_id, channel)
+                    outgoing.call({ system: result[:status].to_s, channel: channel })
+
+                  when "publish"
+                    pubsub.publish(channel, message)
+                    outgoing.call({ system: "published", channel: channel })
+
+                  else
+                    outgoing.call({ error: "unknown action" })
+                  end
+
+                when :close
+                  # Client closed connection
+                  pubsub.unsubscribe_all(connection_id)
+                  io.write(WebSocket::Frame::Outgoing::Server.new(
+                    version: handshake.version,
+                    type: :close
+                  ).to_s)
+                  io.close
+                  break
+                end
               end
             end
-          rescue EOFError, IOError => e
-            Rubee::Logger.error(message: e.message)
-            io.close
-            break
+          rescue EOFError, IOError
+            pubsub.unsubscribe_all(connection_id)
+            io.close rescue nil
           end
         end
 
         [-1, {}, []]
-      end
-
-      def redis_pub
-        @redis_pub ||= ConnectionPool::Wrapper.new { ::Redis.new }
-      end
-
-      def redis_sub
-        @redis_sub ||= ConnectionPool::Wrapper.new { ::Redis.new }
       end
     end
   end

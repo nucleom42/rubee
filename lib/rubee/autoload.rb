@@ -35,6 +35,14 @@ module Rubee
         Dir[File.join(Rubee::APP_ROOT, 'inits/**', '*.rb')].each do |file|
           require_relative file unless black_list.include?("#{file}.rb")
         end
+        # rubee pub sub
+        Dir[File.join(root_directory, 'rubee/pubsub/**', '*.rb')].each do |file|
+          require_relative file unless black_list.include?("#{file}.rb")
+        end
+        # rubee websocket
+        Dir[File.join(root_directory, 'rubee/websocket/**', '*.rb')].each do |file|
+          require_relative file unless black_list.include?("#{file}.rb")
+        end
         # rubee async
         Dir[File.join(root_directory, 'rubee/async/**', '*.rb')].each do |file|
           require_relative file unless black_list.include?("#{file}.rb")
