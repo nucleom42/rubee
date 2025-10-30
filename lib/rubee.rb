@@ -31,15 +31,10 @@ module Rubee
     def call(env)
       # autoload rb files
       Autoload.call
-
-      # register images paths
+      # init rack request
       request = Rack::Request.new(env)
       # Add default path for assets
-      Router.draw do |route|
-        route.get('/images/{path}', to: 'base#image', namespace: 'Rubee')
-        route.get('/js/{path}', to: 'base#js', namespace: 'Rubee')
-        route.get('/css/{path}', to: 'base#css', namespace: 'Rubee')
-      end
+      register_assets_routes
       # define route
       route = Router.route_for(request)
       # if react is the view so we would like to delegate not cauth by rubee routes to it.
@@ -61,6 +56,16 @@ module Rubee
       action = route[:action]
       # fire the action
       controller.send(action)
+    end
+
+    private
+
+    def register_assets_routes
+      Router.draw do |route|
+        route.get('/images/{path}', to: 'base#image', namespace: 'Rubee')
+        route.get('/js/{path}', to: 'base#js', namespace: 'Rubee')
+        route.get('/css/{path}', to: 'base#css', namespace: 'Rubee')
+      end
     end
   end
 end
