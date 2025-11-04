@@ -52,7 +52,7 @@ module Rubee
       in :css
         [status, headers.merge('content-type' => 'text/css'), [object]]
       in :websocket
-        object
+        object # hash is expected
       in :file
         [
           status,
@@ -103,6 +103,15 @@ module Rubee
       erb_template.result(binding)
     end
 
+    def websocket
+      action = @params[:action]
+      unless ['subscribe', 'unsubscribe', 'publish'].include?(action)
+        response_with(object: "Unknown action: #{action}", type: :websocket)
+      end
+
+      public_send(action)
+    end
+
     def params
       inputs = @request.env['rack.input'].read
       body = begin
@@ -136,6 +145,20 @@ module Rubee
       end
 
       {}
+    end
+
+    def handle_websocket
+      res = Rubee::Websocket.call(@request.env) do |payload|
+        @params = payload
+        yield
+      end
+      res
+    end
+
+    class << self
+      def attach_websocket!
+        around(:websocket, :handle_websocket)
+      end
     end
   end
 end

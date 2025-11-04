@@ -15,7 +15,7 @@ module Rubee
       end
 
       # --- Subscribe connection to a channel ---
-      def subscribe(connection_id, channel, &block)
+      def subscribe(connection_id, channel, options = {}, &block)
         key = redis_key_for(connection_id)
 
         # Check if already subscribed
@@ -31,7 +31,7 @@ module Rubee
           @redis_pool.with do |redis|
             redis.subscribe(channel) do |on|
               on.message do |ch, msg|
-                block.call(ch, msg)
+                block.call(ch, msg, options)
               end
             end
           end

@@ -7,10 +7,9 @@ require 'redis'
 
 module Rubee
   class Websocket
+    using ChargedHash
     class << self
-      using ChargedHash
-
-      def call(env)
+      def call(env, &controller_block)
         unless env['rack.hijack']
           return [500, { 'Content-Type' => 'text/plain' }, ['Hijack not supported']]
         end
@@ -46,57 +45,86 @@ module Rubee
 
         # --- Listen to incoming data ---
         Thread.new do
-          begin
-            loop do
-              data = io.readpartial(1024)
-              incoming << data
+          loop do
+            data = io.readpartial(1024)
+            incoming << data
 
-              while (frame = incoming.next)
-                case frame.type
-                when :text
-                  payload = JSON.parse(frame.data) rescue {}
-                  action  = payload["action"]
-                  channel = payload["channel"]
-                  message = payload["message"]
-
-                  case action
-                  when "subscribe"
-                    result = pubsub.subscribe(connection_id, channel) do |ch, msg|
-                      outgoing.call({ channel: ch, message: msg })
-                    end
-                    outgoing.call({ system: result[:status].to_s, channel: channel })
-
-                  when "unsubscribe"
-                    result = pubsub.unsubscribe(connection_id, channel)
-                    outgoing.call({ system: result[:status].to_s, channel: channel })
-
-                  when "publish"
-                    pubsub.publish(channel, message)
-                    outgoing.call({ system: "published", channel: channel })
-
-                  else
-                    outgoing.call({ error: "unknown action" })
+            while (frame = incoming.next)
+              case frame.type
+              when :text
+                payload = begin
+                            JSON.parse(frame.data)
+                          rescue
+                            {}
+                          end
+                payload_hash = payload
+                action = payload_hash["action"]
+                channel = payload_hash["channel"]
+                message = payload_hash["message"]
+                options = payload_hash.select { |k, _| !["action", "channel", "message"].include?(k) }
+                case action
+                when "subscribe"
+                  result = pubsub.subscribe(connection_id, channel, payload) do |ch, msg, _opt|
+                    # Publish handler
+                    options = _opt.select { |k, _| !["action", "channel", "message"].include?(k) }
+                    _controller_out = yield(channel: ch, message: msg, action: "publish", options:)
+                    opt = _controller_out.select { |k, _| !["channel", "message"].include?(k) }
+                    outgoing.call({ channel: ch, message: msg, **opt })
                   end
+                  outgoing.call({ system: result[:status].to_s, channel: channel })
 
-                when :close
-                  # Client closed connection
-                  pubsub.unsubscribe_all(connection_id)
-                  io.write(WebSocket::Frame::Outgoing::Server.new(
-                    version: handshake.version,
-                    type: :close
-                  ).to_s)
-                  io.close
-                  break
+                when "unsubscribe"
+                  result = pubsub.unsubscribe(connection_id, channel)
+                  opt = controller_out(&controller_block).select { |k, _| !["channel", "message"].include?(k) }
+                  outgoing.call({ system: result[:status].to_s, channel: channel, **opt })
+
+                when "publish"
+                  message = { message:, options: }
+                  pubsub.publish(channel, message)
+                  outgoing.call({ system: "published", **payload_hash })
+
+                else
+                  outgoing.call({ error: "unknown action" })
                 end
+
+              when :close
+                # Client closed connection
+                pubsub.unsubscribe_all(connection_id)
+                io.write(WebSocket::Frame::Outgoing::Server.new(
+                  version: handshake.version,
+                  type: :close
+                ).to_s)
+                io.close
+                break
               end
             end
-          rescue EOFError, IOError
-            pubsub.unsubscribe_all(connection_id)
-            io.close rescue nil
+          end
+        rescue EOFError, IOError
+          pubsub.unsubscribe_all(connection_id)
+          begin
+            io.close
+          rescue
+            nil
           end
         end
 
         [-1, {}, []]
+      end
+
+      def payload
+        JSON.parse(frame.data)
+      rescue
+        {}
+      end
+
+      def controller_out(&block)
+        payload_hash = payload
+        action  = payload_hash["action"]
+        channel = payload_hash["channel"]
+        message = payload_hash["message"]
+        options = payload_hash.select { |k, _| !["action", "channel", "message"].include?(k) }
+
+        block.call(channel:, message:, action:, options:)
       end
     end
   end
