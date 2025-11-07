@@ -28,10 +28,6 @@ module Rubee
         io.write(handshake.to_s)
         incoming = WebSocket::Frame::Incoming::Server.new(version: handshake.version)
 
-        # Unique per connection
-        connection_id = SecureRandom.uuid
-        pubsub = Rubee::PubSub::RedisClassic.instance
-
         outgoing = ->(data) do
           frame = WebSocket::Frame::Outgoing::Server.new(
             version: handshake.version,
@@ -52,57 +48,19 @@ module Rubee
             while (frame = incoming.next)
               case frame.type
               when :text
-                payload = begin
-                            JSON.parse(frame.data)
-                          rescue
-                            {}
-                          end
-                payload_hash = payload
-                action = payload_hash["action"]
-                channel = payload_hash["channel"]
-                message = payload_hash["message"]
-                options = payload_hash.select { |k, _| !["action", "channel", "message"].include?(k) }
-                case action
-                when "subscribe"
-                  result = pubsub.subscribe(connection_id, channel, payload) do |ch, msg, _opt|
-                    # Publish handler
-                    options = _opt.select { |k, _| !["action", "channel", "message"].include?(k) }
-                    _controller_out = yield(channel: ch, message: msg, action: "publish", options:)
-                    opt = _controller_out.select { |k, _| !["channel", "message"].include?(k) }
-                    outgoing.call({ channel: ch, message: msg, **opt })
-                  end
-                  outgoing.call({ system: result[:status].to_s, channel: channel })
-
-                when "unsubscribe"
-                  result = pubsub.unsubscribe(connection_id, channel)
-                  opt = controller_out(&controller_block).select { |k, _| !["channel", "message"].include?(k) }
-                  outgoing.call({ system: result[:status].to_s, channel: channel, **opt })
-
-                when "publish"
-                  message = { message:, options: }
-                  pubsub.publish(channel, message)
-                  outgoing.call({ system: "published", **payload_hash })
-
-                else
-                  outgoing.call({ error: "unknown action" })
-                end
+                out = controller_out(frame, outgoing, &controller_block)
+                outgoing.call(**out)
 
               when :close
                 # Client closed connection
-                pubsub.unsubscribe_all(connection_id)
-                io.write(WebSocket::Frame::Outgoing::Server.new(
-                  version: handshake.version,
-                  type: :close
-                ).to_s)
-                io.close
+                handle_close(frame, io, handshake)
                 break
               end
             end
           end
         rescue EOFError, IOError
-          pubsub.unsubscribe_all(connection_id)
           begin
-            io.close
+            handle_close(frame, io, handshake)
           rescue
             nil
           end
@@ -111,18 +69,31 @@ module Rubee
         [-1, {}, []]
       end
 
-      def payload
+      def payload(frame)
         JSON.parse(frame.data)
       rescue
         {}
       end
 
-      def controller_out(&block)
-        payload_hash = payload
+      def handle_close(frame, io, handshake)
+        payload_hash = payload(frame)
+        channel = payload_hash["channel"]
+        subcriber = payload_hash["subcriber"]
+        Rubee::WebsocketConnections.instance.remove("#{channel}:#{subcriber}", io)
+        io.write(WebSocket::Frame::Outgoing::Server.new(
+          version: handshake.version,
+          type: :close
+        ).to_s)
+        io.close
+      end
+
+      def controller_out(frame, io, &block)
+        payload_hash = payload(frame)
         action  = payload_hash["action"]
         channel = payload_hash["channel"]
         message = payload_hash["message"]
         options = payload_hash.select { |k, _| !["action", "channel", "message"].include?(k) }
+        options.merge!(io:)
 
         block.call(channel:, message:, action:, options:)
       end

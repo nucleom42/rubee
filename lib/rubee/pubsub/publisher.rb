@@ -8,8 +8,8 @@ module Rubee
       end
 
       module ClassMethods
-        def pub(channel, args = {})
-          Rubee::Configuration.pubsub_container.pub(channel, args)
+        def pub(channel, args = {}, &block)
+          Rubee::Configuration.pubsub_container.pub(channel, args, &block)
           true
         end
       end

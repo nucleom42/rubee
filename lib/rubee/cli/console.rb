@@ -16,12 +16,6 @@ module Rubee
             end
           end
 
-          def reload
-            app_files = Dir["./#{Rubee::APP_ROOT}/**/*.rb"]
-            app_files.each { |file| load(file) }
-            color_puts('Reloaded ..', color: :green)
-          end
-
           begin
             # Start IRB
             IRB.start

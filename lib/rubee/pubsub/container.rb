@@ -18,14 +18,24 @@ module Rubee
       protected
 
       def retrieve_klasses(iterable)
-        iterable.map { |clazz| clazz.split('::').inject(Object) { |o, c| o.const_get(c) } }
+        iterable.map { |clazz| turn_to_class(clazz) }
       end
 
-      def fan_out(clazzes, args)
+      def turn_to_class(string)
+        string.split('::').inject(Object) { |o, c| o.const_get(c) }
+      end
+
+      def fan_out(clazzes, args, &block)
         mutex = Mutex.new
 
         mutex.synchronize do
-          clazzes.each { |clazz| clazz.on_pub(clazz.name, args) }
+          clazzes.each do |clazz|
+            if block
+              block.call(clazz.name, args)
+            else
+              clazz.on_pub(clazz.name, args)
+            end
+          end
           true
         end
       end

@@ -8,19 +8,19 @@ module Rubee
       end
 
       module ClassMethods
-        def sub(channel)
-          Rubee::Configuration.pubsub_container.sub(channel, self.name)
+        def sub(channel, args = [], &block)
+          Rubee::Configuration.pubsub_container.sub(channel, name, args, &block)
 
           true
         end
 
-        def unsub(channel)
-          Rubee::Configuration.pubsub_container.unsub(channel, self.name)
+        def unsub(channel, args = [], &block)
+          Rubee::Configuration.pubsub_container.unsub(channel, name, args, &block)
 
           true
         end
 
-        def on_pub(channel, message)
+        def on_pub(channel, message, options = {})
           raise NotImplementedError
         end
       end
