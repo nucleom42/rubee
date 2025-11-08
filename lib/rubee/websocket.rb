@@ -36,7 +36,7 @@ module Rubee
           )
           io.write(frame.to_s)
         rescue IOError
-          # Socket closed
+          Rubee::Logger.error(message: "Failed to write to client")
         end
 
         # --- Listen to incoming data ---
