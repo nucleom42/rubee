@@ -1,5 +1,5 @@
 class WelcomeController < Rubee::BaseController
-  attach_websocket! # Method required to turn
+  attach_websocket! # Method required to turn controller to been able to handle websocket requests
   using ChargedHash
 
   def show

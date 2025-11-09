@@ -35,9 +35,11 @@ module Rubee
       # Example: sub("ok", "User", ["123"])
       def sub(channel, klass_name, args = [], &block)
         @mutex.synchronize do
-          key = "#{channel}:#{klass_name}"
+          id = args.first
+          id_string = id ? ":#{id}" : ""
+          key = "#{channel}:#{klass_name}#{id_string}"
           existing = with_redis { |r| r.get(key) }
-          io = args.pop if args.last.respond_to?(:call)
+          io = args.last.respond_to?(:call) ? args.pop : nil
 
           with_redis { |r| r.set(key, args.join(",")) } unless existing
           block&.call(key, io: io)
@@ -47,7 +49,9 @@ module Rubee
 
       def unsub(channel, klass_name, args = [], &block)
         @mutex.synchronize do
-          key = "#{channel}:#{klass_name}"
+          id = args.first
+          id_string = id ? ":#{id}" : ""
+          key = "#{channel}:#{klass_name}#{id_string}"
           value = with_redis { |r| r.get(key) }
           return false unless value
 
@@ -66,9 +70,9 @@ module Rubee
 
       def retrieve_klasses(iterable)
         iterable.each_with_object({}) do |(key, args), hash|
-          channel, clazz = key.split(":")
+          channel, clazz, id = key.split(":")
           arg_list = args.to_s.split(",")
-          hash[key] = { channel:, clazz:, args: arg_list }
+          hash[key] = { channel:, clazz:, args: arg_list, id: }
         end
       end
 
@@ -78,8 +82,8 @@ module Rubee
           clazz_args = opts[:args]
 
           clazz.on_pub(opts[:channel], *clazz_args, **method_args)
-
-          block&.call("#{opts[:channel]}:#{opts[:clazz]}", **method_args)
+          id_string = opts[:id] ? ":#{opts[:id]}" : ""
+          block&.call("#{opts[:channel]}:#{opts[:clazz]}#{id_string}", **method_args)
         end
         true
       end
