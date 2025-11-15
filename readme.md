@@ -6,9 +6,9 @@
 ![GitHub Repo stars](https://img.shields.io/github/stars/nucleom42/rubee?style=social)
 
 
-# <img src="lib/images/rubee.svg" alt="ruBEE" height="40"> ... ruBEE
+# <img src="lib/images/rubee.svg" alt="RUBEE" height="40"> ... RUBEE
 
-ruBEE is a Ruby-based web framework designed to streamline the development of modular monolith web applications. \
+RUBEE is a Ruby-based web framework designed to streamline the development of modular monolith web applications. \
 Under the hood, it leverages the power of Ruby and Rack backed by Puma, offering a clean, efficient, and flexible architecture. \
 It offers a structured approach to building scalable, maintainable, and React-ready projects, \
 making it an ideal choice for developers seeking a balance between monolithic simplicity and modular flexibility.
@@ -19,7 +19,7 @@ Want to get a quick API server up and runing? You can do it for real quick!
 
 ## Production ready
 
-Take a look on the rubee demo site with all documentation stored in there: https://rubee.dedyn.io/
+Take a look on the RUBEE demo site with all documentation stored in there: https://rubee.dedyn.io/
 Want to explore how it built? https://github.com/nucleom42/rubee-site
 
 ## Stress tested
@@ -41,17 +41,17 @@ Transfer/sec:    140.07KB
 - Average latency: ~305 ms
 - Total requests handled: 9,721
 - Hardware: Raspberry Pi 5(8 Gb) (single board computer)
-- Server: ruBEE app hosted via Nginx + HTTPS
+- Server: RUBEE app hosted via Nginx + HTTPS
 
-This demonstrates ruBEE’s efficient architecture and suitability for lightweight deployments — even on low-power hardware.
+This demonstrate RUBEE’s efficient architecture and suitability for lightweight deployments — even on low-power hardware.
 
 ## Comparison
-Here below is a **short web frameworks comparison** built with Ruby, so you can evaluate your choice with ruBEE.
+Here below is a **short web frameworks comparison** built with Ruby, so you can evaluate your choice with RUBEE.
 
 **Disclaimer:**
 The comparison is based on a very generic and subjective information open in the Internet and is not a real benchmark. The comparison is aimed to give you a general idea of the differences between the frameworks and Rubee and not to compare the frameworks directly.
 
-| Feature / Framework | **ruBEE** | Rails | Sinatra | Hanami | Padrino | Grape |
+| Feature / Framework | **RUBEE** | Rails | Sinatra | Hanami | Padrino | Grape |
 |---------------------|-----------|-------|---------|--------|---------|-------|
 | **React readiness** | Built-in React integration (route generator can scaffold React components that fetch data via controllers) | React via webpacker/importmap, but indirect | No direct React support | Can integrate React | Can integrate via JS pipelines | API-focused, no React support |
 | **Routing style**   | Explicit, file-based routes with clear JSON/HTML handling | DSL, routes often implicit inside controllers | Explicit DSL, inline in code | Declarative DSL | Rails-like DSL | API-oriented DSL |
@@ -106,9 +106,9 @@ Databases – Supports SQLite3, PostgreSQL, MySQL, and more via the Sequel gem.
 <br>
 Views – JSON, ERB, and plain HTML out of the box.
 <br>
-React Ready – React is supported as a first-class ruBEE view engine.
+React Ready – React is supported as a first-class RUBEE view engine.
 <br>
-Bundlable – Charge your ruBEE app with any gem you need. Update effortlessly via Bundler.
+Bundlable – Charge your RUBEE app with any gem you need. Update effortlessly via Bundler.
 <br>
 ORM-agnostic – Models are native ORM objects, but you can use them as blueprints for any data source.
 <br>
@@ -126,7 +126,7 @@ Background Jobs – Schedule and process background jobs using your preferred as
 
 ## Installation
 
-1. Install ruBEE
+1. Install RUBEE
 ```bash
 gem install ru.Bee
 ```
@@ -151,7 +151,7 @@ Make sure:
 bundle install
 ```
 
-4. Run ruBEE server. Default port is 7000
+4. Run RUBER server. Default port is 7000
 ```bash
 rubee start # or rubee start_dev for development
 
@@ -216,7 +216,7 @@ This will generate the following files
 [Back to content](#content)
 
 ## Model
-Model in ruBEE is just simple ruby object that can be serilalized in the view
+Model in RUBEE is just simple ruby object that can be serilalized in the view
 in the way it required (ie json).
 Here below is a simple example on how it can be used by rendering json from in memory object
 
@@ -355,7 +355,7 @@ irb(main):023> User.all
 => []
 ```
 
-Use complex queries chains and when ready serialize it back to ruBEE object.
+Use complex queries chains and when ready serialize it back to RUBEE object.
 ```Ruby
 # user model
 class User < Rubee::SequelObject
@@ -392,7 +392,7 @@ irb(main):009>  .where(comment_id: Comment.where(text: "test").last.id)
 irb(main):010>  .then { |dataset| Comment.serialize(dataset) }
 => [#<Comment:0x0000000121889998 @id=30, @text="test", @user_id=702, @created=2025-09-28 22:03:07.011332 -0400, @updated=2025-09-28 22:03:07.011332 -0400>]
 ```
-This is recommended when you want to run one query and serialize it back to ruBEE object only once.
+This is recommended when you want to run one query and serialize it back to RUBEE object only once.
 So it may safe some resources.
 
 [Back to content](#content)
@@ -408,7 +408,7 @@ If you feel comfortable you can play with retry configuration parameters:
   config.db_busy_timeout = { env:, value: 1000 } # this is busy timeout in ms, before raising bussy error
 ```
 
-For ruBEE model class persist methods create and update retry will be added automatically. However, \
+For RUBEE model class persist methods create and update retry will be added automatically. However, \
 if you want to do it with Sequel dataset you need to do it yourself:
 
 ```ruby
@@ -417,7 +417,7 @@ if you want to do it with Sequel dataset you need to do it yourself:
 [Back to content](#content)
 
 ## Routing
-ruBEE uses explicit routes. In the routes.rb yout can define routes for any of the main HTTP methods. \
+RUBEE uses explicit routes. In the routes.rb yout can define routes for any of the main HTTP methods. \
 You can also add any matched parameter denoted by a pair of `{ }` in the path of the route. \
 Eg. `/path/to/{a_key}/somewhere`
 
@@ -443,7 +443,7 @@ route.{http_method} {path}, to: "{controller}#{action}",
 ```
 
 ### Defining Model attributes in routes
-One of ruBEE's unique traits is where we can define our models for generation. \
+One of RUBEE's unique traits is where we can define our models for generation. \
 You've seen above one possible way you can set up.
 
 ```ruby
@@ -572,7 +572,7 @@ Will generate:
 
 ### Modualar application
 
-You can also use ruBEE to create modular applications.\
+You can also use RUBEE to create modular applications.\
 And attach as many subprojects you need.
 Main philosophy of attach functinality is to keep the main project clean and easy to maintain. It will still\
 share data with the main app. So where to define a border between the main app and subprojects is up to developer.
@@ -649,7 +649,7 @@ rubee start # or rubee start_dev for development
 [Back to content](#content)
 
 ## Views
-View in ruBEE is just a plain html/erb/react file that can be rendered from the controller.
+View in RUBEE is just a plain html/erb/react file that can be rendered from the controller.
 
 ## Templates over erb
 
@@ -794,7 +794,7 @@ function Users() {
 
 ## Object hooks
 
-In ruBEE by extending Hookable module any Ruby object can be charged with hooks (logic),
+In RUBEE by extending Hookable module any Ruby object can be charged with hooks (logic),
 that can be executed before, after and around a specific method execution.
 
 Here below a controller example. However it can be used in any Ruby object, like Model etc.
@@ -1004,7 +1004,7 @@ end
 
 [Back to content](#content)
 
-## ruBEE commands
+## RUBEE commands
 ```bash
 rubee start # start the server
 rubee start_dev # start the server in dev mode, which restart server on changes
@@ -1026,7 +1026,7 @@ rubee db run:create_apples # where create_apples is the name of the migration fi
 rubee db structure # generate migration file for the database structure
 ```
 
-## ruBEE console
+## RUBEE console
 ```bash
 rubee console # start the console
 # you can reload the console by typing reload, so it will pick up latest changes
@@ -1041,7 +1041,7 @@ rubee test auth_tokenable_test.rb # run specific tests
 [Back to content](#content)
 
 
-If you want to run any ruBEE command within a specific ENV make sure you added it before a command.
+If you want to run any RUBEE command within a specific ENV make sure you added it before a command.
 For instance if you want to run console in test environment you need to run the following command
 
 ```bash
@@ -1175,7 +1175,7 @@ When you trigger the controller action, the logs will look like this:
 
 ### Contributing
 
-If you are interested in contributing to ruBEE,
+If you are interested in contributing to RUBEE,
 please read the [Contributing]()https://github.com/nucleom42/rubee/blob/main/contribution.md) guide.
 Also feel free to open an [issue](https://github.com/nucleom42/rubee/issues) if you apot one.
 Have an idea or you wnat to discuss something?
