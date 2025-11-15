@@ -3,10 +3,10 @@ name: Test
 on:
   push:
     branches:
-      - '**'  # Runs on all branches
+      - '**'
   pull_request:
     branches:
-      - '**'  # Runs on PRs to any branch
+      - '**'
   merge_group:
     branches:
       - '**'
@@ -14,6 +14,20 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+
+    services:
+      redis:
+        image: redis:7-alpine
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 5
+
+    env:
+      REDIS_URL: redis://localhost:6379
 
     steps:
       - name: Checkout code
@@ -29,36 +43,41 @@ jobs:
           gem install bundler
           bundle install --jobs 4 --retry 3
 
-      - name: set up ruBee
+      - name: Set up ruBee
         run: |
-          bundle install --redownload && gem build rubee.gemspec && gem install ru.Bee-*.gem
+          bundle install --redownload
+          gem build rubee.gemspec
+          gem install ru.Bee-*.gem
 
-      - name: Run all migration for ruBee internals
+      - name: Run ruBee internal migrations
         run: |
           RACK_ENV=test bin/rubee db run:all
 
-      - name: Run ruBee internals minitest
+      - name: Run ruBee internal tests
         run: |
           RACK_ENV=test bin/rubee test
 
       - name: Create dummy project
         run: |
-          rm -rf my_project && RACK_ENV=test rubee project my_project && cd my_project
+          rm -rf my_project
+          RACK_ENV=test rubee project my_project
 
-      - name: Run bundle for the dummy project
+      - name: Install dummy project dependencies
         run: |
+          cd my_project
           bundle install
 
-      - name: Run db init for the dummy project
+      - name: Run db init for dummy project
         run: |
+          cd my_project
           RACK_ENV=test rubee db init
 
-      - name: Run all migration for the dummy project
+      - name: Run all migrations for dummy project
         run: |
+          cd my_project
           RACK_ENV=test bin/rubee db run:all
 
-      - name: Run Minitests for the dummy project
+      - name: Run Minitests for dummy project
         run: |
+          cd my_project
           RACK_ENV=test bin/rubee test
-
-
