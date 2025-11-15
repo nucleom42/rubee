@@ -113,22 +113,28 @@ module Rubee
     end
 
     def params
-      inputs = @request.env['rack.input'].read
-      body = begin
-        JSON.parse(@request.body.read.strip)
-             rescue StandardError
-               {}
-      end
-      begin
-        body.merge!(URI.decode_www_form(inputs).to_h.transform_keys(&:to_sym))
-      rescue StandardError
-        nil
-      end
+      # Read raw input safely (only once)
+      raw_input = @request.body.read.to_s.strip
+      @request.body.rewind if @request.body.respond_to?(:rewind)
+
+      # Try parsing JSON first, fall back to form-encoded data
+      parsed_input =
+        begin
+          JSON.parse(raw_input)
+        rescue StandardError
+          begin
+            URI.decode_www_form(raw_input).to_h.transform_keys(&:to_sym)
+          rescue
+            {}
+          end
+        end
+
+      # Combine route params, request params, and body
       @params ||= extract_params(@request.path, @route[:path])
-        .merge(body)
+        .merge(parsed_input)
         .merge(@request.params)
         .transform_keys(&:to_sym)
-        .reject { |k, _v| [:_method].include?(k.downcase.to_sym) }
+        .reject { |k, _v| k.to_sym == :_method }
     end
 
     def headers
@@ -148,7 +154,7 @@ module Rubee
     end
 
     def handle_websocket
-      res = Rubee::Websocket.call(@request.env) do |payload|
+      res = Rubee::WebSocket.call(@request.env) do |payload|
         @params = payload
         yield
       end

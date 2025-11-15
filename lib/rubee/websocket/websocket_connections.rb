@@ -1,5 +1,5 @@
 module Rubee
-  class WebsocketConnections
+  class WebSocketConnections
     include Singleton
     def initialize
       @subscribers ||= Hash.new { |h, k| h[k] = [] }
@@ -11,6 +11,14 @@ module Rubee
 
     def remove(channel, io)
       @subscribers[channel].delete(io)
+    end
+
+    def remove_all(io)
+      @subscribers.each_value { _1.delete(io) }
+    end
+
+    def flush_all
+      @subscribers.each_value(&:clear)
     end
 
     def stream(channel, args = {})

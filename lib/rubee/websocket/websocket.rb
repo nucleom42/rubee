@@ -6,7 +6,7 @@ require 'json'
 require 'redis'
 
 module Rubee
-  class Websocket
+  class WebSocket
     using ChargedHash
     class << self
       def call(env, &controller_block)
@@ -17,7 +17,7 @@ module Rubee
         env['rack.hijack'].call
         io = env['rack.hijack_io']
 
-        handshake = WebSocket::Handshake::Server.new
+        handshake = ::WebSocket::Handshake::Server.new
         handshake.from_rack(env)
         unless handshake.valid?
           io.write("HTTP/1.1 400 Bad Request\r\n\r\n")
@@ -26,17 +26,17 @@ module Rubee
         end
 
         io.write(handshake.to_s)
-        incoming = WebSocket::Frame::Incoming::Server.new(version: handshake.version)
+        incoming = ::WebSocket::Frame::Incoming::Server.new(version: handshake.version)
 
         outgoing = ->(data) do
-          frame = WebSocket::Frame::Outgoing::Server.new(
+          frame = ::WebSocket::Frame::Outgoing::Server.new(
             version: handshake.version,
             type: :text,
             data: data.to_json
           )
           io.write(frame.to_s)
         rescue IOError
-          Rubee::Logger.error(message: "Failed to write to client")
+          nil
         end
 
         # --- Listen to incoming data ---
@@ -66,7 +66,7 @@ module Rubee
           end
         end
 
-        [-1, {}, []]
+        [101, handshake.headers, []]
       end
 
       def payload(frame)
@@ -79,8 +79,8 @@ module Rubee
         payload_hash = payload(frame)
         channel = payload_hash["channel"]
         subcriber = payload_hash["subcriber"]
-        Rubee::WebsocketConnections.instance.remove("#{channel}:#{subcriber}", io)
-        io.write(WebSocket::Frame::Outgoing::Server.new(
+        ::Rubee::WebSocketConnections.instance.remove("#{channel}:#{subcriber}", io)
+        io.write(::WebSocket::Frame::Outgoing::Server.new(
           version: handshake.version,
           type: :close
         ).to_s)
