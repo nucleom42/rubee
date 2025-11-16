@@ -38,11 +38,11 @@ module Rubee
         # rubee pub sub
         Dir[File.join(root_directory, 'rubee/pubsub/**', '*.rb')].each do |file|
           require_relative file unless black_list.include?("#{file}.rb")
-        end
+        end if Rubee::Features.redis_available?
         # rubee websocket
         Dir[File.join(root_directory, 'rubee/websocket/**', '*.rb')].each do |file|
           require_relative file unless black_list.include?("#{file}.rb")
-        end
+        end if Rubee::Features.redis_available?
         # rubee async
         Dir[File.join(root_directory, 'rubee/async/**', '*.rb')].each do |file|
           require_relative file unless black_list.include?("#{file}.rb")

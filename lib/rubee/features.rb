@@ -1,0 +1,21 @@
+module Rubee
+  class Features
+    class << self
+      def redis_available?
+        require "redis"
+        redis = Redis.new
+        redis.ping
+        true
+      rescue LoadError, Redis::CannotConnectError
+        false
+      end
+
+      def websocket_available?
+        require "websocket"
+        true
+      rescue LoadError
+        false
+      end
+    end
+  end
+end

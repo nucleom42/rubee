@@ -108,8 +108,9 @@ module Rubee
             gem 'json'
             gem 'jwt'
 
-            # websocket
+            # Websocket is required to use integrated websocket feature
             gem 'websocket'
+            # Redis is required for pubsub and websocket
             gem 'redis'
 
             group :development do
