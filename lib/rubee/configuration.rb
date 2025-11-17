@@ -9,6 +9,7 @@ module Rubee
         development: {
           database_url: '',
           port: 7000,
+          redis_url: '',
         },
         production: {},
         test: {},
@@ -34,6 +35,11 @@ module Rubee
       def database_url=(args)
         args[:app] ||= :app
         @configuraiton[args[:app].to_sym][args[:env].to_sym][:database_url] = args[:url]
+      end
+
+      def redis_url=(args)
+        args[:app] ||= :app
+        @configuraiton[args[:app].to_sym][args[:env].to_sym][:redis_url] = args[:url]
       end
 
       def async_adapter=(args)

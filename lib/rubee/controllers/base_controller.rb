@@ -163,7 +163,14 @@ module Rubee
 
     class << self
       def attach_websocket!
-        around(:websocket, :handle_websocket)
+        around(
+          :websocket, :handle_websocket,
+          if: -> do
+            redis_available = Rubee::Features.redis_available?
+            Rubee::Logger.error(message: 'Please make sure redis server is running') unless redis_available
+            redis_available
+          end
+        )
       end
     end
   end

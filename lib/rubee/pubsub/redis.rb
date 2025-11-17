@@ -12,7 +12,14 @@ module Rubee
       DEFAULT_TIMEOUT = 5
 
       def initialize
-        @pool = ConnectionPool.new(size: DEFAULT_POOL_SIZE, timeout: DEFAULT_TIMEOUT) { ::Redis.new }
+        redis_url = Rubee::Configuration.get_redis_url
+        @pool = ConnectionPool.new(size: DEFAULT_POOL_SIZE, timeout: DEFAULT_TIMEOUT) do
+          if redis_url&.empty?
+            ::Redis.new
+          else
+            ::Redis.new(url: redis_url)
+          end
+        end
         @mutex = Mutex.new
       end
 

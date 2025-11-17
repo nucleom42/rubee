@@ -3,7 +3,8 @@ module Rubee
     class << self
       def redis_available?
         require "redis"
-        redis = Redis.new
+        redis_url = Rubee::Configuration.get_redis_url
+        redis = redis_url&.empty? ? Redis.new : Redis.new(url: redis_url)
         redis.ping
         true
       rescue LoadError, Redis::CannotConnectError
