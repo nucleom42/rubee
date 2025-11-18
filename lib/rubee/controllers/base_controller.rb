@@ -142,6 +142,10 @@ module Rubee
         .collect { |key, val| [key.sub(/^HTTP_/, ''), val] }
     end
 
+    def websocket_connections
+      Rubee::WebSocketConnections.instance
+    end
+
     def extract_params(path, pattern)
       regex_pattern = pattern.gsub(/\{(\w+)\}/, '(?<\1>[^/]+)')
       regex = Regexp.new("^#{regex_pattern}$")

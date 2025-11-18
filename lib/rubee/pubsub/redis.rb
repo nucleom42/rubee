@@ -40,7 +40,7 @@ module Rubee
       end
 
       # Example: sub("ok", "User", ["123"])
-      def sub(channel, klass_name, args = [], &block)
+      def sub(channel, klass_name, *args, &block)
         @mutex.synchronize do
           id = args.first
           id_string = id ? ":#{id}" : ""
@@ -54,7 +54,7 @@ module Rubee
         true
       end
 
-      def unsub(channel, klass_name, args = [], &block)
+      def unsub(channel, klass_name, *args, &block)
         @mutex.synchronize do
           id = args.first
           id_string = id ? ":#{id}" : ""
@@ -88,7 +88,7 @@ module Rubee
           clazz = turn_to_class(opts[:clazz])
           clazz_args = opts[:args]
 
-          clazz.on_pub(opts[:channel], *clazz_args, **method_args)
+          clazz.on_pub(opts[:channel], *clazz_args, **method_args) if clazz.respond_to?(:on_pub)
           id_string = opts[:id] ? ":#{opts[:id]}" : ""
           block&.call("#{opts[:channel]}:#{opts[:clazz]}#{id_string}", **method_args)
         end
