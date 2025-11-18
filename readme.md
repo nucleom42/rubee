@@ -1184,18 +1184,18 @@ When you trigger the controller action, the logs will look like this:
 With ru.Bee 2.0.0 you can use Websocket with ease!
 
 Here are steps to get started:
-Make sure redis server is installed and running
+1. Make sure redis server is installed and running
 ````bash
 sudo apt-get install -y redis # linux
 brew install redis # osx
 ````
-1. Enable websocket and redisto your Gemfile
+2. Enable websocket and redis to your Gemfile
 ```bash
 gem 'ru.Bee', '~> 2.0.0'
 gem 'redis'
 gem 'websocket'
 ```
-2. Add the redis url to your configuration file, unless it connects to 127.0.0.1:6379
+3. Add the redis url to your configuration file, unless it connects to 127.0.0.1:6379
 ```ruby
 # config/base_configuration.rb
 Rubee::Configuration.setup(env=:development) do |config|
@@ -1203,7 +1203,16 @@ Rubee::Configuration.setup(env=:development) do |config|
   config.redis_url = { url: "redis://localhost:6378/0", env: }
 end
 ```
-3. Make model pubsubable
+3. Add webscoket entry connection route
+```ruby
+# config/routes.rb
+Rubee::Router.draw do |router|
+#...
+  router.get('/ws', to: 'users#websocket') # entry point to start websocket session
+  # So, const ws = new WebSocket("ws://website/ws"); on the client side, should establish the connection
+end
+```
+4. Make model pubsubable
 ```ruby
 # app/models/user.rb
 class User < Rubee::BaseModel
@@ -1212,7 +1221,7 @@ class User < Rubee::BaseModel
   #...
 end
 ```
-4. Enable websocket in your controller
+5. Enable websocket in your controller
 ```ruby
 # app/controllers/users_controller.rb
 class UsersController < Rubee::BaseController
