@@ -17,6 +17,10 @@ Want to get a quick API server up and runing? You can do it for real quick!
 <br />
 [![Watch the demo](https://img.youtube.com/vi/ko7H70s7qq0/hqdefault.jpg)](https://www.youtube.com/watch?v=ko7H70s7qq0)
 
+Starting from ru.Bee 2.0.0, ru.Bee supports Websocket, which is a feature that allows you to build real-time applications with ease. \
+<br />
+[![Watch the demo]()](https://www.youtube.com/watch?v=gp8IheKBNm4)
+
 ## Production ready
 
 Take a look on the RUBEE demo site with all documentation stored in there: https://rubee.dedyn.io/
@@ -86,9 +90,6 @@ The comparison is based on a very generic and subjective information open in the
 - [Websocket](#websocket)
 
 You can read it on the demo: [site](https://rubee.dedyn.io/)
-
-🚧 The doc site is on update mode now. We are working on it.
-Please refer to the documentation shown below.
 
 ## Features
 
@@ -1278,7 +1279,7 @@ class UsersController < Rubee::BaseController
   end
 end
 ```
-If you are interested to see chat app example, please check [chat](https://github.com/nucleom42/rubee/tree/main/examples/chat)
+If you are interested to see chat app example, please check [chat](https://github.com/nucleom42/rubee-chat)
 
 [Back to content](#content)
 ### Contributing
