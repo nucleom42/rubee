@@ -27,6 +27,10 @@ gem 'rdoc'
 gem 'fileutils'
 # date
 gem 'date'
+# WebSocket
+gem 'websocket'
+# Redis
+gem 'redis'
 
 group :test do
   # testing framework

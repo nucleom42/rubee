@@ -1,5 +1,6 @@
 module Rubee
   class Autoload
+    BLACKLIST = ['rubee.rb', 'test_helper.rb']
     class << self
       def call(black_list = [], **options)
         load_whitelisted(options[:white_list_dirs]) && return if options[:white_list_dirs]
@@ -12,7 +13,7 @@ module Rubee
         Dir.glob(File.join(Rubee::APP_ROOT, '**', '*.rb')).sort.each do |file|
           base_name = File.basename(file)
 
-          unless base_name.end_with?('_test.rb') || (black_list + ['rubee.rb', 'test_helper.rb']).include?(base_name)
+          unless base_name.end_with?('_test.rb') || (black_list + BLACKLIST).include?(base_name)
             require_relative file
           end
         end
@@ -33,6 +34,14 @@ module Rubee
         end
         # app inits
         Dir[File.join(Rubee::APP_ROOT, 'inits/**', '*.rb')].each do |file|
+          require_relative file unless black_list.include?("#{file}.rb")
+        end
+        # rubee pub sub
+        Dir[File.join(root_directory, 'rubee/pubsub/**', '*.rb')].each do |file|
+          require_relative file unless black_list.include?("#{file}.rb")
+        end
+        # rubee websocket
+        Dir[File.join(root_directory, 'rubee/websocket/**', '*.rb')].each do |file|
           require_relative file unless black_list.include?("#{file}.rb")
         end
         # rubee async

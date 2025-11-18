@@ -345,4 +345,98 @@ zip: '555555')
       end
     end
   end
+
+  describe 'pubsub' do
+    describe 'when Rubee::PubSub::Subscriber is included' do
+      before { User.include(Rubee::PubSub::Subscriber) }
+
+      it 'reveals sub method' do
+        _(User.respond_to?(:sub)).must_equal(true)
+      end
+
+      it 'reveals unsub method' do
+        _(User.respond_to?(:unsub)).must_equal(true)
+      end
+    end
+
+    describe 'when Rubee::PubSub::Publisher is included' do
+      before { User.include(Rubee::PubSub::Publisher) }
+
+      it 'reveals pub method' do
+        _(User.respond_to?(:pub)).must_equal(true)
+      end
+    end
+
+    describe '.sub' do
+      before do
+        User.include(Rubee::PubSub::Subscriber)
+        User.include(Rubee::PubSub::Publisher)
+      end
+
+      user = User.create(email: 'ok-test@test.com', password: '123')
+
+      describe 'when sub with channel and args' do
+        it 'returns true' do
+          _(User.sub("ok", [user.id.to_s])).must_equal(true)
+
+          User.unsub("ok", [user.id.to_s])
+          user.destroy
+        end
+      end
+    end
+
+    describe '.unsub' do
+      before do
+        User.include(Rubee::PubSub::Subscriber)
+        User.include(Rubee::PubSub::Publisher)
+      end
+
+      describe 'when unsub with channel and args' do
+        it 'returns true' do
+          _(User.unsub("ok", ["123456"])).must_equal(true)
+        end
+      end
+    end
+
+    describe 'pub flow' do
+      describe 'when pub with channel and args' do
+        after do
+          User.destroy_all(cascade: true)
+        end
+
+        it 'fan out ouput' do
+          User.include(Rubee::PubSub::Subscriber)
+          User.include(Rubee::PubSub::Publisher)
+
+          user_one = User.create(email: 'ok-test1@test.com', password: '123')
+          user_two = User.create(email: 'ok-test@2test.com', password: '123')
+          user_three = User.create(email: 'ok-test3@test.com', password: '123')
+
+          User.singleton_class.define_method(:on_pub) do |channel, *args, **options|
+            id = args.first
+            user = User.find(id)
+            if user
+              user.update(password: '321')
+            else
+              raise "User with id=#{id} not found"
+            end
+          end
+
+          User.sub("ok", [user_one.id.to_s])
+          User.sub("ok", [user_two.id.to_s])
+          User.sub("ok", [user_three.id.to_s])
+
+          User.pub("ok", message: "hello")
+
+          User.unsub("ok", [user_one.id.to_s])
+          User.unsub("ok", [user_two.id.to_s])
+          User.unsub("ok", [user_three.id.to_s])
+
+          _(user_one.reload.password).must_equal('321')
+          _(user_two.reload.password).must_equal('321')
+          _(user_three.reload.password).must_equal('321')
+        end
+      end
+    end
+  end
 end

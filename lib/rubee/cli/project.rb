@@ -29,7 +29,7 @@ module Rubee
           FileUtils.mkdir_p(target_dir)
           # Define blacklist
           blacklist_files = %w[rubee.rb print_colors.rb version.rb config.ru test_helper.rb Gemfile.lock test.yml test.db
-                               development.db production.db]
+                               development.db production.db users_controller.rb users_controller.rb]
           blacklist_dirs = %w[rubee tests .git .github .idea node_modules db inits]
           # Copy files, excluding blacklisted ones
           copy_project_files(source_dir, target_dir, blacklist_files, blacklist_dirs)
@@ -107,6 +107,11 @@ module Rubee
             gem 'puma'
             gem 'json'
             gem 'jwt'
+
+            # Websocket is required to use integrated websocket feature
+            gem 'websocket'
+            # Redis is required for pubsub and websocket
+            gem 'redis'
 
             group :development do
               gem 'rerun'

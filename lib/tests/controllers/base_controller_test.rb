@@ -1,6 +1,6 @@
 require_relative '../test_helper'
 
-class BaseControllerTest < Minitest::Test
+class WebSocketControllerTest < Minitest::Test
   include Rack::Test::Methods
 
   def app

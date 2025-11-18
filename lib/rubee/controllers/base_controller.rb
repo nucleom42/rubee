@@ -51,6 +51,8 @@ module Rubee
         [status, headers.merge('content-type' => 'application/javascript'), [object]]
       in :css
         [status, headers.merge('content-type' => 'text/css'), [object]]
+      in :websocket
+        object # hash is expected
       in :file
         [
           status,
@@ -101,28 +103,47 @@ module Rubee
       erb_template.result(binding)
     end
 
+    def websocket
+      action = @params[:action]
+      unless ['subscribe', 'unsubscribe', 'publish'].include?(action)
+        response_with(object: "Unknown action: #{action}", type: :websocket)
+      end
+
+      public_send(action)
+    end
+
     def params
-      inputs = @request.env['rack.input'].read
-      body = begin
-        JSON.parse(@request.body.read.strip)
-             rescue StandardError
-               {}
-      end
-      begin
-        body.merge!(URI.decode_www_form(inputs).to_h.transform_keys(&:to_sym))
-      rescue StandardError
-        nil
-      end
+      # Read raw input safely (only once)
+      raw_input = @request.body.read.to_s.strip
+      @request.body.rewind if @request.body.respond_to?(:rewind)
+
+      # Try parsing JSON first, fall back to form-encoded data
+      parsed_input =
+        begin
+          JSON.parse(raw_input)
+        rescue StandardError
+          begin
+            URI.decode_www_form(raw_input).to_h.transform_keys(&:to_sym)
+          rescue
+            {}
+          end
+        end
+
+      # Combine route params, request params, and body
       @params ||= extract_params(@request.path, @route[:path])
-        .merge(body)
+        .merge(parsed_input)
         .merge(@request.params)
         .transform_keys(&:to_sym)
-        .reject { |k, _v| [:_method].include?(k.downcase.to_sym) }
+        .reject { |k, _v| k.to_sym == :_method }
     end
 
     def headers
       @request.env.select { |k, _v| k.start_with?('HTTP_') }
         .collect { |key, val| [key.sub(/^HTTP_/, ''), val] }
+    end
+
+    def websocket_connections
+      Rubee::WebSocketConnections.instance
     end
 
     def extract_params(path, pattern)
@@ -134,6 +155,27 @@ module Rubee
       end
 
       {}
+    end
+
+    def handle_websocket
+      res = Rubee::WebSocket.call(@request.env) do |payload|
+        @params = payload
+        yield
+      end
+      res
+    end
+
+    class << self
+      def attach_websocket!
+        around(
+          :websocket, :handle_websocket,
+          if: -> do
+            redis_available = Rubee::Features.redis_available?
+            Rubee::Logger.error(message: 'Please make sure redis server is running') unless redis_available
+            redis_available
+          end
+        )
+      end
     end
   end
 end
