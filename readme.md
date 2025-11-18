@@ -1221,7 +1221,7 @@ class User < Rubee::BaseModel
   #...
 end
 ```
-5. Enable websocket in your controller
+5. Enable websocket in your controller and implement required methods
 ```ruby
 # app/controllers/users_controller.rb
 class UsersController < Rubee::BaseController
