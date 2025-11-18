@@ -1184,6 +1184,11 @@ When you trigger the controller action, the logs will look like this:
 With ru.Bee 2.0.0 you can use Websocket with ease!
 
 Here are steps to get started:
+Make sure redis server is installed and running
+````bash
+sudo apt-get install -y redis # linux
+brew install redis # osx
+````
 1. Enable websocket and redisto your Gemfile
 ```bash
 gem 'ru.Bee', '~> 2.0.0'
