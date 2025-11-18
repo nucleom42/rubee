@@ -83,6 +83,7 @@ The comparison is based on a very generic and subjective information open in the
 - [Background jobs](#background-jobs)
 - [Modular](#modualar-application)
 - [Logger](#logger)
+- [Websocket](#websocket)
 
 You can read it on the demo: [site](https://rubee.dedyn.io/)
 
@@ -123,6 +124,10 @@ Asyncable – Plug in async adapters and use any popular background job engine.
 Console – Start an interactive console and reload on the fly.
 <br>
 Background Jobs – Schedule and process background jobs using your preferred async stack.
+<br>
+Websocket – Serve and handle WebSocket connections.
+<br>
+Logger – Use any logger you want.
 
 ## Installation
 
@@ -1173,6 +1178,109 @@ When you trigger the controller action, the logs will look like this:
 
 [Back to content](#content)
 
+## Websocket
+
+With ru.Bee 2.0.0 you can use Websocket with ease!
+
+Here are steps to get started:
+1. Enable websocket and redisto your Gemfile
+```bash
+gem 'ru.Bee', '~> 2.0.0'
+gem 'redis'
+gem 'websocket'
+```
+2. Add the redis url to your configuration file, unless it connects to 127.0.0.1:6379
+```ruby
+# config/base_configuration.rb
+Rubee::Configuration.setup(env=:development) do |config|
+#...
+  config.redis_url = { url: "redis://localhost:6378/0", env: }
+end
+```
+3. Make model pubsubable
+```ruby
+# app/models/user.rb
+class User < Rubee::BaseModel
+  include Rubee::PubSub::Publisher
+  include Rubee::PubSub::Subscriber
+  #...
+end
+```
+4. Enable websocket in your controller
+```ruby
+# app/controllers/users_controller.rb
+class UsersController < Rubee::BaseController
+  attach_websocket! # this will handle websocket connections and direct them to the controller methods: publish, subscribe, unsubscribe
+
+
+  # Subscribe is expected to get next params from the client:
+  # { action: 'subscribe', 'channel': 'default', 'id': '123', 'subscriber': 'User' }
+  # where
+  # - action corresponds to the method name
+  # - channel is the name of the channel
+  # - id is the id of the user
+  # - subscriber is the name of the model
+  def subscribe
+    channel = params[:channel]
+    sender_id = params[:options][:id] # id moved to options
+    io = params[:options][:io] # io is a websocket connection
+
+    User.sub(channel, sender_id, io) do |channel, args| # subscribe the user for the channel updates
+      websocket_connections.register(channel, args[:io]) # register the websocket connection
+    end
+    # return websocket response
+    response_with(object: { type: 'system', channel: params[:channel], status: :subscribed }, type: :websocket)
+  rescue StandardError => e
+    response_with(object: { type: 'system', error: e.message }, type: :websocket)
+  end
+
+  # Unsubscribe is expected to get next params from the client:
+  # { action: 'unsubscribe', 'channel': 'default', 'id': '123', 'subscriber': 'User' }
+  # where
+  # - action corresponds to the method name
+  # - channel is the name of the channel
+  # - id is the id of the user
+  # - subscriber is the name of the model
+  def unsubscribe
+    channel = params[:channel]
+    sender_id = params[:options][:id]
+    io = params[:options][:io]
+
+    User.unsub(channel, sender_id, io) do |channel, args|
+      websocket_connections.remove(channel, args[:io])
+    end
+
+    response_with(object: params.merge(type: 'system', status: :unsubscribed), type: :websocket)
+  rescue StandardError => e
+    response_with(object: { type: 'system', error: e.message }, type: :websocket)
+  end
+  # Publish is expected to get next params from the client:
+  # { action: 'publish', 'channel': 'default', 'message': 'Hello world', 'id': '123', 'subscriber': 'User' }
+  # where
+  # - action corresponds to the method name
+  # - channel is the name of the channel
+  # - id is the id of the user
+  # - subscriber is the name of the model
+  def publish
+    args = {}
+    User.pub(params[:channel], message: params[:message]) do |channel|
+      # Here we pack args with any additional data client might need
+      user = User.find(params[:options][:id])
+      args[:message] = params[:message]
+      args[:sender] = params[:options][:id]
+      args[:sender_name] = user.email
+      websocket_connections.stream(channel, args)
+    end
+
+    response_with(object: { type: 'system', message: params[:message], status: :published }, type: :websocket)
+  rescue StandardError => e
+    response_with(object: { type: 'system', error: e.message }, type: :websocket)
+  end
+end
+```
+If you are interested to see chat app example, please check [chat](https://github.com/nucleom42/rubee/tree/main/examples/chat)
+
+[Back to content](#content)
 ### Contributing
 
 If you are interested in contributing to RUBEE,
