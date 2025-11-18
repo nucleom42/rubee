@@ -19,7 +19,7 @@ Want to get a quick API server up and runing? You can do it for real quick!
 
 Starting from ru.Bee 2.0.0, ru.Bee supports Websocket, which is a feature that allows you to build real-time applications with ease. \
 <br />
-[![Watch the demo]()](https://www.youtube.com/watch?v=gp8IheKBNm4)
+[![Watch the demo]()https://img.youtube.com/vi/gp8IheKBNm4/hqdefault.jpg](https://www.youtube.com/watch?v=gp8IheKBNm4)
 
 ## Production ready
 
