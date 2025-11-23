@@ -35,4 +35,5 @@ This document outlines the planned features and improvements for Rubee.
 - [ ] Convert ERD json to entity generator over router
 - [ ] Make a simple ERD designer UI that can scaffold a project straight away
 
-
+## Bug Fixes
+- [ ] Fix breaking changes came with new ver of OAuth gem (in ru.Bee ver. 2.0.0)
