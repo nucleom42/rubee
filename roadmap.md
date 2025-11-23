@@ -16,11 +16,12 @@ This document outlines the planned features and improvements for Rubee.
 - [ ] Separate Rubee functionality into detachable gems
 - [x] Make hooks able to handle class methods (ver. 1.11)
 - [ ] validation for Rubee model
-- [ ] Websocket support with pub sub
+- [x] Websocket support with pub sub
 
 ## Documentation & Community
 - [ ] Forum for Rubee doc site
 - [ ] Pagination for Rubee doc site admin
+- [ ] Imporve readme and inline it with rubee.dedyn.io
 
 
 ## Version enging for migrations
