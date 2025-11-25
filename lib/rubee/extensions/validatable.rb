@@ -8,10 +8,10 @@ module Rubee
         @errors = {}
       end
 
-      def add_error(attribute, message)
+      def add_error(attribute, hash)
         @valid = false
-        @errors[attribute] ||= []
-        @errors[attribute] << message
+        @errors[attribute] ||= {}
+        @errors[attribute].merge!(hash)
       end
 
       def has_errors_for?(attribute)
@@ -28,10 +28,10 @@ module Rubee
         @state = state
       end
 
-      def required(error_message)
+      def required(error_hash)
         value = @instance.send(@attribute)
         if value.nil? || (value.respond_to?(:empty?) && value.empty?)
-          @state.add_error(@attribute, error_message)
+          @state.add_error(@attribute, error_hash)
         end
         self
       end
@@ -40,22 +40,25 @@ module Rubee
         self
       end
 
-      def type(expected_class, error_message)
+      def type(expected_class, error_hash)
         return self if @state.has_errors_for?(@attribute)
 
         value = @instance.send(@attribute)
         unless value.is_a?(expected_class)
-          @state.add_error(@attribute, error_message)
+          @state.add_error(@attribute, error_hash)
         end
         self
       end
 
-      def condition(predicate_block, error_message)
+      def condition(handler, error_message)
         return self if @state.has_errors_for?(@attribute)
 
-        unless predicate_block.call
-          @state.add_error(@attribute, error_message)
+        if handler.respond_to?(:call)
+          @state.add_error(@attribute, error_message) unless handler.call
+        else
+          @instance.send(handler)
         end
+
         self
       end
     end
@@ -91,7 +94,7 @@ module Rubee
       end
 
       def required(attribute, options)
-        error_message = options[:required]
+        error_message = options
         RuleChain.new(self, attribute, @state).required(error_message)
       end
 
@@ -99,8 +102,8 @@ module Rubee
         RuleChain.new(self, attribute, @state).optional
       end
 
-      def add_error(attribute, message)
-        @state.add_error(attribute, message)
+      def add_error(attribute, hash)
+        @state.add_error(attribute, hash)
       end
     end
 
