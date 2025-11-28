@@ -1,5 +1,7 @@
 module Rubee
   module Validatable
+    class Error < StandardError; end
+
     class State
       attr_accessor :errors, :valid
 

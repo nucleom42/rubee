@@ -33,12 +33,11 @@ module Rubee
 
       else
         begin
-          created_object = self.class.create(args)
+          created_id = self.class.dataset.insert(args)
         rescue StandardError => _e
           return false
         end
-        self.id = created_object.id
-
+        self.id = created_id
       end
       true
     end
@@ -210,6 +209,7 @@ module Rubee
         end
         instance = new(**attrs)
         Rubee::DBTools.with_retry { instance.save }
+        instance
       end
 
       def destroy_all(cascade: false)

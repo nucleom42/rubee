@@ -8,6 +8,7 @@ module Rubee
 
       base.include(Rubee::Hookable)
       base.include(Rubee::Serializable)
+      base.include(Rubee::Validatable)
     end
 
     module ClassMethods
