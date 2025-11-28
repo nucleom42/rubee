@@ -208,9 +208,8 @@ module Rubee
         if dataset.columns.include?(:created) && dataset.columns.include?(:updated)
           attrs.merge!(created: Time.now, updated: Time.now)
         end
-
-        out_id = Rubee::DBTools.with_retry { dataset.insert(**attrs) }
-        new(**attrs.merge(id: out_id))
+        instance = new(**attrs)
+        Rubee::DBTools.with_retry { instance.save }
       end
 
       def destroy_all(cascade: false)

@@ -39,3 +39,9 @@ ensure
   $stdout = old_stdout
 end
 
+def raise_error
+  yield
+rescue => e
+  e
+end
+

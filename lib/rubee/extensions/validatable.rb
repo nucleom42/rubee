@@ -26,6 +26,7 @@ module Rubee
         @instance = instance
         @attribute = attribute
         @state = state
+        @optional = false
       end
 
       def required(error_hash)
@@ -37,6 +38,7 @@ module Rubee
       end
 
       def optional(*)
+        @optional = true
         self
       end
 
@@ -44,6 +46,8 @@ module Rubee
         return self if @state.has_errors_for?(@attribute)
 
         value = @instance.send(@attribute)
+        return self if @optional && value.nil?
+
         unless value.is_a?(expected_class)
           @state.add_error(@attribute, error_hash)
         end
@@ -52,6 +56,8 @@ module Rubee
 
       def condition(handler, error_message)
         return self if @state.has_errors_for?(@attribute)
+        value = @instance.send(@attribute)
+        return self if @optional && value.nil?
 
         if handler.respond_to?(:call)
           @state.add_error(@attribute, error_message) unless handler.call
@@ -71,7 +77,7 @@ module Rubee
 
     module Initializer
       def initialize(*)
-        @state = State.new
+        @__validation_state = State.new
         super
         run_validations
       end
@@ -80,30 +86,34 @@ module Rubee
     module InstanceMethods
       def valid?
         run_validations
-        @state.valid
+        @__validation_state.valid
+      end
+
+      def invalid?
+        !valid?
       end
 
       def errors
         run_validations
-        @state.errors
+        @__validation_state.errors
       end
 
       def run_validations
-        @state = State.new
+        @__validation_state = State.new
         self.class&.validation_block&.call(self)
       end
 
       def required(attribute, options)
         error_message = options
-        RuleChain.new(self, attribute, @state).required(error_message)
+        RuleChain.new(self, attribute, @__validation_state).required(error_message)
       end
 
       def optional(attribute)
-        RuleChain.new(self, attribute, @state).optional
+        RuleChain.new(self, attribute, @__validation_state).optional
       end
 
       def add_error(attribute, hash)
-        @state.add_error(attribute, hash)
+        @__validation_state.add_error(attribute, hash)
       end
     end
 

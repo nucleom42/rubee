@@ -11,7 +11,7 @@ module Rubee
           hook = Module.new do
             define_method(method) do |*args, &block|
               if conditions_met?(options[:if], options[:unless])
-                handler.respond_to?(:call) ? handler.call : send(handler)
+                handler.respond_to?(:call) ? handler.to_proc.call(self) : send(handler)
               end
 
               super(*args, &block)
@@ -29,7 +29,7 @@ module Rubee
               result = super(*args, &block)
 
               if conditions_met?(options[:if], options[:unless])
-                handler.respond_to?(:call) ? handler.call : send(handler)
+                handler.respond_to?(:call) ? handler.to_proc.call(self) : send(handler)
               end
 
               result
@@ -47,7 +47,7 @@ module Rubee
               if conditions_met?(options[:if], options[:unless])
                 if handler.respond_to?(:call)
                   result = nil
-                  handler.call do
+                  handler.to_proc.call(self) do
                     result = super(*args, &block)
                   end
 
@@ -67,24 +67,23 @@ module Rubee
         end
       end
 
-      def conditions_met?(if_condition = nil, unless_condition = nil)
+      def conditions_met?(if_condition = nil, unless_condition = nil, instance = nil)
         return true if if_condition.nil? && unless_condition.nil?
-
         if_condition_result =
           if if_condition.nil?
             true
           elsif if_condition.respond_to?(:call)
-            if_condition.call
-          elsif respond_to?(if_condition)
-            send(if_condition)
+            if_condition.to_proc.call(instance)
+          elsif instance.respond_to?(if_condition)
+            instance.send(if_condition)
           end
         unless_condition_result =
           if unless_condition.nil?
             false
           elsif unless_condition.respond_to?(:call)
-            unless_condition.call
-          elsif respond_to?(unless_condition)
-            send(unless_condition)
+            unless_condition.to_proc.call(instance)
+          elsif instance.respond_to?(unless_condition)
+            instance.send(unless_condition)
           end
 
         if_condition_result && !unless_condition_result
@@ -93,7 +92,7 @@ module Rubee
 
     module InstanceMethods
       def conditions_met?(if_condition = nil, unless_condition = nil)
-        self.class.conditions_met?(if_condition, unless_condition)
+        self.class.conditions_met?(if_condition, unless_condition, self)
       end
     end
   end
