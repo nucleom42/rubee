@@ -17,6 +17,7 @@ This document outlines the planned features and improvements for Rubee.
 - [x] Make hooks able to handle class methods (ver. 1.11)
 - [ ] validation for Rubee model
 - [x] Websocket support with pub sub
+- [ ] Home background engine, based on Redis
 
 ## Documentation & Community
 - [ ] Forum for Rubee doc site
