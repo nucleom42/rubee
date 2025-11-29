@@ -3,7 +3,7 @@ require_relative '../test_helper'
 describe 'Comment model' do
   describe 'owns_many :users, over: :posts' do
     before do
-      comment = Comment.new(text: 'test')
+      comment = Comment.new(text: 'test_enough')
       comment.save
       user = User.new(email: 'ok-test@test.com', password: '123')
       user.save
@@ -17,18 +17,18 @@ describe 'Comment model' do
 
     describe 'when there are associated comment records' do
       it 'returns all records' do
-        _(Comment.where(text: 'test').last.users.count).must_equal(1)
-        _(Comment.where(text: 'test').last.users.first.email).must_equal('ok-test@test.com')
+        _(Comment.where(text: 'test_enough').last.users.count).must_equal(1)
+        _(Comment.where(text: 'test_enough').last.users.first.email).must_equal('ok-test@test.com')
       end
     end
 
     describe 'sequel dataset query' do
       it 'returns all records' do
         result = Comment.dataset.join(:posts, comment_id: :id)
-          .where(comment_id: Comment.where(text: 'test').last.id)
+          .where(comment_id: Comment.where(text: 'test_enough').last.id)
           .then { |dataset| Comment.serialize(dataset) }
 
-        _(result.first.text).must_equal('test')
+        _(result.first.text).must_equal('test_enough')
       end
     end
   end
@@ -55,7 +55,7 @@ describe 'Comment model' do
           required_or_optional, *required_or_optional_args
         )
           .type(String, type: "text field must be string")
-          .condition(-> { comment.text.length > 4 }, { length: "text length must be greater than 4" })
+          .condition(proc { comment.text.length > 4 }, { length: "text length must be greater than 4" })
       end
     end
     it 'is valid' do
@@ -89,77 +89,79 @@ describe 'Comment model' do
       _(comment.errors[:text]).must_equal({ required: "text filed is required" })
     end
 
-    # describe 'when first validation is optional' do
-    #   it 'no text should be valid' do
-    #     include_and_validate required: false
+    describe 'when first validation is optional' do
+      it 'no text should be valid' do
+        include_and_validate required: false
 
-    #     comment = Comment.new(user_id: 1)
+        comment = Comment.new(user_id: 1)
 
-    #     _(comment.valid?).must_equal(true)
-    #     _(comment.errors[:test]).must_equal(nil)
-    #   end
+        _(comment.valid?).must_equal(true)
+        _(comment.errors[:test]).must_equal(nil)
+      end
 
-    #   it 'text is a number should be invalid' do
-    #     include_and_validate required: false
-    #     comment = Comment.new(text: 1)
+      it 'text is a number should be invalid' do
+        include_and_validate required: false
+        comment = Comment.new(text: 1)
 
-    #     _(comment.valid?).must_equal(false)
-    #     _(comment.errors[:text]).must_equal({ type: "text field must be string" })
-    #   end
+        _(comment.valid?).must_equal(false)
+        _(comment.errors[:text]).must_equal({ type: "text field must be string" })
+      end
 
-    #   it 'text is short should be invalid' do
-    #     include_and_validate required: false
-    #     comment = Comment.new(text: 'test')
+      it 'text is short should be invalid' do
+        include_and_validate required: false
+        comment = Comment.new(text: 'test')
 
-    #     _(comment.valid?).must_equal(false)
-    #     _(comment.errors[:text]).must_equal({ length: "text length must be greater than 4" })
-    #   end
-    # end
+        _(comment.valid?).must_equal(false)
+        _(comment.errors[:text]).must_equal({ length: "text length must be greater than 4" })
+      end
+    end
 
-    # describe 'before save must be valid' do
-    #   it 'does not persit if record is invalid' do
-    #     include_and_validate
-    #     Comment.before(
-    #       :save, ->(comment) { raise Rubee::Validatable::Error, comment.errors.to_s },
-    #       if: ->(comment) { comment&.invalid? }
-    #     )
+    describe 'before save must be valid' do
+      it 'does not persit if record is invalid' do
+        include_and_validate
+        Comment.before(
+          :save, proc { |comment| raise Rubee::Validatable::Error, comment.errors.to_s },
+          if: ->(comment) { comment&.invalid? }
+        )
 
-    #     comment = Comment.new(text: 'test')
-    #     _(raise_error { comment.save }.is_a?(Rubee::Validatable::Error)).must_equal(true)
-    #     _(comment.persisted?).must_equal(false)
-    #   end
+        comment = Comment.new(text: 'test')
+        _(raise_error { comment.save }.is_a?(Rubee::Validatable::Error)).must_equal(true)
+        _(comment.persisted?).must_equal(false)
+      end
 
-      # describe 'when usig method' do
-      #   it 'does not persit if record is invalid' do
-      #     include_and_validate
-      #     Comment.before(:save, ->(comment) { raise Rubee::Validatable::Error, comment.errors.to_s }, if: :invalid?)
+      describe 'when usig method' do
+        it 'does not persit if record is invalid' do
+          include_and_validate
+          Comment.before(:save, proc { |comment| raise Rubee::Validatable::Error, comment.errors.to_s }, if: :invalid?)
 
-      #     comment = Comment.new(text: 'test')
-      #     _(raise_error { comment.save }.is_a?(Rubee::Validatable::Error)).must_equal(true)
-      #     _(comment.persisted?).must_equal(false)
-      #   end
-      # end
-    # end
+          comment = Comment.new(text: 'test')
+          _(raise_error { comment.save }.is_a?(Rubee::Validatable::Error)).must_equal(true)
+          _(comment.persisted?).must_equal(false)
+        end
+      end
+    end
 
-    # describe 'before create must be invalid' do
-      # it 'does not create if record is invalid' do
-      #   include_and_validate
-      #   Comment.before(:save, ->(comment) { raise Rubee::Validatable::Error, comment.errors.to_s }, if: :invalid?)
+    describe 'before create must be invalid' do
+      it 'does not create if record is invalid' do
+        include_and_validate
+        Comment.before(:save, proc { |comment| raise Rubee::Validatable::Error, comment.errors.to_s }, if: :invalid?)
 
-      #   initial_comments_count = Comment.count
-      #   _(raise_error { Comment.create(text: 'te') }.is_a?(Rubee::Validatable::Error)).must_equal(true)
-      #   assert_equal(initial_comments_count, Comment.count)
-      # end
-    # end
+        initial_comments_count = Comment.count
+        _(raise_error { Comment.create(text: 'te') }.is_a?(Rubee::Validatable::Error)).must_equal(true)
+        assert_equal(initial_comments_count, Comment.count)
+      end
+    end
 
     describe 'before update must be invalid' do
       it 'does not update if record is invalid' do
         include_and_validate
-        Comment.around(:update, ->(comment, args) do
-          raise Rubee::Validatable::Error, comment.errors.to_s if Comment.new(*args).invalid?
-          yield
+        Comment.around(:update, proc do |_comment, args, &update_method|
+          com = Comment.new(*args)
+          raise Rubee::Validatable::Error, com.errors.to_s if com.invalid?
+          update_method.call
         end)
         comment = Comment.create(text: 'test123123')
+
         initial_comments_count = Comment.count
         _(raise_error { comment.update(text: 'te') }.is_a?(Rubee::Validatable::Error)).must_equal(true)
         assert_equal(initial_comments_count, Comment.count)
@@ -167,13 +169,15 @@ describe 'Comment model' do
 
       it 'updates the record if record is valid' do
         include_and_validate
-        Comment.around(:update, ->(comment, args) do
-          raise Rubee::Validatable::Error, comment.errors.to_s if Comment.new(*args).invalid?
-          yield
+        Comment.before(:update, ->(model, args) do
+          if (instance = model.class.new(*args)) && instance.invalid?
+            raise Rubee::Validatable::Error, instance.errors.to_s
+          end
         end)
         comment = Comment.create(text: 'test123123')
+
         comment.update(text: 'testerter')
-        assert_equal('test', comment.text)
+        assert_equal('testerter', comment.text)
       end
     end
   end

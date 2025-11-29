@@ -224,6 +224,15 @@ module Rubee
           klass.new(**klass_attributes)
         end
       end
+
+      def validate_before_persist!
+        before(:save, proc { |model| raise Rubee::Validatable::Error, model.errors.to_s }, if: :invalid?)
+        before(:update, proc do |model, args|
+          if (instance = model.class.new(*args)) && instance.invalid?
+            raise Rubee::Validatable::Error, instance.errors.to_s
+          end
+        end)
+      end
     end
   end
 end
