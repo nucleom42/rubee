@@ -33,12 +33,11 @@ module Rubee
 
       else
         begin
-          created_object = self.class.create(args)
+          created_id = self.class.dataset.insert(args)
         rescue StandardError => _e
           return false
         end
-        self.id = created_object.id
-
+        self.id = created_id
       end
       true
     end
@@ -208,9 +207,9 @@ module Rubee
         if dataset.columns.include?(:created) && dataset.columns.include?(:updated)
           attrs.merge!(created: Time.now, updated: Time.now)
         end
-
-        out_id = Rubee::DBTools.with_retry { dataset.insert(**attrs) }
-        new(**attrs.merge(id: out_id))
+        instance = new(**attrs)
+        Rubee::DBTools.with_retry { instance.save }
+        instance
       end
 
       def destroy_all(cascade: false)
@@ -224,6 +223,15 @@ module Rubee
           klass_attributes = record_hash.filter { target_klass_fields.include?(_1) }
           klass.new(**klass_attributes)
         end
+      end
+
+      def validate_before_persist!
+        before(:save, proc { |model| raise Rubee::Validatable::Error, model.errors.to_s }, if: :invalid?)
+        before(:update, proc do |model, args|
+          if (instance = model.class.new(*args)) && instance.invalid?
+            raise Rubee::Validatable::Error, instance.errors.to_s
+          end
+        end)
       end
     end
   end
