@@ -58,6 +58,7 @@ describe 'Comment model' do
           .condition(proc { comment.text.length > 4 }, { length: "text length must be greater than 4" })
       end
     end
+
     it 'is valid' do
       include_and_validate
       comment = Comment.new(text: 'test it as valid')
@@ -178,6 +179,27 @@ describe 'Comment model' do
 
         comment.update(text: 'testerter')
         assert_equal('testerter', comment.text)
+      end
+    end
+
+    describe 'message instead hash as error' do
+      it 'assembles error hash' do
+        Comment.validate do |comment|
+          comment.attribute(:text).required.type(String)
+            .condition(proc { comment.text.length > 4 })
+        end
+
+        comment = Comment.new(text: 'test')
+        _(comment.valid?).must_equal(false)
+        _(comment.errors[:text]).must_equal({ message: "condition is not met" })
+
+        comment = Comment.new(text: 123)
+        _(comment.valid?).must_equal(false)
+        _(comment.errors[:text]).must_equal({ message: "attribute must be String" })
+
+        comment = Comment.new(user_id: User.last)
+        _(comment.valid?).must_equal(false)
+        _(comment.errors[:text]).must_equal({ message: "attribute is required" })
       end
     end
   end
