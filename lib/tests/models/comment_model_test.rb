@@ -47,15 +47,14 @@ describe 'Comment model' do
 
   describe 'validatable' do
     def include_and_validate(required: true)
-      # Comment.include(Rubee::Validatable)
       required_or_optional = required ? :required : :optional
-      required_or_optional_args = required ? [:text, required: "text filed is required"] : [:text]
-      Comment.validate do |comment|
-        comment.send(
+      required_or_optional_args = required ? [required: "text filed is required"] : []
+      Comment.validate do
+        attribute(:text).send(
           required_or_optional, *required_or_optional_args
         )
           .type(String, type: "text field must be string")
-          .condition(proc { comment.text.length > 4 }, { length: "text length must be greater than 4" })
+          .condition(proc { text.length > 4 }, { length: "text length must be greater than 4" })
       end
     end
 
@@ -182,11 +181,10 @@ describe 'Comment model' do
       end
     end
 
-    describe 'message instead hash as error' do
+    describe 'default errors as error' do
       it 'assembles error hash' do
-        Comment.validate do |comment|
-          comment.attribute(:text).required.type(String)
-            .condition(proc { comment.text.length > 4 })
+        Comment.validate do
+          attribute(:text).required.type(String).condition(-> { text.length > 4 })
         end
 
         comment = Comment.new(text: 'test')
@@ -199,7 +197,29 @@ describe 'Comment model' do
 
         comment = Comment.new(user_id: User.last)
         _(comment.valid?).must_equal(false)
-        _(comment.errors[:text]).must_equal({ message: "attribute is required" })
+        _(comment.errors[:text]).must_equal({ message: "attribute 'text' is required" })
+      end
+    end
+
+    describe 'message instead hash as error' do
+      it 'assembles error hash' do
+        Comment.validate do
+          attribute(:text)
+            .required("Text is a mandatory field").type(String, "Text must be a string")
+            .condition(-> { text.length > 4 }, "Text length must be greater than 4")
+        end
+
+        comment = Comment.new(text: 'test')
+        _(comment.valid?).must_equal(false)
+        _(comment.errors[:text]).must_equal({ message: "Text length must be greater than 4" })
+
+        comment = Comment.new(text: 123)
+        _(comment.valid?).must_equal(false)
+        _(comment.errors[:text]).must_equal({ message: "Text must be a string" })
+
+        comment = Comment.new(user_id: User.last)
+        _(comment.valid?).must_equal(false)
+        _(comment.errors[:text]).must_equal({ message: "Text is a mandatory field" })
       end
     end
   end

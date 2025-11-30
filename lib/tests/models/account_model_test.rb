@@ -18,9 +18,8 @@ describe 'Account model' do
 
     describe '#validate_before_persist' do
       it 'rasies error if account is not valid' do
-        Account.validate do |account|
-          account
-            .required(:addres, required: "address is required")
+        Account.validate do
+          required(:addres, required: "address is required")
             .type(String, type: "address must be string")
         end
         Account.validate_before_persist!

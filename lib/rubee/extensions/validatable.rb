@@ -34,7 +34,7 @@ module Rubee
       def required(error_message = nil)
         value = @instance.send(@attribute)
 
-        error_hash = assemble_error_hash(error_message, :required)
+        error_hash = assemble_error_hash(error_message, :required, attribute: @attribute)
         if value.nil? || (value.respond_to?(:empty?) && value.empty?)
           @state.add_error(@attribute, error_hash)
         end
@@ -94,7 +94,7 @@ module Rubee
       def default_message(type, **options)
         {
           condition: "condition is not met",
-          required: "attribute is required",
+          required: "attribute '#{options[:attribute]}' is required",
           type: "attribute must be #{options[:class]}",
         }[type]
       end
@@ -131,7 +131,13 @@ module Rubee
 
       def run_validations
         @__validation_state = State.new
-        self.class&.validation_block&.call(self)
+        if (block = self.class.validation_block)
+          instance_exec(&block)
+        end
+      end
+
+      def subject
+        @__validation_state.instance
       end
 
       def attribute(name)
