@@ -77,6 +77,7 @@ The comparison is based on a very generic and subjective information open in the
 - [Database](#database)
 - [Views](#views)
 - [Hooks](#hooks)
+- [Validations](#validations)
 - [JWT based authentification](#jwt-based-authentification)
 - [OAuth2 based authentification](#oauth-authentification)
 - [Rubee commands](#rubee-commands)
@@ -863,6 +864,88 @@ hello!
 world!
 ```
 
+[Back to content](#content)
+
+## Validations
+
+In ru.Bee any class can be charged with validations. This is done by including Validatable module.
+Please note, ru.Bee model is validatable by default. No need to include it explicitly.
+```ruby
+class Foo
+  include Rubee::Validatable
+
+  attr_accessor :name, :age
+
+  def initialize(name, age)
+    @name = name
+    @age = age
+  end
+
+  validate do |foo|
+    foo
+      .required(:name, required: 'Name is required')
+      .type(String, type: 'must be a string')
+      .condition(->{ foo.name.length > 2 }, length: 'Name must be at least 3 characters long')
+
+    foo
+      .required(:age, required: 'Age is required')
+      .type(Integer, type: 'must be an integer')
+      .condition(->{ foo.age > 18 }, age: 'You must be at least 18 years old')
+  end
+end
+```
+```bash
+    irb(main):068> Foo.new("Joe", "20")
+    =>
+    #<Foo:0x0000000120d7f778
+     @__validation_state=#<Rubee::Validatable::State:0x0000000120d7f700 @errors={age: {type: "must be an integer"}}, @valid=false>,
+     @age="20",
+     @name="Joe">
+    irb(main):069> foo = Foo.new("Joe", 11)
+    =>
+    #<Foo:0x0000000105f2b0b0
+    ...
+    irb(main):070> foo.valid?
+    => false
+    irb(main):071> foo.errors
+    => {age: {age: "You must be at least 18 years old"}}
+    irb(main):072> foo.age=20
+    => 20
+    irb(main):073> foo.valid?
+    => true
+```
+Model example
+```ruby
+class User < Rubee::SequelObject
+  attr_accessor :id, :email, :password, :created, :updated
+
+    validate do |user|
+     user
+       .required(:email, required: 'Email is required')
+       .condition(
+         ->{ user.email.match?(/\A[\w+\-.]+@[a-z\d\-]+(\.[a-z\d\-]+)*\.[a-z]+\z/i) }, email: 'Wrong email format'
+       )
+    end
+    validate_before_persist! # This will validate and raise error in case invalid before saving to DB
+end
+```
+```bash
+irb(main):089> user = User.new(email: "wrong", password: 123)
+=> #<User:0x000000010cda23b8 @email="wrong", @password=123>
+irb(main):090> user.valid?
+=> false
+irb(main):091> user.errors
+=> {email: {email: "Wrong email format"}}
+irb(main):091> user.save
+...sequel_object.rb:229:in 'block in Rubee::SequelObject.validate_before_persist!': {email: {email: "Wrong email format"}} (Rubee::Validatable::Error)
+irb(main):092> user.email = "ok@ok.com"
+=> "ok@ok.com"
+irb(main):094> user.valid?
+=> true
+irb(main):095> user.save
+=> true
+
+```
 [Back to content](#content)
 
 ## JWT based authentification
