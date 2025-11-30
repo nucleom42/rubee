@@ -31,43 +31,72 @@ module Rubee
         @optional = false
       end
 
-      def required(error_hash)
+      def required(error_message = nil)
         value = @instance.send(@attribute)
+
+        error_hash = assemble_error_hash(error_message, :required, attribute: @attribute)
         if value.nil? || (value.respond_to?(:empty?) && value.empty?)
           @state.add_error(@attribute, error_hash)
         end
+
         self
       end
 
       def optional(*)
         @optional = true
+
         self
       end
 
-      def type(expected_class, error_hash)
-        return self if @state.has_errors_for?(@attribute)
+      def attribute
+        self
+      end
 
+      def type(expected_class, error_message = nil)
+        return self if @state.has_errors_for?(@attribute)
         value = @instance.send(@attribute)
         return self if @optional && value.nil?
 
+        error_hash = assemble_error_hash(error_message, :type, class: expected_class)
         unless value.is_a?(expected_class)
           @state.add_error(@attribute, error_hash)
         end
+
         self
       end
 
-      def condition(handler, error_message)
+      def condition(handler, error_message = nil)
         return self if @state.has_errors_for?(@attribute)
         value = @instance.send(@attribute)
         return self if @optional && value.nil?
 
+        error_hash = assemble_error_hash(error_message, :condition)
         if handler.respond_to?(:call)
-          @state.add_error(@attribute, error_message) unless handler.call
+          @state.add_error(@attribute, error_hash) unless handler.call
         else
           @instance.send(handler)
         end
 
         self
+      end
+
+      private
+
+      def assemble_error_hash(error_message, error_type, **options)
+        error_message ||= default_message(error_type, **options)
+        if error_message.is_a?(String)
+          error_message = { message: error_message }
+        end
+
+        error_message
+      end
+
+      def default_message(type, **options)
+        {
+          condition: "condition is not met",
+          required: "attribute '#{options[:attribute]}' is required",
+          type: "attribute must be #{options[:class]}",
+        }[type]
       end
     end
 
@@ -102,7 +131,17 @@ module Rubee
 
       def run_validations
         @__validation_state = State.new
-        self.class&.validation_block&.call(self)
+        if (block = self.class.validation_block)
+          instance_exec(&block)
+        end
+      end
+
+      def subject
+        @__validation_state.instance
+      end
+
+      def attribute(name)
+        RuleChain.new(self, name, @__validation_state).attribute
       end
 
       def required(attribute, options)

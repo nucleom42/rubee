@@ -881,70 +881,88 @@ class Foo
     @age = age
   end
 
-  validate do |foo|
-    foo
-      .required(:name, required: 'Name is required')
-      .type(String, type: 'must be a string')
-      .condition(->{ foo.name.length > 2 }, length: 'Name must be at least 3 characters long')
+  validate do
+    attribute(:name).required.type(String).condition(->{ name.length > 2 })
 
-    foo
-      .required(:age, required: 'Age is required')
-      .type(Integer, type: 'must be an integer')
-      .condition(->{ foo.age > 18 }, age: 'You must be at least 18 years old')
+    attribute(:age)
+      .required('Age is a manadatory field')
+      .type(Integer, error_message: 'Must be an integerRRRRRRrrr!')
+      .condition(->{ age > 18 }, fancy_error: 'You must be at least 18 years old, dude!')
   end
 end
 ```
+Then we can evaluate it in the ru.Bee console
 ```bash
-    irb(main):068> Foo.new("Joe", "20")
-    =>
-    #<Foo:0x0000000120d7f778
-     @__validation_state=#<Rubee::Validatable::State:0x0000000120d7f700 @errors={age: {type: "must be an integer"}}, @valid=false>,
-     @age="20",
-     @name="Joe">
-    irb(main):069> foo = Foo.new("Joe", 11)
-    =>
-    #<Foo:0x0000000105f2b0b0
-    ...
-    irb(main):070> foo.valid?
-    => false
-    irb(main):071> foo.errors
-    => {age: {age: "You must be at least 18 years old"}}
-    irb(main):072> foo.age=20
-    => 20
-    irb(main):073> foo.valid?
-    => true
+=> #<Proc:0x000000010d389d80 (irb):32>
+irb(main):041> Foo.new("Test", 20)
+=> #<Foo:0x000000010d383fc0 @__validation_state=#<Rubee::Validatable::State:0x000000010d383de0 @errors={}, @valid=true>, @age=20, @name="Test">
+irb(main):042> Foo.new("Test", 1)
+=>
+#<Foo:0x000000010ce61c40
+ @__validation_state=#<Rubee::Validatable::State:0x000000010ce61bc8 @errors={age: {fancy_error: "You must be at least 18 years old, dude!"}}, @valid=false>,
+ @age=1,
+ @name="Test">
+irb(main):043> Foo.new("Test", nil)
+=>
+#<Foo:0x000000010c46f200
+ @__validation_state=#<Rubee::Validatable::State:0x000000010c46f070 @errors={age: {message: "Age is a manadatory field"}}, @valid=false>,
+ @age=nil,
+ @name="Test">
+irb(main):044> Foo.new("Te", 20)
+=>
+#<Foo:0x000000010cfe9270
+ @__validation_state=#<Rubee::Validatable::State:0x000000010cfe91f8 @errors={name: {message: "condition is not met"}}, @valid=false>,
+ @age=20,
+ @name="Te">
+irb(main):045> foo = Foo.new("Joe", "wrong")
+=>
+#<Foo:0x000000010d32eb38
+...
+irb(main):046> foo.valid?
+=> false
+irb(main):047> foo.errors
+=> {age: {error_message: "Must be an integerRRRRRRrrr!"}}
 ```
 Model example
 ```ruby
 class User < Rubee::SequelObject
   attr_accessor :id, :email, :password, :created, :updated
 
-    validate do |user|
-     user
-       .required(:email, required: 'Email is required')
-       .condition(
-         ->{ user.email.match?(/\A[\w+\-.]+@[a-z\d\-]+(\.[a-z\d\-]+)*\.[a-z]+\z/i) }, email: 'Wrong email format'
-       )
-    end
-    validate_before_persist! # This will validate and raise error in case invalid before saving to DB
+  validate_before_persist! # This will validate and raise error in case invalid before saving to DB
+  validate do
+    attribute(:email).required
+      .condition(
+        ->{ email.match?(/\A[\w+\-.]+@[a-z\d\-]+(\.[a-z\d\-]+)*\.[a-z]+\z/i) }, error: 'Wrong email format'
+      )
+  end
 end
 ```
 ```bash
-irb(main):089> user = User.new(email: "wrong", password: 123)
-=> #<User:0x000000010cda23b8 @email="wrong", @password=123>
-irb(main):090> user.valid?
+irb(main):074> user = User.new(email: "wrong", password: 123)
+=>
+#<User:0x000000010d2c3e78
+...
+irb(main):075> user.valid?
 => false
-irb(main):091> user.errors
-=> {email: {email: "Wrong email format"}}
-irb(main):091> user.save
-...sequel_object.rb:229:in 'block in Rubee::SequelObject.validate_before_persist!': {email: {email: "Wrong email format"}} (Rubee::Validatable::Error)
-irb(main):092> user.email = "ok@ok.com"
+irb(main):076> user.errors
+=> {email: {error: "Wrong email format"}}
+irb(main):077> user.save
+=>{email: {error: "Wrong email format"}} (Rubee::Validatable::Error) ..
+irb(main):078> user.email = "ok@ok.com"
 => "ok@ok.com"
-irb(main):094> user.valid?
+irb(main):079> user.valid?
 => true
-irb(main):095> user.save
+irb(main):080> user.save
 => true
-
+irb(main):081> user
+=>
+#<User:0x000000010d2c3e78
+ @__validation_state=#<Rubee::Validatable::State:0x000000010cb28628 @errors={}, @valid=true>,
+ @created=2025-11-30 17:18:52.254197 -0500,
+ @email="ok@ok.com",
+ @id=2260,
+ @password=123,
+ @updated=2025-11-30 17:18:52.254206 -0500>
 ```
 [Back to content](#content)
 
