@@ -151,14 +151,14 @@ cd my_project
 
 ***Prerequisites***<br />
 Make sure:
-**Ruby** language (3.1>) is installed
+**Ruby** language (3.1 or higher, 3.4.1 recommended) is installed
 **Bundler** is installed
 
 ```bash
 bundle install
 ```
 
-4. Run RUBER server. Default port is 7000
+4. Run ru.Bee server. Default port is 7000
 ```bash
 rubee start # or rubee start_dev for development
 
