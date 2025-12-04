@@ -50,11 +50,15 @@ class AuthTokenableTest < Minitest::Test
     assert_equal(last_response.status, 401)
   end
 
-  def test_welcome_controller_included_auth_tokenable_authenticated
+  def test_test_controller_included_auth_tokenable_authenticated
     post('/test/login', { email: '9oU8S@example.com', password: '123456' })
     rack_mock_session.cookie_jar["jwt"] = last_response.cookies["jwt"].value.last
     get('/test/show')
 
     assert_equal(last_response.status, 200)
+  end
+
+  def test_test_controller_included_auth_tokenable_authenticated_custom_model
+
   end
 end
