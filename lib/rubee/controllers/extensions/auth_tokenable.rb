@@ -27,10 +27,10 @@ module Rubee
         @request.env['rack.session']&.[]('authentificated')
       end
 
-      def authentificated_user
-        # User model must be created with email and password properties at least
+      def authentificated_user(user_model: ::User, login: :email, password: :password)
         if params[:email] && params[:password]
-          @authentificated_user ||= ::User.where(email: params[:email], password: params[:password]).first
+          query_params = { login => params[login], password => params[password] }
+          @authentificated_user ||= user_model.where(query_params).first
         elsif @request.cookies['jwt'] && valid_token?
           token = @request.cookies['jwt']
           hash = ::JWT.decode(token, Rubee::AuthTokenable::KEY, true, { algorithm: 'HS256' })
@@ -38,11 +38,11 @@ module Rubee
         end
       end
 
-      def authentificate!
-        return false unless authentificated_user
+      def authentificate!(user_model: ::User, login: :email, password: :password)
+        return false unless authentificated_user(user_model:, login:, password:)
 
         # Generate token
-        payload = { username: params[:email], exp: Time.now.to_i + EXPIRE }
+        payload = { username: params[login], exp: Time.now.to_i + EXPIRE }
         @token = ::JWT.encode(payload, KEY, 'HS256')
         # Set jwt token to the browser within cookie, so next browser request will include it.
         # make sure it passed to response_with headers options
