@@ -3,7 +3,7 @@ require 'date'
 
 module Rubee
   module AuthTokenable
-    KEY = "secret#{Date.today}".freeze unless defined?(KEY) # Feel free to cusomtize it
+    KEY ="secret#{ENV['JWT_KEY']}#{Date.today}".freeze unless defined?(KEY) # Feel free to cusomtize it
     EXPIRE = 3600 unless defined?(EXPIRE)
 
     def self.included(base)
@@ -28,7 +28,7 @@ module Rubee
       end
 
       def authentificated_user(user_model: ::User, login: :email, password: :password)
-        if params[:email] && params[:password]
+        if params[login] && params[password]
           query_params = { login => params[login], password => params[password] }
           @authentificated_user ||= user_model.where(query_params).first
         elsif @request.cookies['jwt'] && valid_token?
