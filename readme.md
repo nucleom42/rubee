@@ -978,6 +978,7 @@ rubee db run:create_users
 This will create table users and initiate first user with demo credentials.
 email: "ok@ok.com", password: "password"
 Feel free to customize it in the /db/create_users.rb file before running migration.
+Please note user model is default but are free to use any model you need. See more examples below.
 
 Then in the controller you can include the AuthTokenable module and use its methods:
 ```ruby
@@ -1019,7 +1020,7 @@ For security reason it is recommended to initialize JWT_KEY while starting ru.Be
 ```bash
 JWT_KEY=SDJwer0wer23j rubee start
 ```
-User is a default model for validation but using it is not a mandatory. You can use any model you need busy
+User is a default model for validation but using it is not a mandatory. You can use any model you need by
 passing arguments to authentificate! and unauthentificate! methods.
 
 ```ruby
