@@ -3,9 +3,9 @@
 This document outlines the planned features and improvements for Rubee.
 
 ## Authentication & Security
-- [ ] Customise auth user
-- [ ] OAuth integration
-- [ ] Add configurable model for auth
+- [x] Customise auth user
+- [x] OAuth integration
+- [x] Add configurable model for auth
 - [ ] Rubee common auth API
 - [ ] Security: CORS
 - [ ] Security: DDoS protection

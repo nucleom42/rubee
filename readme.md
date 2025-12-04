@@ -1015,6 +1015,54 @@ class UsersController < Rubee::BaseController
   end
 end
 ```
+For security reason it is recommended to initialize JWT_KEY while starting ru.Bee application.
+```bash
+JWT_KEY=SDJwer0wer23j rubee start
+```
+User is a default model for validation but using it is not a mandatory. You can use any model you need busy
+passing arguments to authentificate! and unauthentificate! methods.
+
+```ruby
+class Client < Sequel::Model
+  attr_accessor :id, :name, :digest_password, :created, :updated
+end
+
+class ClientController < Rubee::BaseController
+  include Rubee::AuthTokenable
+  # List methods you want to restrict
+  auth_methods :index
+
+  # GET /clinets/login (login form page)
+  def edit
+    response_with
+  end
+
+  # POST /clients/login (login logic)
+  def login
+    if authentificate! user_model: Client, login: :name, password: :digest_password
+      response_with type: :redirect, to: "/clinets", headers: @token_header
+    else
+      @error = "Wrong login or password"
+      response_with render_view: "clinets_edit"
+    end
+  end
+
+  # POST /clinets/logout
+  def logout
+    unauthentificate! user_model: Client, login: :name, password: :digest_password
+    response_with type: :redirect, to: "/clients/login", headers: @zeroed_token_header
+  end
+
+  # GET /clinets (restricted endpoint)
+  def index
+    response_with object: Client.all, type: :json
+  end
+end
+
+```
+
+[Back to content](#content)
+
 ## OAuth authentification
 If you want to plug in the OAuth 2.0 authentication, you can use the following code using OAuth2 gem:
 First thing you need to do is to add the gem to your Gemfile
