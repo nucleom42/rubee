@@ -27,11 +27,11 @@ module Rubee
 
     def valid_token?(token)
       return false unless token
-
       hash = decode_jwt(token)
-      email = hash[:username]
+      login_params = hash[:login]
+      klass = hash[:klass]&.split('::')&.inject(Object) { |o, c| o.const_get(c) }
 
-      ::User.where(email:)&.any? if email
+      klass&.where(login_params.transform_keys(&:to_sym))&.any?
     end
 
     def decode_jwt(token)

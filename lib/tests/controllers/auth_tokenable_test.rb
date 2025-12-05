@@ -68,7 +68,7 @@ class AuthTokenableTest < Minitest::Test
       route.get('/testtwo/show', to: 'testtwo#show')
     end
     User.create(email: '9oU8S@example.com', password: '123456')
-    Client.create(name: '9oU8S@example.com', digest_password: '123456')
+    Client.create(name: '9o@example.com', digest_password: '123456')
   end
 
   def test_test_controller_included_auth_tokenable
@@ -92,7 +92,7 @@ class AuthTokenableTest < Minitest::Test
   end
 
   def test_test_controller_included_auth_tokenable_authenticated_custom_model
-    post('/testtwo/login', { name: '9oU8S@example.com', digest_password: '123456' })
+    post('/testtwo/login', { name: '9o@example.com', digest_password: '123456' })
     rack_mock_session.cookie_jar["jwt"] = last_response.cookies["jwt"].value.last
     get('/testtwo/show')
 

@@ -34,7 +34,7 @@ module Rubee
         elsif @request.cookies['jwt'] && valid_token?
           token = @request.cookies['jwt']
           hash = ::JWT.decode(token, Rubee::AuthTokenable::KEY, true, { algorithm: 'HS256' })
-          @authentificated_user ||= ::User.where(email: hash[0]['username']).first
+          @authentificated_user ||= user_model.where(login => hash[0][login]).first
         end
       end
 
@@ -42,7 +42,7 @@ module Rubee
         return false unless authentificated_user(user_model:, login:, password:)
 
         # Generate token
-        payload = { username: params[login], exp: Time.now.to_i + EXPIRE }
+        payload = { login: { login => params[login] }, klass: user_model.name, exp: Time.now.to_i + EXPIRE }
         @token = ::JWT.encode(payload, KEY, 'HS256')
         # Set jwt token to the browser within cookie, so next browser request will include it.
         # make sure it passed to response_with headers options
