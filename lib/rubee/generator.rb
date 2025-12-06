@@ -6,6 +6,7 @@ module Rubee
     def initialize(model_name, model_attributes, controller_name, action_name, **options)
       @model_name = model_name&.downcase
       @model_attributes = model_attributes || []
+      @filtered_attributes = model_attributes.select { |attribute| !attribute[:name].include?('index') }
       @base_name = controller_name.to_s.gsub('Controller', '').downcase.to_s
       color_puts("base_name: #{@base_name}", color: :gray)
       @plural_name = @base_name.plural? ? @base_name : @base_name.pluralize
@@ -33,7 +34,7 @@ module Rubee
 
       content = <<~RUBY
         class #{@namespace}#{@model_name.camelize} < Rubee::SequelObject
-          #{'attr_accessor ' + @model_attributes.map { |hash| ":#{hash[:name]}" }.join(', ') unless @model_attributes.empty?}
+          #{'attr_accessor ' + @filtered_attributes.map { |hash| ":#{hash[:name]}" }.join(', ') unless @filtered_attributes.empty?}
         end
       RUBY
 

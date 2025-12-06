@@ -281,11 +281,7 @@ Style/NonNilCheck:
   IncludeSemanticChanges: false
 
 Style/MethodDefParentheses:
-  EnforcedStyle: require_parentheses
-  SupportedStyles:
-    - require_parentheses
-    - require_no_parentheses
-    - require_no_parentheses_except_multiline
+  enabled: false
 
 Naming/MethodName:
   EnforcedStyle: snake_case

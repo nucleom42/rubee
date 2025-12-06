@@ -80,7 +80,7 @@ module Rubee
           react_app_file = <<~REACT_APP_FILE
             import React from 'react';
 
-            export function #{new_app_name.camelize}App() {
+            export default function #{new_app_name.camelize}App() {
               return (
                 <h1>#{new_app_name.camelize}App</h1>
               );
