@@ -9,9 +9,6 @@ class CreateComments
       # timestamps
       datetime(:created)
       datetime(:updated)
-
     end
-
-    User.create(email: 'ok@ok.com', password: 'password')
   end
 end

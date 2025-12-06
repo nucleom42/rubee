@@ -3,6 +3,8 @@ module Rubee
     BLACKLIST = ['rubee.rb', 'test_helper.rb']
     class << self
       def call(black_list = [], **options)
+        load_dotenv_file
+        
         load_whitelisted(options[:white_list_dirs]) && return if options[:white_list_dirs]
         # autoload all rbs
         root_directory = File.join(Rubee::ROOT_PATH, '/lib')
@@ -16,6 +18,17 @@ module Rubee
           unless base_name.end_with?('_test.rb') || (black_list + BLACKLIST).include?(base_name)
             require_relative file
           end
+        end
+      end
+      
+      def load_dotenv_file
+        require 'dotenv'
+        env_file = File.join(Rubee::APP_ROOT, ".env.#{ENV['RACK_ENV']}")
+        if File.exist?(env_file)
+          puts "Loading environment variables from: #{env_file}" if ENV['DEBUG']
+          Dotenv.load(env_file)
+        else
+          puts "Environment file not found: #{env_file}" if ENV['DEBUG']
         end
       end
 
@@ -53,12 +66,12 @@ module Rubee
           require_relative File.join(Rubee::APP_ROOT, Rubee::LIB,
                                      'config/base_configuration')
         end
-        # This is necessary prerequisitedb init step
-        if Rubee::PROJECT_NAME == 'rubee'
-          Rubee::Configuration.setup(env = :test) do |config|
-            config.database_url = { url: 'sqlite://lib/tests/test.db', env: }
-          end
-        end
+        # # This is necessary prerequisitedb init step
+        # if Rubee::PROJECT_NAME == 'rubee'
+        #   Rubee::Configuration.setup(env = :test) do |config|
+        #     config.database_url = { url: ENV['DATABASE_URL'], env: }
+        #   end
+        # end
 
         require_relative File.join(Rubee::APP_ROOT, Rubee::LIB, 'config/routes') unless black_list.include?('routes.rb')
         # rubee extensions

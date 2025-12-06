@@ -7,9 +7,9 @@ module Rubee
           # ENV['RACK_ENV'] ||= 'development' # already set in bin/rubee
 
           if Rubee::PROJECT_NAME == 'rubee'
-            Rubee::Configuration.setup(env = :test) do |config|
-              config.database_url = { url: 'sqlite://lib/tests/test.db', env: }
-            end
+            # Rubee::Configuration.setup(env = :test) do |config|
+            #   config.database_url = { url: 'sqlite://lib/tests/test.db', env: }
+            # end
             Rubee::SequelObject.reconnect! unless command == 'init'
           end
 
@@ -26,8 +26,9 @@ module Rubee
           else
             [file_name]
           end
+          
           Rubee::Configuration.envs.each do |env|
-            ENV['RACK_ENV'] = env.to_s
+            # ENV['RACK_ENV'] = env.to_s # it sets ENV['RACK_ENV'] = 'app' and it is wrong, only bin/rubee should override ENV['RACK_ENV']
             file_names.each do |file|
               color_puts("Run #{file} file for #{env} env", color: :cyan)
               Object.const_get(file.split('_').map(&:capitalize).join).new.call
@@ -41,7 +42,7 @@ module Rubee
         end
 
         def init(_argv)
-          ensure_database_exists(Rubee::Configuration.get_database_url)
+          ensure_database_exists(ENV['DATABASE_URL'])
         end
 
         def structure(_argv)
@@ -75,24 +76,25 @@ module Rubee
           uri = URI.parse(db_url)
           case uri.scheme
           when 'sqlite'
-            begin
+            db_path = db_url.sub(%r{^sqlite://}, '')
+            if Rubee::DBTools.valid_sqlite_database_exists?(db_path)
               Sequel.connect(db_url)
               color_puts("Database #{ENV['RACK_ENV']} exists", color: :cyan)
-            rescue => _e
-              if File.exist?(db_path = db_url.sub(%r{^sqlite://}, ''))
-                color_puts("Database #{ENV['RACK_ENV']} exists", color: :cyan)
-              else
-                Sequel.sqlite(db_path)
-                color_puts("Database #{ENV['RACK_ENV']} created", color: :green)
+            else
+              db = Sequel.sqlite(db_path)
+              # Sequel.sqlite(db_path) creates only empty text file, we need to create a table to create valid sqlite database
+              db.create_table? :schema_info do
+                Integer :version, default: 0
               end
+              color_puts("Database #{ENV['RACK_ENV']} created", color: :green)
             end
           when 'postgres'
             begin
               Sequel.connect(db_url)
               color_puts("Database #{ENV['RACK_ENV']} exists", color: :cyan)
             rescue StandardError => _e
-              con = Sequel.connect(Rubee::Configuration.get_database_url.gsub(%r{(/test|/development|/production)},
-        ''))
+              # do we really need gsub here?
+              con = Sequel.connect(db_url.gsub(%r{(/test|/development|/production)}, ''))
               con.run("CREATE DATABASE #{ENV['RACK_ENV']}")
               color_puts("Database #{ENV['RACK_ENV']} created", color: :green)
             end

@@ -13,12 +13,47 @@ require 'rack/test'
 require 'stringio'
 
 require_relative '../../lib/rubee'
-
 Rubee::Autoload.call
 Rubee::Configuration.setup(env = :test) do |config|
-  config.database_url = { url: 'sqlite://lib/tests/test.db', env: }
+  config.database_url = { url: ENV['DATABASE_URL'], env: }
 end
-Rubee::SequelObject.reconnect!
+
+Rubee::CLI::Db.call('db', ['db', 'init']) # ensure test db exists
+Rubee::SequelObject.reconnect! # connect to test db
+
+def truncate_test_tables!
+  db = Rubee::SequelObject::DB
+  if db.adapter_scheme == :sqlite
+    # Disable FK checks for SQLite
+    db.run('PRAGMA foreign_keys = OFF')
+    
+    tables_to_truncate.each do |table|
+      db[table].delete
+    end
+    
+    db.run('PRAGMA foreign_keys = ON')
+  else
+    # For PostgreSQL/MySQL, disable triggers if needed
+    tables_to_truncate.each do |table|
+      db[table].delete
+    end
+  end
+end
+
+def tables_to_truncate
+  db = Rubee::SequelObject::DB
+  db.tables.reject { |t| t.to_s.start_with?('sqlite_') }
+end
+
+# delete all tables from test db
+truncate_test_tables!
+
+# run migrations in test db
+Rubee::CLI::Db.call('db', ['db', 'run:all']) 
+
+# Load test seed data
+require_relative 'test_seed'
+TestSeed.load
 
 def assert_difference(expression, difference = 1)
   before = expression.call
@@ -44,4 +79,3 @@ def raise_error
 rescue => e
   e
 end
-

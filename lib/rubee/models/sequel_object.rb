@@ -160,16 +160,41 @@ module Rubee
       def reconnect!
         return if defined?(DB) && !DB.nil?
 
-        const_set(:DB, Sequel.connect(Rubee::Configuration.get_database_url))
+        db_url = ENV['DATABASE_URL']
+        uri = URI.parse(db_url) rescue nil
+
+        if uri&.scheme == 'sqlite' || uri&.scheme == 'sqlite3'
+          db_path = db_url.sub(%r{^sqlite://}, '')
+          if Rubee::DBTools.valid_sqlite_database_exists?(db_path)
+            const_set(:DB, Sequel.connect(db_url))
+          else
+            # Set DB to nil to avoid infinite loops, but allow future retries
+            const_set(:DB, nil) unless defined?(DB)
+            return false
+          end
+        else
+          const_set(:DB, Sequel.connect(db_url))
+        end
 
         Rubee::DBTools.set_prerequisites!
-
         true
       end
 
       def dataset
         @dataset ||= DB[pluralize_class_name.to_sym]
       rescue Exception => _e
+        # when DB is nil or undefined, DB[pluralize_class_name.to_sym] has exception
+        # This reconnect counter prevent infinite loop when database connection fails
+        # Track reconnect attempts and raise error after max retries
+        @reconnect_attempts ||= 0
+        @reconnect_attempts += 1
+        
+        if @reconnect_attempts > 3
+          ru_bee = (Rubee::PROJECT_NAME == 'rubee' ? 'bin/rubee' : 'rubee')
+          raise "Failed to connect to database after 3 attempts. run '#{ru_bee} db init' to initialize the database."
+        end
+        
+        sleep 0.5
         reconnect!
         retry
       end
@@ -233,6 +258,7 @@ module Rubee
           end
         end)
       end
+
     end
   end
 end

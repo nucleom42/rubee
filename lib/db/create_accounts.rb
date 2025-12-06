@@ -10,8 +10,5 @@ class CreateAccounts
       datetime(:created)
       datetime(:updated)
     end
-
-    Account.create(addres: '13th Ave, NY', user_id: User.all.first.id)
-    Account.create(addres: '14th Ave, NY', user_id: User.all.last.id)
   end
 end
