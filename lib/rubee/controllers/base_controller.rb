@@ -67,7 +67,7 @@ module Rubee
       in :unauthentificated
         [401, headers.merge('content-type' => 'text/plain'), ['Unauthentificated']]
       in :redirect
-        [302, headers.merge('location' => to.to_s), ['Unauthentificated']]
+        [302, headers.merge('location' => to.to_s), []]
       in :not_found
         [404, { 'content-type' => 'text/plain' }, ['Route not found']]
       else # rendering erb view is a default behavior

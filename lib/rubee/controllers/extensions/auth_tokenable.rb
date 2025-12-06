@@ -34,7 +34,7 @@ module Rubee
         elsif @request.cookies['jwt'] && valid_token?
           token = @request.cookies['jwt']
           hash = ::JWT.decode(token, Rubee::AuthTokenable::KEY, true, { algorithm: 'HS256' })
-          @authentificated_user ||= user_model.where(login => hash[0][login]).first
+          @authentificated_user ||= user_model.where(login => hash[0]["login"][login.to_s]).first
         end
       end
 

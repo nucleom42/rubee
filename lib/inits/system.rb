@@ -3,5 +3,3 @@ def reload
   app_files.each { |file| load(file) }
   puts "\e[32mReloaded..\e[0m"
 end
-
-
