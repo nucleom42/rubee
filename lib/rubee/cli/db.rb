@@ -4,7 +4,8 @@ module Rubee
       class << self
         def call(command, argv)
           command = argv[1].split(':').first
-          ENV['RACK_ENV'] ||= 'development'
+          # ENV['RACK_ENV'] ||= 'development' # already set in bin/rubee
+
           if Rubee::PROJECT_NAME == 'rubee'
             Rubee::Configuration.setup(env = :test) do |config|
               config.database_url = { url: 'sqlite://lib/tests/test.db', env: }

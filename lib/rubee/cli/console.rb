@@ -8,7 +8,7 @@ module Rubee
 
         def console(argv)
           argv.clear
-          ENV['RACK_ENV'] ||= 'development'
+          # ENV['RACK_ENV'] ||= 'development' # already set in bin/rubee
 
           if Rubee::PROJECT_NAME == 'rubee'
             Rubee::Configuration.setup(env = :test) do |config|

@@ -7,7 +7,7 @@ module Rubee
         end
 
         def test(argv)
-          ENV['RACK_ENV'] = 'test'
+          # ENV['RACK_ENV'] = 'test' # already set in bin/rubee
           file_name = argv[1] # Get the first argument
           line = argv[2]&.start_with?('--line=') ? argv[2].split('=')[1] : nil
           lib = Rubee::PROJECT_NAME == 'rubee' ? '/lib' : ''
