@@ -10,8 +10,5 @@ class CreatePosts
       datetime(:created)
       datetime(:updated)
     end
-
-    Post.create(user_id: User.all.first.id, comment_id: Comment.all.first.id)
-    Post.create(user_id: User.all.last.id, comment_id: Comment.all.last.id)
   end
 end

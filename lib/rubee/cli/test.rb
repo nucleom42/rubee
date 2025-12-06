@@ -7,20 +7,20 @@ module Rubee
         end
 
         def test(argv)
-          ENV['RACK_ENV'] = 'test'
+          # ENV['RACK_ENV'] = 'test' # already set in bin/rubee
           file_name = argv[1] # Get the first argument
           line = argv[2]&.start_with?('--line=') ? argv[2].split('=')[1] : nil
           lib = Rubee::PROJECT_NAME == 'rubee' ? '/lib' : ''
           if file_name && !line
             color_puts("Running #{file_name} test ...", color: :yellow)
-            exec("ruby -Itest -e \"require '.#{lib}/tests/#{file_name}'\"")
+            system('ruby', '-Itest', ".#{lib}/tests/#{file_name}")
           elsif file_name && line
             color_puts("Running #{file_name} test at line #{line} ...", color: :yellow)
             test_name = find_test_at_line(".#{lib}/tests/#{file_name}", line)
-            exec("ruby -Itest .#{lib}/tests/#{file_name} -n #{test_name}")
+            system('ruby', '-Itest', ".#{lib}/tests/#{file_name}", '-n', test_name)
           else
             color_puts('Running all tests ...', color: :yellow)
-            exec("ruby -Itest -e \"Dir.glob('.#{lib}/tests/**/*_test.rb').each { |file| require file }\"")
+            system('ruby', '-Itest', '-e', "Dir.glob('.#{lib}/tests/**/*_test.rb').each { |file| require file }")
           end
         end
 

@@ -5,6 +5,7 @@ require 'rubygems'
 require_relative '../lib/inits/print_colors'
 require_relative '../lib/rubee'
 
+ENV['RACK_ENV'] ||= 'test' if ARGV[0] == 'test'
 ENV['RACK_ENV'] ||= 'development'
 
 LIB_ROOT = File.expand_path('../lib', File.dirname(__FILE__))

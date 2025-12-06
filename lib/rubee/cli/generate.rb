@@ -10,7 +10,8 @@ module Rubee
           method, path = argv[1..2]
           app = argv[3]
           app_name = app.nil? ? :app : app.split(':')[1]
-          ENV['RACK_ENV'] ||= 'development'
+          # ENV['RACK_ENV'] ||= 'development' # already set in bin/rubee
+          
           routes = Rubee::Router.instance_variable_get(:@routes)
           route = routes.find { |route| route[:path] == path.to_s && route[:method] == method.to_sym }
 

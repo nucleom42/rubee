@@ -24,9 +24,10 @@ module Rubee
             production: {},
             test: {},
           }
-          unless @configuraiton[app.to_sym][env.to_sym]
-            @configuraiton[app.to_sym][env.to_sym] = {}
-          end
+        end
+
+        unless @configuraiton[app.to_sym][env.to_sym]
+          @configuraiton[app.to_sym][env.to_sym] = {}
         end
 
         yield(self)
@@ -85,7 +86,7 @@ module Rubee
 
       def react(**args)
         args[:app] ||= :app
-        @configuraiton[args[:app].to_sym][ENV['RACK_ENV']&.to_sym || :development][:react] || {}
+        @configuraiton[args[:app].to_sym]&.[](ENV['RACK_ENV']&.to_sym || :development)&.[](:react) || {}
       end
 
       def pubsub_container=(args)
@@ -95,14 +96,14 @@ module Rubee
 
       def pubsub_container(**args)
         args[:app] ||= :app
-        @configuraiton[args[:app].to_sym][ENV['RACK_ENV']&.to_sym || :development][:pubsub_container] || ::Rubee::PubSub::Redis.instance
+        @configuraiton[args[:app].to_sym]&.[](ENV['RACK_ENV']&.to_sym || :development)&.[](:pubsub_container) || ::Rubee::PubSub::Redis.instance
       end
 
       def method_missing(method_name, *args)
         return unless method_name.to_s.start_with?('get_')
 
         app_name = args[0] || :app
-        @configuraiton[app_name.to_sym][ENV['RACK_ENV']&.to_sym || :development]
+        @configuraiton[app_name.to_sym]&.[](ENV['RACK_ENV']&.to_sym || :development)
           &.[](method_name.to_s.delete_prefix('get_').to_sym)
       end
 
