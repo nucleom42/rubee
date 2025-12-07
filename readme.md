@@ -449,7 +449,9 @@ end
 ```
 Before you start the server or runninng test suite you need to ensure your database is initated.
 ```bash
-rubee db init
+rubee db init # this will ensure your database is created for each environment
+RACK_ENV=test rubee db run:all # this will run all migrations for test environment
+RACK_ENV=development rubee db run:all # this will run all migrations for development environment
 ```
 
 [Back to content](#content)
