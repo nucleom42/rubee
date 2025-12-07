@@ -13,7 +13,7 @@ module Rubee
 
     module ClassMethods
       def pluralize_class_name
-        name.pluralize.downcase.snakeize
+        name.pluralize.snakeize
       end
 
       def accessor_names
