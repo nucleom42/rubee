@@ -218,8 +218,8 @@ module Rubee
 
       def serialize(suquel_dataset, klass = nil)
         klass ||= self
+        target_klass_fields = DB[klass.name.snakeize.pluralize.downcase.to_sym].columns
         suquel_dataset.map do |record_hash|
-          target_klass_fields = DB[klass.name.pluralize.downcase.to_s.camelize.to_sym].columns
           klass_attributes = record_hash.filter { target_klass_fields.include?(_1) }
           klass.new(**klass_attributes)
         end
