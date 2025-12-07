@@ -1,4 +1,4 @@
-# 🧑‍💻 Contributing to Rubee
+## 🧑‍💻 Contributing to Rubee
 
 Hey there! 👋 First of all, thanks for being interested in contributing to **Rubee** — we appreciate it a lot. Whether you're here to fix a bug, suggest an idea, improve the docs, or add a shiny new feature, you're more than welcome.
 
@@ -33,7 +33,8 @@ Here are a few ways to jump in:
 
 4. Run migrations
    ```bash
-   bin/rubee db run:all
+   bin/rubee init
+   RACK_ENV=test bin/rubee db run:all
    ```
 
 5. Run tests
