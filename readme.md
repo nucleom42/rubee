@@ -404,6 +404,56 @@ So it may safe some resources.
 
 [Back to content](#content)
 
+## Database
+
+ru.Bee supports Postgres and Mysqlite databases fully and can potentially be used with any
+database supported by Sequel gem.
+
+When it comes to sqlite make sure you have sqlite3 included in your Gemfile.
+```ruby
+gem 'sqlite3'
+```
+And define your database urls for each environment in config/base_configuration.rb file:
+```ruby
+Rubee::Configuration.setup(env = :development) do |config|
+  config.database_url = { url: 'sqlite://db/development.db', env: }
+  ...
+end
+Rubee::Configuration.setup(env = :test) do |config|
+  config.database_url = { url: 'sqlite://db/test.db', env: }
+  ...
+end
+Rubee::Configuration.setup(env = :production) do |config|
+  config.database_url = { url: 'sqlite://db/production.db', env: }
+  ...
+end
+```
+For the PostgreSQL you need to include pg gem in your Gemfile
+```ruby
+gem 'pg'
+```
+And define your database urls for each environment in config/base_configuration.rb file:
+```ruby
+Rubee::Configuration.setup(env = :development) do |config|
+  config.database_url = { url: "postgres://postgres@localhost:5432/development", env: }
+  ...
+end
+Rubee::Configuration.setup(env = :test) do |config|
+  config.database_url = { url: "postgres://postgres@localhost:5432/test", env: }
+  ...
+end
+Rubee::Configuration.setup(env = :production) do |config|
+  config.database_url = { url: "postgres://postgres:#{ENV['DB_PASSWORD']}@localhost:5432/production", env: }
+  ...
+end
+```
+Before you start the server or runninng test suite you need to ensure your database is initated.
+```bash
+rubee db init
+```
+
+[Back to content](#content)
+
 ## Mysqlite production ready
 Starting from verison 1.9.0 main issue for using sqlite - write db lock is resolved!
 If you feel comfortable you can play with retry configuration parameters:
