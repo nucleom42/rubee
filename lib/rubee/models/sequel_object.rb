@@ -114,7 +114,7 @@ module Rubee
           if over
             sequel_dataset = klass
               .join(over.to_sym, "#{singularized_assoc_name.snakeize}_id".to_sym => :id)
-              .where(fk_name.to_sym => id)
+              .where(Sequel[over][fk_name.to_sym] => id)
             self.class.serialize(sequel_dataset, klass)
           else
             klass.where(fk_name.to_sym => id)
