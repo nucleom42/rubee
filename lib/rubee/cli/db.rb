@@ -81,7 +81,6 @@ module Rubee
               Sequel.connect(db_url)
               color_puts("Database #{ENV['RACK_ENV']} exists", color: :cyan)
             else
-              FileUtils.mkdir_p(File.dirname(db_path)) # while testing in CI server, folder doeesn't exist. so, create folder
               db = Sequel.sqlite(db_path)
               # Sequel.sqlite(db_path) creates only empty text file, we need to create a table to create valid sqlite database
               db.create_table? :schema_info do
