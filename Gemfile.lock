@@ -9,7 +9,6 @@ GEM
     connection_pool (3.0.2)
     date (3.5.0)
     docile (1.4.1)
-    dotenv (3.2.0)
     erb (6.0.0)
     ffi (1.17.2-aarch64-linux-gnu)
     ffi (1.17.2-aarch64-linux-musl)
@@ -135,7 +134,6 @@ PLATFORMS
 
 DEPENDENCIES
   date
-  dotenv
   fileutils
   irb
   json

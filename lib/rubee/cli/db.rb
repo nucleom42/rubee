@@ -7,7 +7,7 @@ module Rubee
           # ENV['RACK_ENV'] ||= 'development' # already set in bin/rubee
 
           if Rubee::PROJECT_NAME == 'rubee'
-            # Rubee::Configuration.setup(env = :test) do |config|
+            # Rubee::Configuration.setup(env = :test) do |config| # already set in autoload (calling from bin/rubee)
             #   config.database_url = { url: 'sqlite://lib/tests/test.db', env: }
             # end
             Rubee::SequelObject.reconnect! unless command == 'init'
@@ -42,7 +42,7 @@ module Rubee
         end
 
         def init(_argv)
-          ensure_database_exists(ENV['DATABASE_URL'])
+          ensure_database_exists(Rubee::Configuration.get_database_url)
         end
 
         def structure(_argv)
@@ -81,6 +81,7 @@ module Rubee
               Sequel.connect(db_url)
               color_puts("Database #{ENV['RACK_ENV']} exists", color: :cyan)
             else
+              FileUtils.mkdir_p(File.dirname(db_path)) # while testing in CI server, folder doeesn't exist. so, create folder
               db = Sequel.sqlite(db_path)
               # Sequel.sqlite(db_path) creates only empty text file, we need to create a table to create valid sqlite database
               db.create_table? :schema_info do

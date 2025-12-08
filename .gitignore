@@ -8,7 +8,7 @@ lib/js/bundle.js.map
 lib/js/app.js.map
 
 # test database
-lib/tests/test-sqlite3.db
+lib/tests/test.db
 
 # Test coverage report
 coverage/

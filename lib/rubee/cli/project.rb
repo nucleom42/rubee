@@ -97,7 +97,6 @@ module Rubee
             source 'https://rubygems.org'
 
             gem 'ru.Bee'
-            gem 'dotenv'
             gem 'sequel'
             gem 'sqlite3'
             gem 'rake'

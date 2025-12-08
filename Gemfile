@@ -6,8 +6,6 @@ ruby '3.4.1'
 gem 'puma'
 gem 'rack'
 gem 'rackup'
-# env variables
-gem 'dotenv'
 # db
 gem 'sqlite3'
 # gem 'pg'

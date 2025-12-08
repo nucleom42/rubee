@@ -14,9 +14,6 @@ require 'stringio'
 
 require_relative '../../lib/rubee'
 Rubee::Autoload.call
-Rubee::Configuration.setup(env = :test) do |config|
-  config.database_url = { url: ENV['DATABASE_URL'], env: }
-end
 
 Rubee::CLI::Db.call('db', ['db', 'init']) # ensure test db exists
 Rubee::SequelObject.reconnect! # connect to test db

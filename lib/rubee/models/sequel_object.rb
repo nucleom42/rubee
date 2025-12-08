@@ -160,10 +160,10 @@ module Rubee
       def reconnect!
         return if defined?(DB) && !DB.nil?
 
-        db_url = ENV['DATABASE_URL']
-        uri = URI.parse(db_url) rescue nil
+        db_url = Rubee::Configuration.get_database_url
+        uri = URI.parse(db_url)
 
-        if uri&.scheme == 'sqlite' || uri&.scheme == 'sqlite3'
+        if uri.scheme == 'sqlite' || uri.scheme == 'sqlite3'
           db_path = db_url.sub(%r{^sqlite://}, '')
           if Rubee::DBTools.valid_sqlite_database_exists?(db_path)
             const_set(:DB, Sequel.connect(db_url))
