@@ -184,23 +184,7 @@ module Rubee
 
       def dataset
         @dataset ||= DB[pluralize_class_name.to_sym]
-<<<<<<< HEAD
-      rescue Exception => _e
-        # when DB is nil or undefined, DB[pluralize_class_name.to_sym] has exception
-        # This reconnect counter prevent infinite loop when database connection fails
-        # Track reconnect attempts and raise error after max retries
-        @reconnect_attempts ||= 0
-        @reconnect_attempts += 1
-        
-        if @reconnect_attempts > 3
-          ru_bee = (Rubee::PROJECT_NAME == 'rubee' ? 'bin/rubee' : 'rubee')
-          raise "Failed to connect to database after 3 attempts. run '#{ru_bee} db init' to initialize the database."
-        end
-        
-        sleep 0.5
-=======
       rescue Exception => e
->>>>>>> main
         reconnect!
         @__reconnect_count ||= 0
         @__reconnect_count += 1
