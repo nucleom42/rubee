@@ -222,5 +222,23 @@ describe 'Comment model' do
         _(comment.errors[:text]).must_equal({ message: "Text is a mandatory field" })
       end
     end
+
+    describe 'when validate_after_setters' do
+      it 'validates attribute' do
+        Comment.validate_after_setters
+        Comment.validate do
+          attribute(:text)
+            .required("Text is a mandatory field").type(String, "Text must be a string")
+            .condition(-> { text.length > 4 }, "Text length must be greater than 4")
+        end
+
+        comment = Comment.new(text: 'testqwe')
+        _(comment.valid?).must_equal(true)
+        comment.text = 'test'
+
+        _(comment.errors.empty?).must_equal(false)
+        _(comment.errors[:text]).must_equal({ message: "Text length must be greater than 4" })
+      end
+    end
   end
 end
