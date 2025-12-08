@@ -125,7 +125,6 @@ module Rubee
       end
 
       def errors
-        run_validations
         @__validation_state.errors
       end
 
@@ -163,6 +162,13 @@ module Rubee
 
       def validate(&block)
         @validation_block = block
+      end
+
+      def validate_after_setters
+        unless respond_to?(:after)
+          raise "Can't use validate_after_setters without after hook, please include Rubee::Hookable"
+        end
+        after(*accessor_names.filter { |name| !name.start_with?("__") }.map { |name| "#{name}=" }, :run_validations)
       end
     end
   end

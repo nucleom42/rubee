@@ -28,13 +28,15 @@ module Rubee
         begin
           update(args)
         rescue StandardError => _e
+          add_error(:base, sequel_error: e.message)
           return false
         end
 
       else
         begin
           created_id = self.class.dataset.insert(args)
-        rescue StandardError => _e
+        rescue StandardError => e
+          add_error(:base, sequel_error: e.message)
           return false
         end
         self.id = created_id
@@ -169,8 +171,14 @@ module Rubee
 
       def dataset
         @dataset ||= DB[pluralize_class_name.to_sym]
-      rescue Exception => _e
+      rescue Exception => e
         reconnect!
+        @__reconnect_count ||= 0
+        @__reconnect_count += 1
+        if @__reconnect_count > 3
+          raise e
+        end
+        sleep(0.1)
         retry
       end
 

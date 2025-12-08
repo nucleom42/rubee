@@ -27,5 +27,8 @@ module Rubee
 
     module Initializer
     end
+
+    module ClassMethods
+    end
   end
 end
