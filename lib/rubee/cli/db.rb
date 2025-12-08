@@ -7,7 +7,8 @@ module Rubee
           # ENV['RACK_ENV'] ||= 'development' # already set in bin/rubee
 
           if Rubee::PROJECT_NAME == 'rubee'
-            # Rubee::Configuration.setup(env = :test) do |config| # already set in autoload (calling from bin/rubee)
+            # already set in autoload (autoload is calling from bin/rubee)
+            # Rubee::Configuration.setup(env = :test) do |config|
             #   config.database_url = { url: 'sqlite://lib/tests/test.db', env: }
             # end
             Rubee::SequelObject.reconnect! unless command == 'init'
@@ -26,15 +27,19 @@ module Rubee
           else
             [file_name]
           end
-          
+
+          original_rack_env = ENV['RACK_ENV'] # after run migrations, set original value
           Rubee::Configuration.envs.each do |env|
-            # ENV['RACK_ENV'] = env.to_s # it sets ENV['RACK_ENV'] = 'app' and it is wrong, only bin/rubee should override ENV['RACK_ENV']
+            ENV['RACK_ENV'] = env.to_s
             file_names.each do |file|
               color_puts("Run #{file} file for #{env} env", color: :cyan)
               Object.const_get(file.split('_').map(&:capitalize).join).new.call
             end
           end
+          ENV['RACK_ENV'] = original_rack_env # after run migrations, set original value
+          
           color_puts("Migration for #{file_name} completed", color: :green)
+          
           unless Rubee::PROJECT_NAME == 'rubee'
             color_puts('Regenerate schema file', color: :cyan)
             generate_structure

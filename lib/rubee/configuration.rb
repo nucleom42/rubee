@@ -107,8 +107,8 @@ module Rubee
           &.[](method_name.to_s.delete_prefix('get_').to_sym)
       end
 
-      def envs
-        @configuraiton.keys
+      def envs(app = :app)
+        @configuraiton[app.to_sym].keys
       end
     end
   end

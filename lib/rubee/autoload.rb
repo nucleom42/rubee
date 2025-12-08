@@ -2,7 +2,7 @@ module Rubee
   class Autoload
     BLACKLIST = ['rubee.rb', 'test_helper.rb']
     class << self
-      def call(black_list = [], **options)   
+      def call(black_list = [], **options)
         load_whitelisted(options[:white_list_dirs]) && return if options[:white_list_dirs]
         # autoload all rbs
         root_directory = File.join(Rubee::ROOT_PATH, '/lib')
