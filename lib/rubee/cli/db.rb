@@ -28,7 +28,7 @@ module Rubee
             [file_name]
           end
 
-          original_rack_env = ENV['RACK_ENV'] # after run migrations, set original value
+          original_rack_env = ENV['RACK_ENV'] # before run migrations, remember original value
           Rubee::Configuration.envs.each do |env|
             ENV['RACK_ENV'] = env.to_s
             file_names.each do |file|
