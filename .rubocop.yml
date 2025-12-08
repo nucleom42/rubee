@@ -5,7 +5,7 @@ AllCops:
   StyleGuideBaseURL: https://shopify.github.io/ruby-style-guide/
 
 Style/MethodCallWithArgsParentheses:
-  Enabled: true
+  Enabled: false
   IgnoreMacros: true
   IgnoredMethods:
     - require

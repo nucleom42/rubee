@@ -28,13 +28,15 @@ module Rubee
         begin
           update(args)
         rescue StandardError => _e
+          add_error(:base, sequel_error: e.message)
           return false
         end
 
       else
         begin
           created_id = self.class.dataset.insert(args)
-        rescue StandardError => _e
+        rescue StandardError => e
+          add_error(:base, sequel_error: e.message)
           return false
         end
         self.id = created_id
@@ -114,7 +116,7 @@ module Rubee
           if over
             sequel_dataset = klass
               .join(over.to_sym, "#{singularized_assoc_name.snakeize}_id".to_sym => :id)
-              .where(fk_name.to_sym => id)
+              .where(Sequel[over][fk_name.to_sym] => id)
             self.class.serialize(sequel_dataset, klass)
           else
             klass.where(fk_name.to_sym => id)
@@ -182,6 +184,7 @@ module Rubee
 
       def dataset
         @dataset ||= DB[pluralize_class_name.to_sym]
+<<<<<<< HEAD
       rescue Exception => _e
         # when DB is nil or undefined, DB[pluralize_class_name.to_sym] has exception
         # This reconnect counter prevent infinite loop when database connection fails
@@ -195,7 +198,16 @@ module Rubee
         end
         
         sleep 0.5
+=======
+      rescue Exception => e
+>>>>>>> main
         reconnect!
+        @__reconnect_count ||= 0
+        @__reconnect_count += 1
+        if @__reconnect_count > 3
+          raise e
+        end
+        sleep(0.1)
         retry
       end
 
@@ -243,8 +255,8 @@ module Rubee
 
       def serialize(suquel_dataset, klass = nil)
         klass ||= self
+        target_klass_fields = DB[klass.name.snakeize.pluralize.downcase.to_sym].columns
         suquel_dataset.map do |record_hash|
-          target_klass_fields = DB[klass.name.pluralize.downcase.to_s.camelize.to_sym].columns
           klass_attributes = record_hash.filter { target_klass_fields.include?(_1) }
           klass.new(**klass_attributes)
         end

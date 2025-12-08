@@ -1,4 +1,4 @@
-# 🧑‍💻 Contributing to Rubee
+## 🧑‍💻 Contributing to Rubee
 
 Hey there! 👋 First of all, thanks for being interested in contributing to **Rubee** — we appreciate it a lot. Whether you're here to fix a bug, suggest an idea, improve the docs, or add a shiny new feature, you're more than welcome.
 
@@ -33,7 +33,8 @@ Here are a few ways to jump in:
 
 4. Run migrations
    ```bash
-   bin/rubee db run:all
+   bin/rubee init
+   RACK_ENV=test bin/rubee db run:all
    ```
 
 5. Run tests
@@ -45,23 +46,26 @@ Here are a few ways to jump in:
 
 ## 🚀 Making a Change
 
-1. Create a new branch
+1. Create a new branch and define clear purpose of the changes.
+2. link PR in description to issue, topic discussion or roadmap item.
+.
 ```bash
     git checkout -b your-branch-name
 ```
-2. Make your changes ✨
-
-3. Run tests ✅
-
-4. Commit clearly
+3. Make your changes. Please try to keep a PR as small as possible and resolve only one item at a time, preferably linked to described in the PR description. 
+4. Cover your chnages with test is very
+much expected.
+5. Run entire test suite and make sure it is all green.
+6. Commit clearly
 ```bash
     git commit -m "Fix: explain clearly what you changed"
 ```
-5. Push and open a pull request 🙌
+7. Push and open a pull request 🙌
 
     We ❤️ clean and well-documented code. Add comments where it helps, and don’t stress perfection — we’ll help review.
 
 ✅ Code Style & Conventions
     Stick to standard Ruby formatting (2-space indent, snake_case, etc.). Run rubocop to ensure your code is clean.
-    Follow the existing project structure unless you have a good reason to shift it.
+    Follow the existing project structure unless you have a good reason to shift it. 
+    Please do not leave commented out code. If you are sure about necessity of it, just remove it and make sure its not breaking.
     Keep things simple and readable

@@ -8,7 +8,7 @@ end
 describe 'Database Objectable' do
   describe 'class methods' do
     it 'pluralizes class names' do
-      _(MergBerg.pluralize_class_name).must_equal('mergbergs')
+      _(MergBerg.pluralize_class_name).must_equal('merg_bergs')
     end
 
     it 'retrieves accessor names' do
