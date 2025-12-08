@@ -20,20 +20,8 @@ Rubee::SequelObject.reconnect! # connect to test db
 
 def truncate_test_tables!
   db = Rubee::SequelObject::DB
-  if db.adapter_scheme == :sqlite
-    # Disable FK checks for SQLite
-    db.run('PRAGMA foreign_keys = OFF')
-    
-    tables_to_truncate.each do |table|
-      db[table].delete
-    end
-    
-    db.run('PRAGMA foreign_keys = ON')
-  else
-    # For PostgreSQL/MySQL, disable triggers if needed
-    tables_to_truncate.each do |table|
-      db[table].delete
-    end
+  tables_to_truncate.each do |table|
+    db[table].delete
   end
 end
 
