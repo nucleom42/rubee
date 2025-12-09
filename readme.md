@@ -978,8 +978,9 @@ irb(main):047> foo.errors
 Model example
 ```ruby
 class User < Rubee::SequelObject
-  attr_accessor :id, :email, :password, :created, :updated
-
+  attr_accessor :id, :email, :password, :created
+  
+  validate_after_setters # This will run validation after each setter.
   validate_before_persist! # This will validate and raise error in case invalid before saving to DB
   validate do
     attribute(:email).required
@@ -1016,6 +1017,15 @@ irb(main):081> user
  @password=123,
  @updated=2025-11-30 17:18:52.254206 -0500>
 ```
+If you want to apply validation_before_persist! and validation_after_setters globally,
+add init/sequle_object_preloader.rb(you can chose any name)
+file withing set up those methods 
+for Rubee::SequelObject parent class by adding:
+```
+Rubee::SequelObject.validate_befor_persist!
+Rubee::SequelObject.validate_after_setters
+```
+So you shouldn't add it to each model again and again.
 [Back to content](#content)
 
 ## JWT based authentification
