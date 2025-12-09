@@ -25,13 +25,14 @@ module Rubee
           else
             [file_name]
           end
-          Rubee::Configuration.envs.each do |env|
-            ENV['RACK_ENV'] = env.to_s
-            file_names.each do |file|
-              color_puts("Run #{file} file for #{env} env", color: :cyan)
-              Object.const_get(file.split('_').map(&:capitalize).join).new.call
-            end
+
+          color_puts("Selected environment: #{ENV['RACK_ENV']}", color: :magenta)
+
+          file_names.each do |file|
+            color_puts("Run #{file} file", color: :cyan)
+            Object.const_get(file.split('_').map(&:capitalize).join).new.call
           end
+
           color_puts("Migration for #{file_name} completed", color: :green)
           unless Rubee::PROJECT_NAME == 'rubee'
             color_puts('Regenerate schema file', color: :cyan)
@@ -81,6 +82,7 @@ module Rubee
               if File.exist?(db_path = db_url.sub(%r{^sqlite://}, ''))
                 color_puts("Database #{ENV['RACK_ENV']} exists", color: :cyan)
               else
+                FileUtils.mkdir_p(File.dirname(db_path))
                 Sequel.sqlite(db_path)
                 color_puts("Database #{ENV['RACK_ENV']} created", color: :green)
               end

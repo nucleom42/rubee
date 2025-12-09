@@ -12,6 +12,6 @@ class CreateComments
 
     end
 
-    User.create(email: 'ok@ok.com', password: 'password')
+    # User.create(email: 'ok@ok.com', password: 'password')
   end
 end

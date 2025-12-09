@@ -31,6 +31,17 @@ module Rubee
           Rubee::SequelObject::DB.execute("PRAGMA busy_timeout = #{BUSY_TIMEOUT}")
         end
       end
+
+      def valid_sqlite_database_exists?(db_path)
+        return false unless File.exist?(db_path)
+        
+        require 'sqlite3'
+        SQLite3::Database.new(db_path, flags: SQLite3::Constants::Open::READONLY).close
+        true
+      rescue => e
+        puts "valid_sqlite_database_exists? = false. #{e.message}" if ENV['DEBUG']
+        false
+      end
     end
   end
 end
