@@ -33,7 +33,7 @@ Here are a few ways to jump in:
 
 4. Run migrations
    ```bash
-   bin/rubee init
+   RACK_ENV=test bin/rubee init
    RACK_ENV=test bin/rubee db run:all
    ```
 
