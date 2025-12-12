@@ -5,13 +5,6 @@ module Rubee
         def call(command, argv)
           command = argv[1].split(':').first
           ENV['RACK_ENV'] ||= 'development'
-          if Rubee::PROJECT_NAME == 'rubee'
-            Rubee::Configuration.setup(env = :test) do |config|
-              config.database_url = { url: 'sqlite://lib/tests/test.db', env: }
-            end
-            Rubee::SequelObject.reconnect! unless command == 'init'
-          end
-
           send(command, argv)
         end
 
@@ -25,12 +18,9 @@ module Rubee
           else
             [file_name]
           end
-          Rubee::Configuration.envs.each do |env|
-            ENV['RACK_ENV'] = env.to_s
-            file_names.each do |file|
-              color_puts("Run #{file} file for #{env} env", color: :cyan)
-              Object.const_get(file.split('_').map(&:capitalize).join).new.call
-            end
+          file_names.each do |file|
+            color_puts("Run #{file} file for #{ENV['RACK_ENV']} env", color: :cyan)
+            Object.const_get(file.split('_').map(&:capitalize).join).new.call
           end
           color_puts("Migration for #{file_name} completed", color: :green)
           unless Rubee::PROJECT_NAME == 'rubee'
@@ -81,6 +71,7 @@ module Rubee
               if File.exist?(db_path = db_url.sub(%r{^sqlite://}, ''))
                 color_puts("Database #{ENV['RACK_ENV']} exists", color: :cyan)
               else
+                db_path = "#{Rubee::LIB}/#{db_path}" if Rubee::PROJECT_NAME == 'rubee'
                 Sequel.sqlite(db_path)
                 color_puts("Database #{ENV['RACK_ENV']} created", color: :green)
               end

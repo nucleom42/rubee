@@ -10,12 +10,6 @@ module Rubee
           argv.clear
           ENV['RACK_ENV'] ||= 'development'
 
-          if Rubee::PROJECT_NAME == 'rubee'
-            Rubee::Configuration.setup(env = :test) do |config|
-              config.database_url = { url: 'sqlite://lib/tests/test.db', env: }
-            end
-          end
-
           begin
             # Start IRB
             IRB.start

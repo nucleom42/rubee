@@ -57,11 +57,11 @@ module Rubee
                                      'config/base_configuration')
         end
         # This is necessary prerequisitedb init step
-        if Rubee::PROJECT_NAME == 'rubee'
-          Rubee::Configuration.setup(env = :test) do |config|
-            config.database_url = { url: 'sqlite://lib/tests/test.db', env: }
-          end
-        end
+        # if Rubee::PROJECT_NAME == 'rubee'
+        #   Rubee::Configuration.setup(env = :test) do |config|
+        #     config.database_url = { url: 'sqlite://lib/tests/test.db', env: }
+        #   end
+        # end
 
         require_relative File.join(Rubee::APP_ROOT, Rubee::LIB, 'config/routes') unless black_list.include?('routes.rb')
         # rubee extensions
