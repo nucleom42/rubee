@@ -27,7 +27,7 @@ module Rubee
       if args[:id]
         begin
           update(args)
-        rescue StandardError => _e
+        rescue StandardError => e
           add_error(:base, sequel_error: e.message)
           return false
         end
