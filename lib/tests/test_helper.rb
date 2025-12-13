@@ -15,10 +15,6 @@ require 'stringio'
 require_relative '../../lib/rubee'
 
 Rubee::Autoload.call
-Rubee::Configuration.setup(env = :test) do |config|
-  config.database_url = { url: 'sqlite://lib/tests/test.db', env: }
-end
-Rubee::SequelObject.reconnect!
 
 def assert_difference(expression, difference = 1)
   before = expression.call

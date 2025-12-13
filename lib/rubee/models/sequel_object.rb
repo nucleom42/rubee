@@ -160,13 +160,19 @@ module Rubee
       end
 
       def reconnect!
-        return if defined?(DB) && !DB.nil?
+        return if db_set?
 
         const_set(:DB, Sequel.connect(Rubee::Configuration.get_database_url))
 
         Rubee::DBTools.set_prerequisites!
 
         true
+      rescue Exception => e
+        false
+      end
+
+      def db_set?
+        defined?(DB) && !DB.nil?
       end
 
       def dataset

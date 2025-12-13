@@ -9,3 +9,7 @@ lib/js/app.js.map
 
 # Test coverage report
 coverage/
+
+# db files
+lib/db/test.db
+lib/db/development.db

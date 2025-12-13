@@ -46,9 +46,13 @@ jobs:
         run: |
           bundle install --redownload && gem build rubee.gemspec && gem install ru.Bee-*.gem
 
+      - name: Inint db for ruBee internals
+        run: |
+          RACK_ENV=test bin/rubee db init
+
       - name: Run all migration for ruBee internals
         run: |
-          RACK_ENV=test bin/rubee db run:all
+          RACK_ENV=test bin/rubee db run:create_users && RACK_ENV=test bin/rubee db run:all
 
       - name: Run ruBee internals minitest
         run: |

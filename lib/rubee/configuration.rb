@@ -34,7 +34,7 @@ module Rubee
 
       def database_url=(args)
         args[:app] ||= :app
-        @configuraiton[args[:app].to_sym][args[:env].to_sym][:database_url] = args[:url]
+        @configuraiton[args[:app].to_sym][args[:env].to_sym][:database_url] = args[:url].gsub("//", "//#{Rubee::LIB}")
       end
 
       def redis_url=(args)

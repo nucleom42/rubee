@@ -12,6 +12,7 @@ class CreateComments
 
     end
 
-    User.create(email: 'ok@ok.com', password: 'password')
+    user = User.create(email: 'ok@ok.com', password: 'password')
+    Comment.create(text: 'hello', user_id: user.id)
   end
 end
