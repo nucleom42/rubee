@@ -34,7 +34,7 @@ Here are a few ways to jump in:
 4. Run migrations
    ```bash
    RACK_ENV=test bin/rubee init
-   RACK_ENV=test bin/rubee db run:all
+   RRACK_ENV=test bin/rubee db run:create_users && ACK_ENV=test bin/rubee db run:all
    ```
 
 5. Run tests
@@ -52,7 +52,7 @@ Here are a few ways to jump in:
 ```bash
     git checkout -b your-branch-name
 ```
-3. Make your changes. Please try to keep a PR as small as possible and resolve only one item at a time, preferably linked to described in the PR description. 
+3. Make your changes. Please try to keep a PR as small as possible and resolve only one item at a time, preferably linked to described in the PR description.
 4. Cover your chnages with test is very
 much expected.
 5. Run entire test suite and make sure it is all green.
@@ -66,6 +66,6 @@ much expected.
 
 ✅ Code Style & Conventions
     Stick to standard Ruby formatting (2-space indent, snake_case, etc.). Run rubocop to ensure your code is clean.
-    Follow the existing project structure unless you have a good reason to shift it. 
+    Follow the existing project structure unless you have a good reason to shift it.
     Please do not leave commented out code. If you are sure about necessity of it, just remove it and make sure its not breaking.
     Keep things simple and readable
