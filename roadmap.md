@@ -19,6 +19,7 @@ This document outlines the planned features and improvements for Rubee.
 - [x] Websocket support with pub sub
 - [ ] Home background engine, based on Redis
 - [ ] Model extend with dynamic methods {field}_changed?
+- [ ] Inline generator fully to all sequel types
 
 ## Documentation & Community
 - [ ] Forum for Rubee doc site
