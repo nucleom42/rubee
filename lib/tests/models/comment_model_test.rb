@@ -96,7 +96,7 @@ describe 'Comment model' do
         comment = Comment.new(user_id: 1)
 
         _(comment.valid?).must_equal(true)
-        _(comment.errors[:test]).must_equal(nil)
+        _(comment.errors[:test].nil?).must_equal(true)
       end
 
       it 'text is a number should be invalid' do

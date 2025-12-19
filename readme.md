@@ -84,6 +84,7 @@ The comparison is based on a very generic and subjective information open in the
 - [Generate commands](#generate-commands)
 - [Migration commands](#migration-commands)
 - [Rubee console](#rubee-console)
+- [Rubee::Support](#rubee-support)
 - [Testing](#testing)
 - [Background jobs](#background-jobs)
 - [Modular](#modualar-application)
@@ -979,7 +980,7 @@ Model example
 ```ruby
 class User < Rubee::SequelObject
   attr_accessor :id, :email, :password, :created
-  
+
   validate_after_setters # This will run validation after each setter.
   validate_before_persist! # This will validate and raise error in case invalid before saving to DB
   validate do
@@ -1019,7 +1020,7 @@ irb(main):081> user
 ```
 If you want to apply validation_before_persist! and validation_after_setters globally,
 add init/sequle_object_preloader.rb(you can chose any name)
-file withing set up those methods 
+file withing set up those methods
 for Rubee::SequelObject parent class by adding:
 ```
 Rubee::SequelObject.validate_befor_persist!
@@ -1027,6 +1028,44 @@ Rubee::SequelObject.validate_after_setters
 ```
 So you shouldn't add it to each model again and again.
 [Back to content](#content)
+
+## Rubee support
+
+In Rubee you have an optional way to charge your code with usefull methods that added to base Ruby classes.
+You can add them to your project globally by setting up it in configuration.
+
+```ruby
+# To include all support methods
+Rubee::Configuration.setup do |config|
+  config.rubee_support = { all: true }
+end
+
+# To include only those who belong to a indicated class
+Rubee::Configuration.setup do |config|
+  config.rubee_support = { classes: [Rubee::Support::String] }
+  # So only String will be charged with support methods
+end
+```
+Here are list of additionl APIs extended for:
+
+```ruby
+# By adding to configuration Rubee::Suport::Hash class or just applying all, Hash will tollerate string or symbol keys.
+{one: 1}[:one] # => 1
+{one: 1}["one"] # => 1
+
+# By adding to configuration Rubee::Support::String or just applying all, String will be enriched with handy helper methods.
+```ruby
+"test".pluralize # => "tests"
+"test".singularize # => "test"
+"test".camelize # => "Test"
+"TestMe".snakeize # => "test_mei"
+"test".singular? # => true
+"test".plural? # => false
+```
+
+[Back to content](#content)
+
+
 
 ## JWT based authentification
 

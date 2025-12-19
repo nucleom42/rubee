@@ -35,8 +35,9 @@ gem 'redis'
 group :test do
   # testing framework
   gem "minitest"
+  gem "minitest-mock"
   gem "rack-test"
-  gem 'simplecov', require: false
+  gem "simplecov", require: false
 end
 
 group :development do
