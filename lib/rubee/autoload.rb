@@ -7,6 +7,7 @@ module Rubee
         # autoload all rbs
         root_directory = File.join(Rubee::ROOT_PATH, '/lib')
         priority_order_require(root_directory, black_list)
+        load_support(root_directory, black_list)
         load_inits(root_directory, black_list)
         # ensure sequel object is connected
         Rubee::SequelObject.reconnect!
@@ -34,6 +35,12 @@ module Rubee
         end
         # app inits
         Dir[File.join(Rubee::APP_ROOT, 'inits/**', '*.rb')].each do |file|
+          require_relative file unless black_list.include?("#{file}.rb")
+        end
+      end
+
+      def load_support(root_directory, black_list)
+        Dir[File.join(Rubee::ROOT_PATH, '/lib', '/rubee/support/**', '*.rb')].each do |file|
           require_relative file unless black_list.include?("#{file}.rb")
         end
       end

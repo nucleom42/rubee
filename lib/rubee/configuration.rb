@@ -32,6 +32,19 @@ module Rubee
         yield(self)
       end
 
+      def rubee_support=(value)
+        all     = value.fetch(:all, false)
+        classes = value.fetch(:classes, [])
+        if all
+          Rubee::RUBEE_SUPPORT.each do |support_string, klass|
+            support_klass = Object.const_get(support_string)
+            klass.include(support_klass)
+          end
+        else
+          classes.each { |klass| Rubee::RUBEE_SUPPORT[klass.to_s].include(klass) }
+        end
+      end
+
       def database_url=(args)
         args[:app] ||= :app
         @configuraiton[args[:app].to_sym][args[:env].to_sym][:database_url] = args[:url].gsub("//", "//#{Rubee::LIB}")

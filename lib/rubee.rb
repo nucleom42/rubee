@@ -16,6 +16,9 @@ module Rubee
   JS_DIR = File.join(APP_ROOT, LIB, 'js') unless defined?(JS_DIR)
   CSS_DIR = File.join(APP_ROOT, LIB, 'css') unless defined?(CSS_DIR)
   ROOT_PATH = File.expand_path(File.join(__dir__, '..')) unless defined?(ROOT_PATH)
+  unless defined?(RUBEE_SUPPORT)
+    RUBEE_SUPPORT = { "Rubee::Support::Hash" => Hash, "Rubee::Support::String" => String }
+  end
 
   VERSION = '2.3.3'
 
