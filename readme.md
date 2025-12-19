@@ -1052,6 +1052,7 @@ Here are list of additionl APIs extended for:
 # By adding to configuration Rubee::Suport::Hash class or just applying all, Hash will tollerate string or symbol keys.
 {one: 1}[:one] # => 1
 {one: 1}["one"] # => 1
+```
 
 # By adding to configuration Rubee::Support::String or just applying all, String will be enriched with handy helper methods.
 ```ruby
