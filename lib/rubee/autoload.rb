@@ -7,7 +7,7 @@ module Rubee
         # autoload all rbs
         root_directory = File.join(Rubee::ROOT_PATH, '/lib')
         priority_order_require(root_directory, black_list)
-        load_support(root_directory, black_list)
+
         load_inits(root_directory, black_list)
         # ensure sequel object is connected
         Rubee::SequelObject.reconnect!
@@ -58,6 +58,7 @@ module Rubee
         Dir[File.join(root_directory, 'rubee/async/**', '*.rb')].each do |file|
           require_relative file unless black_list.include?("#{file}.rb")
         end
+        load_support(root_directory, black_list)
         # app config and routes
         unless black_list.include?('base_configuration.rb')
           require_relative File.join(Rubee::APP_ROOT, Rubee::LIB,

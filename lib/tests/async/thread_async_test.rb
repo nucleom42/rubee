@@ -27,7 +27,7 @@ describe 'TestAsyncRunnner' do
       subject
 
       Timeout.timeout(1) do
-        sleep(0.05) until User.count == 5
+        sleep(0.1) until User.count == 5
       end
 
       assert_equal 5, User.count
