@@ -102,6 +102,7 @@ module Rubee
       # > user.comments
       # > [<comment1>, <comment2>]
       def owns_many(assoc, fk_name: nil, over: nil, **options)
+        original_assoc = assoc
         singularized_assoc_name = assoc.to_s.singularize
         fk_name ||= "#{name.to_s.downcase}_id"
         namespace = options[:namespace]
@@ -116,7 +117,7 @@ module Rubee
           if over
             sequel_dataset = klass
               .join(over.to_sym, "#{singularized_assoc_name.snakeize}_id".to_sym => :id)
-              .where(Sequel[over][fk_name.to_sym] => id)
+              .where(Sequel[over][fk_name.to_sym] => id).select_all(original_assoc).all
             self.class.serialize(sequel_dataset, klass)
           else
             klass.where(fk_name.to_sym => id)
