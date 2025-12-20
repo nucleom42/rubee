@@ -37,6 +37,44 @@ module Rubee
           generate_structure
         end
 
+        def schema(_argv)
+          STRUCTURE.each do |table_name, columns|
+            # Table header
+            color_puts(
+              "--- #{table_name}",
+              color: :cyan,
+              style: :bold
+            )
+
+            columns.each do |column_name, meta|
+              parts = []
+
+              # column name
+              col_text = "- #{column_name}"
+              parts << col_text
+
+              # PK
+              if meta[:primary_key]
+                parts << "(PK)"
+              end
+
+              # type
+              if meta[:db_type]
+                parts << "type (#{meta[:db_type]})"
+              end
+
+              line = parts.join(", ")
+
+              color_puts(
+                line,
+                color: meta[:primary_key] ? :yellow : :gray
+              )
+            end
+
+            puts
+          end
+        end
+
         private
 
         def generate_structure

@@ -18,13 +18,13 @@ module Rubee
           Rubee::CLI::React
         in /^project$/
           Rubee::CLI::Project
-        in /^version$/
+        in /^version|v$/
           Rubee::CLI::Version
         in /^routes$/
           Rubee::CLI::Routes
         in /^test$/
           Rubee::CLI::Test
-        in /^(generate|gen)$/
+        in /^(generate|gen|g)$/
           Rubee::CLI::Generate
         in /^db$/
           Rubee::CLI::Db

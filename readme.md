@@ -221,6 +221,32 @@ This will generate the following files
 
 4. Fill the generated files with the logic you need and run the server again!
 
+5. You can find full snapshot of the schema in the STRUCTURE constant or in the db/structur.rb file.
+
+6. You can use rubee cli for printing out lates schema, out of STRUCUTRE constant
+```bash
+-> rubee db schema
+--- users
+- id, (PK), type (INTEGER)
+- email, type (varchar(255))
+- password, type (varchar(255))
+
+--- accounts
+- id, (PK), type (INTEGER)
+- addres, type (varchar(255))
+- user_id, type (INTEGER)
+
+--- posts
+- id, (PK), type (INTEGER)
+- user_id, type (INTEGER)
+- comment_id, type (INTEGER)
+
+--- comments
+- id, (PK), type (INTEGER)
+- text, type (varchar(255))
+- user_id, type (INTEGER)
+```
+
 [Back to content](#content)
 
 ## Model
