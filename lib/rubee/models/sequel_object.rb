@@ -243,8 +243,10 @@ module Rubee
       def validate_before_persist!
         before(:save, proc { |model| raise Rubee::Validatable::Error, model.errors.to_s }, if: :invalid?)
         before(:update, proc do |model, args|
-          if (instance = model.class.new(*args)) && instance.invalid?
-            raise Rubee::Validatable::Error, instance.errors.to_s
+          dup__instance = model.dup
+          dup__instance.assign_attributes(**args[0])
+          if dup__instance.invalid?
+            raise Rubee::Validatable::Error, dup__instance.errors.to_s
           end
         end)
       end
