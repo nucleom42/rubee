@@ -113,12 +113,10 @@ module Rubee
     end
 
     def params
-      # Read raw input safely (only once)
-      raw_input = @request.body.read.to_s.strip
+      raw_input = @request.body&.read&.to_s&.strip
       @request.body.rewind if @request.body.respond_to?(:rewind)
 
-      # Try parsing JSON first, fall back to form-encoded data
-      parsed_input =
+      parsed_input = if raw_input
         begin
           JSON.parse(raw_input)
         rescue StandardError
@@ -128,6 +126,9 @@ module Rubee
             {}
           end
         end
+      else
+        {}
+      end
 
       # Combine route params, request params, and body
       @params ||= extract_params(@request.path, @route[:path])
