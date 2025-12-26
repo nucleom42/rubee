@@ -21,7 +21,13 @@ module Rubee
       def to_h
         instance_variables.each_with_object({}) do |var, hash|
           attr_name = var.to_s.delete('@')
-          hash[attr_name] = instance_variable_get(var) unless attr_name.start_with?('__')
+          next if attr_name.start_with?('__')
+          instance_var = instance_variable_get(var)
+          hash[attr_name] = if instance_var.respond_to?(:to_h)
+            instance_var.to_h
+          else
+            instance_variable_get(var)
+          end
         end
       end
     end
