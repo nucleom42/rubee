@@ -246,6 +246,20 @@ This will generate the following files
 - text, type (varchar(255))
 - user_id, type (INTEGER)
 ```
+7. You can also rpint out the schema for the table you need
+```bash
+-> rubee db schema posts
+--- posts
+- id, (PK), type (INTEGER)
+- user_id, type (INTEGER), nullable
+- comment_id, type (INTEGER), nullable
+- created, type (datetime), nullable
+- updated, type (datetime), nullable
+
+  Foreign keys:
+  - comment_id → comments() on delete no_action on update no_action
+  - user_id → users() on delete no_action on update no_action
+```
 
 [Back to content](#content)
 

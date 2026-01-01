@@ -37,8 +37,16 @@ module Rubee
           generate_structure
         end
 
-        def schema(_argv)
-          STRUCTURE.each do |table_name, columns|
+        def schema(argv)
+          target_table_hash = argv[2] ? { argv[2].to_sym => STRUCTURE[argv[2].to_sym] } : nil
+          (target_table_hash || STRUCTURE).each do |table_name, table_def|
+            unless Rubee::SequelObject::DB.table_exists?(table_name.to_sym)
+              color_puts("Table #{table_name} not found", color: :red)
+              next
+            end
+            columns = table_def[:columns]
+            foreign_keys = table_def[:foreign_keys] || []
+
             # Table header
             color_puts(
               "--- #{table_name}",
@@ -46,22 +54,21 @@ module Rubee
               style: :bold
             )
 
+            # Columns
             columns.each do |column_name, meta|
               parts = []
 
               # column name
-              col_text = "- #{column_name}"
-              parts << col_text
+              parts << "- #{column_name}"
 
               # PK
-              if meta[:primary_key]
-                parts << "(PK)"
-              end
+              parts << "(PK)" if meta[:primary_key]
 
               # type
-              if meta[:db_type]
-                parts << "type (#{meta[:db_type]})"
-              end
+              parts << "type (#{meta[:db_type]})" if meta[:db_type]
+
+              # nullable
+              parts << "nullable" if meta[:allow_null]
 
               line = parts.join(", ")
 
@@ -69,6 +76,30 @@ module Rubee
                 line,
                 color: meta[:primary_key] ? :yellow : :gray
               )
+            end
+
+            # Foreign keys
+            if foreign_keys.any?
+              puts
+              color_puts("  Foreign keys:", color: :magenta, style: :bold)
+
+              foreign_keys.each do |fk|
+                cols = Array(fk[:columns]).join(", ")
+
+                ref_table =
+                  fk.dig(:references, :table) ||
+                  fk[:table]
+
+                ref_cols =
+                  Array(fk.dig(:references, :columns)) || fk["id"]
+
+                fk_line = "  - #{cols} → #{ref_table}(#{ref_cols.join(', ')})"
+
+                fk_line += " on delete #{fk[:on_delete]}" if fk[:on_delete]
+                fk_line += " on update #{fk[:on_update]}" if fk[:on_update]
+
+                color_puts(fk_line, color: :gray)
+              end
             end
 
             puts
@@ -81,17 +112,37 @@ module Rubee
           schema_hash = {}
 
           Rubee::SequelObject::DB.tables.each do |table|
-            schema_hash[table] = {}
+            schema_hash[table] = {
+              columns: {},
+              foreign_keys: [],
+            }
 
+            # Columns
             Rubee::SequelObject::DB.schema(table).each do |column, details|
-              schema_hash[table][column] = details
+              schema_hash[table][:columns][column] = details
+            end
+
+            # Foreign keys
+            Rubee::SequelObject::DB.foreign_key_list(table).each do |fk|
+              schema_hash[table][:foreign_keys] << {
+                name: fk[:name],
+                columns: fk[:columns],
+                references: {
+                  table: fk[:table],
+                  columns: fk[:key],
+                },
+                on_delete: fk[:on_delete],
+                on_update: fk[:on_update],
+              }.compact
             end
           end
-          formatted_hash = JSON.pretty_generate(schema_hash)
-            .gsub(/"(\w+)":/, '\1:') # Convert keys to symbols
-            .gsub(': null', ': nil') # Convert `null` to `nil`
 
-          File.open('db/structure.rb', 'w') do |file|
+          formatted_hash =
+            JSON.pretty_generate(schema_hash)
+              .gsub(/"(\w+)":/, '\1:')
+              .gsub(': null', ': nil')
+          file_path = File.join(Rubee::APP_ROOT, Rubee::LIB, "db/structure.rb")
+          File.open(file_path, 'w') do |file|
             file.puts "STRUCTURE = #{formatted_hash}"
           end
 
