@@ -37,6 +37,12 @@ module Rubee
           generate_structure
         end
 
+        def drop_tables(_argv)
+          out = Rubee::SequelObject::DB.tables.each { |table| Rubee::SequelObject::DB.drop_table(table, cascade: true) }
+          color_puts("These tables has been dropped for #{ENV['RACK_ENV']} env", color: :cyan)
+          color_puts(out, color: :gray)
+        end
+
         def schema(argv)
           target_table_hash = argv[2] ? { argv[2].to_sym => STRUCTURE[argv[2].to_sym] } : nil
           (target_table_hash || STRUCTURE).each do |table_name, table_def|

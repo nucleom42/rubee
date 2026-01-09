@@ -260,6 +260,12 @@ This will generate the following files
   - comment_id → comments() on delete no_action on update no_action
   - user_id → users() on delete no_action on update no_action
 ```
+8. Drop all tables can be handy for development process. But be careful and make sure you pass desired environment
+```bash
+RACK_ENV=test rubee db drop_tables
+These tables has been dropped for test env
+[:companies, :company_clients, :services]
+```
 
 [Back to content](#content)
 

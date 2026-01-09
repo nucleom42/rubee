@@ -75,7 +75,7 @@ GEM
       tsort
     redis (5.4.1)
       redis-client (>= 0.22.0)
-    redis-client (0.26.2)
+    redis-client (0.26.3)
       connection_pool
     regexp_parser (2.11.3)
     reline (0.6.3)
@@ -97,7 +97,7 @@ GEM
       parser (>= 3.3.7.2)
       prism (~> 1.7)
     ruby-progressbar (1.13.0)
-    sequel (5.99.0)
+    sequel (5.100.0)
       bigdecimal
     simplecov (0.22.0)
       docile (~> 1.1)
