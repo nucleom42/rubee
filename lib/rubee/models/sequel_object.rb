@@ -250,6 +250,10 @@ module Rubee
           end
         end)
       end
+
+      def find_or_new(attrs = {})
+        where(attrs).first || new(**attrs)
+      end
     end
   end
 end

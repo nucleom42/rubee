@@ -401,6 +401,18 @@ irb(main):021> user.destroy(cascade: true)
 => 1
 ```
 
+Find record in the databse or initialize the instance for following persistence
+```Ruby
+irb(main):020> user = User.find_or_new(email: "ok23@ok.com")
+=> #<User:0x000000010cfaa5c0 @email="ok23@ok.com", @id=2, @password="123">
+irb(main):021> user.persisted?
+=> true
+irb(main):022> user = User.find_or_new(email: "new@ok.com")
+=> #<User:0x000000010cfaa5c0 @email="new@ok.com", @id=nil, @password=nil>
+irb(main):023> user.persisted?
+=> false
+```
+
 Destroy all records one by one
 ```Ruby
 irb(main):022> User.destroy_all
@@ -423,7 +435,7 @@ class Comment < Rubee::SequelObject
   owns_many :users, over: :posts
 end
 
-# join post modenl
+# join post model
 class Post < Rubee::SequelObject
   attr_accessor :id, :user_id, :comment_id, :created, :updated
   holds :comment
