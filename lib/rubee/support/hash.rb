@@ -23,6 +23,18 @@ module Rubee
           wrap(super(alt_key))
         end
 
+        def deep_dig(key)
+          return self[key] if self[key]
+
+          each do |_, v|
+            if v.is_a?(Hash)
+              return v.deep_dig(key)
+            end
+          end
+
+          nil
+        end
+
         private
 
         def wrap(value)

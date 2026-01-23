@@ -1122,6 +1122,10 @@ Here are list of additionl APIs extended for:
 "test".plural? # => false
 ```
 
+```ruby
+{one: {two: 2}}.deep_dig(:two) # => 2
+```
+
 [Back to content](#content)
 
 

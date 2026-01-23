@@ -55,7 +55,7 @@ module Rubee
                 name = ::Regexp.last_match(1)
                 kind = :method
                 break
-              elsif l =~ /^\s*describe\s+['"](.*)['"]/
+              elsif l =~ /^\s*(describe|context)\s+['"](.*)['"]/
                 name = ::Regexp.last_match(1)
                 kind = :spec
                 break
