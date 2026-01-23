@@ -1,3 +1,5 @@
+require "irb"
+
 module Rubee
   module CLI
     module Console
