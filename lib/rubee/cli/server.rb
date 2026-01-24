@@ -7,7 +7,7 @@ module Rubee
  | |_) | |  | ||  _ \|  _|
  |  _ <| |__| || |_) | |___
  |_| \_\\____/ |____/|_____|
- Ver: %s        ...bzzz
+ Ver: %s       ⬡ ⬢ ⬢ rubee ⬢ ⬡
 LOGO
 
       class << self
