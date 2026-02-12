@@ -120,9 +120,9 @@ module Rubee
               .join(over.to_sym, "#{singularized_assoc_name.snakeize}_id".to_sym => :id)
               .where(Sequel[over][fk_name.to_sym] => id).select_all(original_assoc).all
 
-            AssocArray.new([], klass, sequel_dataset)
+            ::Rubee::AssocArray.new([], klass, sequel_dataset)
           else
-            AssocArray.new([], klass, klass.dataset.where(fk_name.to_sym => id))
+            ::Rubee::AssocArray.new([], klass, klass.dataset.where(fk_name.to_sym => id))
           end
         end
       end
@@ -192,7 +192,7 @@ module Rubee
       end
 
       def all
-        AssocArray.new([], self, dataset)
+        ::Rubee::AssocArray.new([], self, dataset)
       end
 
       def find(id)
@@ -205,7 +205,7 @@ module Rubee
       def where(args, options = {})
         query_dataset = options[:__query_dataset] || dataset
 
-        AssocArray.new([], self, query_dataset.where(**args))
+        ::Rubee::AssocArray.new([], self, query_dataset.where(**args))
       end
 
       def order(args, options = {})
@@ -216,32 +216,32 @@ module Rubee
         else
           args
         end
-        AssocArray.new([], self, query_dataset.order(order_arg))
+        ::Rubee::AssocArray.new([], self, query_dataset.order(order_arg))
       end
 
       def join(assoc, args, options = {})
         query_dataset = options[:__query_dataset] || dataset
 
-        AssocArray.new([], self, query_dataset.join(assoc, **args))
+        ::Rubee::AssocArray.new([], self, query_dataset.join(assoc, **args))
       end
 
       def limit(args, options = {})
         query_dataset = options[:__query_dataset] || dataset
 
-        AssocArray.new([], self, query_dataset.limit(*args))
+        ::Rubee::AssocArray.new([], self, query_dataset.limit(*args))
       end
 
       def offset(args, options = {})
         query_dataset = options[:__query_dataset] || dataset
 
-        AssocArray.new([], self, query_dataset.offset(*args))
+        ::Rubee::AssocArray.new([], self, query_dataset.offset(*args))
       end
 
       def paginate(page = 1, per_page = 10, options = {})
         query_dataset = options[:__query_dataset] || dataset
         offset = (page - 1) * per_page
 
-        AssocArray.new([], self, query_dataset.offset(offset).limit(per_page),
+        ::Rubee::AssocArray.new([], self, query_dataset.offset(offset).limit(per_page),
                        pagination_meta: options[:__pagination_meta])
       end
 

@@ -81,6 +81,11 @@ module Rubee
                                      'rubee/controllers/base_controller')
         end
         # rubee models
+        unless black_list.include?('assoc_array.rb')
+          require_relative File.join(root_directory,
+                                     'rubee/models/assoc_array')
+        end
+
         unless black_list.include?('database_objectable.rb')
           require_relative File.join(root_directory,
                                      'rubee/models/database_objectable')
