@@ -116,11 +116,13 @@ module Rubee
           klass = Object.const_get(assoc)
           if over
             sequel_dataset = klass
+              .dataset
               .join(over.to_sym, "#{singularized_assoc_name.snakeize}_id".to_sym => :id)
               .where(Sequel[over][fk_name.to_sym] => id).select_all(original_assoc).all
-            self.class.serialize(sequel_dataset, klass)
+
+            AssocArray.new([], klass, sequel_dataset)
           else
-            klass.where(fk_name.to_sym => id)
+            AssocArray.new([], klass, klass.dataset.where(fk_name.to_sym => id))
           end
         end
       end
@@ -190,9 +192,7 @@ module Rubee
       end
 
       def all
-        dataset.map do |record_hash|
-          new(**record_hash)
-        end
+        AssocArray.new([], self, dataset)
       end
 
       def find(id)
@@ -202,20 +202,47 @@ module Rubee
         nil
       end
 
-      def where(args)
-        dataset.where(**args).map do |record_hash|
-          new(**record_hash)
-        end
+      def where(args, options = {})
+        query_dataset = options[:__query_dataset] || dataset
+
+        AssocArray.new([], self, query_dataset.where(**args))
       end
 
-      def order(*args)
-        dataset.order(*args).map do |record_hash|
-          new(**record_hash)
+      def order(args, options = {})
+        query_dataset = options[:__query_dataset] || dataset
+
+        order_arg = if args.is_a? Hash
+          args.values[0] == :desc ? Sequel.desc(args.keys[0]) : Sequel.asc(args.keys[0])
+        else
+          args
         end
+        AssocArray.new([], self, query_dataset.order(order_arg))
       end
 
-      def join(assoc, args)
-        dataset.join(assoc, **args)
+      def join(assoc, args, options = {})
+        query_dataset = options[:__query_dataset] || dataset
+
+        AssocArray.new([], self, query_dataset.join(assoc, **args))
+      end
+
+      def limit(args, options = {})
+        query_dataset = options[:__query_dataset] || dataset
+
+        AssocArray.new([], self, query_dataset.limit(*args))
+      end
+
+      def offset(args, options = {})
+        query_dataset = options[:__query_dataset] || dataset
+
+        AssocArray.new([], self, query_dataset.offset(*args))
+      end
+
+      def paginate(page = 1, per_page = 10, options = {})
+        query_dataset = options[:__query_dataset] || dataset
+        offset = (page - 1) * per_page
+
+        AssocArray.new([], self, query_dataset.offset(offset).limit(per_page),
+                       pagination_meta: options[:__pagination_meta])
       end
 
       def create(attrs)

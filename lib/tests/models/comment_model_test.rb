@@ -31,6 +31,85 @@ describe 'Comment model' do
         _(result.first.text).must_equal('test_enough')
       end
     end
+
+    describe 'where clause chain' do
+      it 'returns target records' do
+        _(Comment.where(text: 'test_enough').where(user_id: nil).count)
+          .must_equal(1)
+      end
+    end
+
+    describe 'join chain' do
+      it 'returns target records' do
+        _(Comment.join(:posts, comment_id: :id).where(text: 'test_enough').count)
+          .must_equal(1)
+      end
+    end
+
+    describe 'order clause chain' do
+      it 'returns target records' do
+        Comment.destroy_all cascade: true
+        comment = Comment.new(text: 'abcdef')
+        comment.save
+
+        _(Comment.order(text: :desc).where(user_id: nil).count)
+          .must_equal(1)
+
+        _(Comment.order(text: :asc).where(user_id: nil).first.text)
+          .must_equal('abcdef')
+      end
+    end
+
+    describe 'limit clause chain' do
+      it 'returns target records' do
+        Comment.destroy_all cascade: true
+        comment = Comment.new(text: 'abcdef')
+        Comment.new(text: 'abcdef1')
+        comment.save
+
+        _(Comment.limit(1).where(user_id: nil).count)
+          .must_equal(1)
+
+        _(Comment.limit(1).where(user_id: nil).first.text)
+          .must_equal('abcdef')
+      end
+    end
+
+    describe 'offset clause chain' do
+      it 'returns target records' do
+        Comment.destroy_all cascade: true
+        comment = Comment.new(text: 'abcdef')
+        comment.save
+        com2 = Comment.new(text: 'abcdef1')
+        com2.save
+        _(Comment.offset(1).where(user_id: nil).count)
+          .must_equal(1)
+
+        _(Comment.offset(1).where(user_id: nil).first.text)
+          .must_equal('abcdef1')
+      end
+    end
+
+    describe 'pagination' do
+      it 'returns target records' do
+        Comment.destroy_all cascade: true
+        10.times do |n|
+          Comment.new(text: "test_#{n}").save
+        end
+        comments = Comment.all.paginate(1, 5)
+        _(comments.count).must_equal(5)
+        _(comments.pagination_meta).must_equal(
+          current_page: 1,
+          per_page: 5,
+          total_count: 10,
+          first_page?: true,
+          last_page?: false,
+          prev: nil,
+          next: 2
+        )
+        Comment.destroy_all
+      end
+    end
   end
 
   describe 'method' do

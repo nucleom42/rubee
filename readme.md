@@ -461,6 +461,24 @@ irb(main):010>  .then { |dataset| Comment.serialize(dataset) }
 This is recommended when you want to run one query and serialize it back to ru.Bee object only once.
 So it may safe some resources.
 
+Since version 2.6.0 Rubee::SequelObject supports chaining queries:
+```ruby
+irb(main):001> Comment.where(text: "test").where(user_id: 1)
+=> [#<Comment:0x0000000121889998 @id=30, @text="test", @user_id=702, @created=2025-09-28 22:03:07.011332 -0400, @updated=2025-09-28 22:03:07.011332 -0400>]
+```
+It will run only one query tho.
+Supported methods: where, order, limit, offset, all, owns_many, owns_one, join, paginate
+
+Also new paginate method is available:
+```ruby
+irb(main):001> comments = Comment.all.paginate(page: 1, per_page: 3)
+[#<Comment:0x0000000121889998 @id=30, @text="test", @user_id=702, @created=2025-09-28 22:03:07.011332 -0400, @updated=2025-09-28 22:03:07.011332 -0400>,
+ #<Comment:0x0000000121889998 @id=30, @text="test", @user_id=702, @created=2025-09-28 22:03:07.011332 -0400, @updated=2025-09-28 22:03:07.011332 -0400>,
+ #<Comment:0x0000000121889998 @id=30, @text="test", @user_id=702, @created=2025-09-28 22:03:07.011332 -0400, @updated=2025-09-28 22:03:07.011332 -0400>]
+
+irb(main):001> comments.pagination_meta
+=> {:current_page=>1, :per_page=>3, :total_count=>10, :first_page?=>true, :last_page=>false, :prev=>nil, :next=>2}
+```
 [Back to content](#content)
 
 ## Database
