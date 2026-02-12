@@ -45,8 +45,8 @@ module Rubee
         current_page:,
         per_page:,
         total_count:,
-        first_page?: current_page == 1,
-        last_page?: current_page == (total_count / per_page.to_f).ceil,
+        first_page: current_page == 1,
+        last_page: current_page == (total_count / per_page.to_f).ceil,
         prev: current_page > 1 ? current_page - 1 : nil,
         next: current_page < (total_count / per_page.to_f).ceil ? current_page + 1 : nil,
       }

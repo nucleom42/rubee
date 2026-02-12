@@ -102,8 +102,8 @@ describe 'Comment model' do
           current_page: 1,
           per_page: 5,
           total_count: 10,
-          first_page?: true,
-          last_page?: false,
+          first_page: true,
+          last_page: false,
           prev: nil,
           next: 2
         )

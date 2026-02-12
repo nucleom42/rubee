@@ -476,7 +476,7 @@ irb(main):001> comments = Comment.all.paginate(page: 1, per_page: 3)
  #<Comment:0x0000000121889998 @id=30, @text="test", @user_id=702, @created=2025-09-28 22:03:07.011332 -0400, @updated=2025-09-28 22:03:07.011332 -0400>]
 
 irb(main):001> comments.pagination_meta
-=> {:current_page=>1, :per_page=>3, :total_count=>10, :first_page?=>true, :last_page=>false, :prev=>nil, :next=>2}
+=> {:current_page=>1, :per_page=>3, :total_count=>10, :first_page=>true, :last_page=>false, :prev=>nil, :next=>2}
 ```
 [Back to content](#content)
 
