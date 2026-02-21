@@ -38,6 +38,10 @@ module Rubee
       @__model.offset(*args, __query_dataset: @__query_dataset)
     end
 
+    def owns_many(*args)
+      @__model.owns_many(*args, __query_dataset: @__query_dataset)
+    end
+
     def paginate(*args)
       total_count = @__query_dataset.count
       current_page, per_page = args
