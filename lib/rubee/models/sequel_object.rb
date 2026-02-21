@@ -118,7 +118,7 @@ module Rubee
             sequel_dataset = klass
               .dataset
               .join(over.to_sym, "#{singularized_assoc_name.snakeize}_id".to_sym => :id)
-              .where(Sequel[over][fk_name.to_sym] => id).select_all(original_assoc).all
+              .where(Sequel[over][fk_name.to_sym] => id).select_all(original_assoc)
 
             ::Rubee::AssocArray.new([], klass, sequel_dataset)
           else

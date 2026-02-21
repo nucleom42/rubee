@@ -22,6 +22,13 @@ describe 'Comment model' do
       end
     end
 
+    describe 'owns_many chain' do
+      it 'returns target records' do
+        _(Comment.where(text: 'test_enough').last.users.where(email: 'ok-test@test.com').count)
+          .must_equal(1)
+      end
+    end
+
     describe 'sequel dataset query' do
       it 'returns all records' do
         result = Comment.dataset.join(:posts, comment_id: :id)
