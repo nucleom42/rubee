@@ -32,6 +32,8 @@ module Rubee
           Rubee::CLI::Console
         in /^(attach|att)$/
           Rubee::CLI::Attach
+        in /^bee$/
+          Rubee::CLI::Bee
         else
           proc { color_puts("Unknown command: #{@command}", color: :red) }
         end
