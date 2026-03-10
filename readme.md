@@ -1204,6 +1204,13 @@ rubee db run:create_apples    # run a specific migration file from /db
 rubee db structure            # generate a migration file for the database structure
 ```
 
+## Info commands
+
+```bash
+rubee routes             # print the routes table
+rubee version            # print the current framework version
+```
+
 ## ru.Bee console
 
 ```bash
