@@ -7,7 +7,8 @@
 
 <img width="358" height="131" alt="Screen Shot 2026-03-10 at 6 26 04 PM" src="https://github.com/user-attachments/assets/9f156847-590d-43c2-b432-728e6cc2eacc" />
 <br />
-<img width="200" alt="00" src="https://github.com/user-attachments/assets/5bd5a027-4a79-4897-960f-4cfcbc0bfc92" />
+<img width="200" alt="Screenshot 2026-03-11 at 3 42 16 PM" src="https://github.com/user-attachments/assets/f2df9bc7-cda9-4d91-83d5-deedd499999b" />
+
 
 ru.Bee is a Ruby-based web framework designed to streamline the development of modular monolith web applications.
 Under the hood, it leverages the power of Ruby and Rack backed by Puma, offering a clean, efficient, and flexible architecture.
