@@ -1250,7 +1250,7 @@ gem 'sidekiq'
 # config/base_configuration.rb
 Rubee::Configuration.setup(env = :development) do |config|
   config.database_url  = { url: "sqlite://db/development.db", env: }
-  config.async_adapter = { async_adapter: SidekiqAsync, env: }
+  config.async_adapter = { async_adapter: Rubee::SidekiqAsync, env: }
 end
 ```
 
