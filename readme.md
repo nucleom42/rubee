@@ -6,7 +6,7 @@
 ![GitHub Repo stars](https://img.shields.io/github/stars/nucleom42/rubee?style=social)
 
 <img width="358" height="131" alt="Screen Shot 2026-03-10 at 6 26 04 PM" src="https://github.com/user-attachments/assets/9f156847-590d-43c2-b432-728e6cc2eacc" />
-<img width="1149" height="646" alt="00" src="https://github.com/user-attachments/assets/5bd5a027-4a79-4897-960f-4cfcbc0bfc92" />
+<img width="358" alt="00" src="https://github.com/user-attachments/assets/5bd5a027-4a79-4897-960f-4cfcbc0bfc92" />
 
 ru.Bee is a Ruby-based web framework designed to streamline the development of modular monolith web applications.
 Under the hood, it leverages the power of Ruby and Rack backed by Puma, offering a clean, efficient, and flexible architecture.
