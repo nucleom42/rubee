@@ -20,7 +20,7 @@ module Rubee
     RUBEE_SUPPORT = { "Rubee::Support::Hash" => Hash, "Rubee::Support::String" => String }
   end
 
-  VERSION = '2.7.2'
+  VERSION = '2.7.3'
 
   require_relative 'rubee/router'
   require_relative 'rubee/logger'
@@ -33,9 +33,11 @@ module Rubee
     include Singleton
     using(ChargedString)
 
-    def call(env)
-      # autoload rb files
+    def initialize
       Autoload.call
+    end
+
+    def call(env)
       # init rack request
       request = Rack::Request.new(env)
       # Add default path for assets
@@ -64,8 +66,6 @@ module Rubee
     end
 
     def middlewares
-      Autoload.call
-
       Rubee::Configuration.middlewares
     end
 
