@@ -95,6 +95,8 @@ The comparison is based on generic and subjective information available on the i
 - [Logger](#logger)
 - [WebSocket](#websocket)
 - [Bee assistant](#bee-assistant)
+- [Middleware integration](#middleware-integration)
+
 
 You can read the full docs on the demo site: [rubee.dedyn.io](https://rubee.dedyn.io/)
 
@@ -1555,6 +1557,29 @@ rubee bee --llm=<model> <question>      # single-shot with a specific model
 If you are interested in contributing to ru.Bee, please read the [Contributing](https://github.com/nucleom42/rubee/blob/main/contribution.md) guide.
 Feel free to open an [issue](https://github.com/nucleom42/rubee/issues) if you spot one.
 Have an idea or want to discuss something? Open a [discussion](https://github.com/nucleom42/rubee/discussions).
+
+## Middleware integration
+
+ru.Bee is rack based framework, so you can use register and use middleware for your application.
+1. Create a middleware
+```ruby
+# app/inits/middlewares/my_middleware.rb
+class MyMiddleware
+  def initialize(app)
+    @app = app
+  end
+
+  def call(env)
+    Logger.info("Middleware called")
+    @app.call(env)
+  end
+end
+```
+2. Register the middleware in the `config/base_configuration.rb`
+```ruby
+# config/base_configuration.rb
+config.middlewares = { middlewares: [MyMiddleware], env: }
+```
 
 ## Roadmap
 

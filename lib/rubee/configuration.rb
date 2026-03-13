@@ -106,6 +106,16 @@ module Rubee
         @configuraiton[args[:app].to_sym][args[:env].to_sym][:pubsub_container] = args[:pubsub_container]
       end
 
+      def middlewares=(args)
+        args[:app] ||= :app
+        @configuraiton[args[:app].to_sym][args[:env].to_sym][:middlewares] = args[:middlewares]
+      end
+
+      def middlewares(**args)
+        args[:app] ||= :app
+        @configuraiton[args[:app].to_sym][ENV['RACK_ENV']&.to_sym || :development][:middlewares] || []
+      end
+
       def pubsub_container(**args)
         args[:app] ||= :app
         @configuraiton[args[:app].to_sym][ENV['RACK_ENV']&.to_sym || :development][:pubsub_container] || ::Rubee::PubSub::Redis.instance

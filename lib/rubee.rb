@@ -20,7 +20,7 @@ module Rubee
     RUBEE_SUPPORT = { "Rubee::Support::Hash" => Hash, "Rubee::Support::String" => String }
   end
 
-  VERSION = '2.7.1'
+  VERSION = '2.7.2'
 
   require_relative 'rubee/router'
   require_relative 'rubee/logger'
@@ -61,6 +61,12 @@ module Rubee
       action = route[:action]
       # fire the action
       controller.send(action)
+    end
+
+    def middlewares
+      Autoload.call
+
+      Rubee::Configuration.middlewares
     end
 
     private
