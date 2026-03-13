@@ -1578,6 +1578,8 @@ end
 2. Register the middleware in the `config/base_configuration.rb`
 ```ruby
 # config/base_configuration.rb
+require_relative 'inits/middlewares/my_middleware'
+
 config.middlewares = { middlewares: [MyMiddleware], env: }
 ```
 
