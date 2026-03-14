@@ -1366,7 +1366,7 @@ end
 
 ```ruby
 
-TestAsyncRunner.perform_async(
+TestAsyncRunner.new.perform_async(
   "email" => "new@new.com",
   "password" => "123"
 )
