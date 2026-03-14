@@ -1240,14 +1240,19 @@ rubee test models/user_model_test.rb --line=12      # run a specific line
 
 ## Background jobs
 
-### Sidekiq engine
+# Sidekiq Engine
 
-1. Add Sidekiq to your Gemfile
-```bash
+## Installation & Setup
+
+### 1. Add Sidekiq to your Gemfile
+
+```ruby
 gem 'sidekiq'
+gem 'rack-session'  # Required for Sidekiq Web UI
 ```
 
-2. Configure the adapter for the desired environment
+### 2. Configure the adapter for the desired environment
+
 ```ruby
 # config/base_configuration.rb
 Rubee::Configuration.setup(env = :development) do |config|
@@ -1256,50 +1261,453 @@ Rubee::Configuration.setup(env = :development) do |config|
 end
 ```
 
-3. Install dependencies
+### 3. Install dependencies
+
 ```bash
 bundle install
 ```
 
-4. Start Redis
+### 4. Start Redis
+
+Redis must be running before starting Sidekiq.
+
 ```bash
+# Start Redis server
 redis-server
+
+# Or in background (macOS with Homebrew)
+brew services start redis
+
+# Verify Redis is running
+redis-cli ping
+# Should respond: PONG
 ```
 
-5. Add a Sidekiq configuration file
+### 5. Add Sidekiq configuration file
+
 ```yaml
 # config/sidekiq.yml
+:concurrency: 5
+:queues:
+  - default
+  - mailers
+  - critical
+  - low
 
-development:
-  redis: redis://localhost:6379/0
-  concurrency: 5
-  queues:
-    default:
-    low:
-    high:
+# Redis connection
+:redis:
+  url: redis://localhost:6379/0
+
+# Optional: Logging
+:verbose: false
+:logfile: ./log/sidekiq.log
+
+# Optional: PID file for daemon mode
+:pidfile: ./tmp/pids/sidekiq.pid
 ```
 
-6. Create a Sidekiq worker
-```ruby
-# app/async/test_async_runner.rb
-require_relative 'extensions/asyncable' unless defined? Asyncable
+### 6. Create Sidekiq boot file
 
+```ruby
+# inits/sidekiq.rb
+
+# Configure Redis connection
+Sidekiq.configure_server do |config|
+  config.redis = { url: ENV.fetch('REDIS_URL', 'redis://localhost:6379/0') }
+end
+
+Sidekiq.configure_client do |config|
+  config.redis = { url: ENV.fetch('REDIS_URL', 'redis://localhost:6379/0') }
+end
+
+# Load Rubee application context
+unless Object.const_defined?('Rubee')
+  require 'rubee'
+
+  # Load environment variables
+  require_relative 'dev.rb' if File.exist?(File.join(__dir__, 'dev.rb'))
+
+  # Trigger Rubee autoload
+  Rubee::Autoload.call
+end
+```
+
+### 7. Create a Sidekiq worker
+
+```ruby
+# app/workers/test_async_runner.rb
 class TestAsyncRunner
   include Rubee::Asyncable
   include Sidekiq::Worker
 
-  sidekiq_options queue: :default
+  sidekiq_options queue: :default, retry: 3
 
   def perform(options)
-    User.create(email: options['email'], password: options['password'])
+    options = parse_options(options)
+
+    User.create(
+      email: options['email'],
+      password: options['password']
+    )
+  end
+
+  private
+
+  def parse_options(options)
+    return options unless options.is_a?(String)
+
+    begin
+      JSON.parse(options)
+    rescue JSON::ParserError
+      options
+    end
   end
 end
 ```
 
-7. Use it in your codebase
+### 8. Use it in your codebase
+
 ```ruby
-TestAsyncRunner.new.perform_async(options: { "email" => "new@new.com", "password" => "123" })
+# Enqueue job to run asynchronously
+TestAsyncRunner.perform_async({
+  "email" => "new@new.com",
+  "password" => "123"
+}.to_json)
+
+# Or without JSON serialization
+TestAsyncRunner.perform_async(
+  "email" => "new@new.com",
+  "password" => "123"
+)
+
+# Schedule job to run in 5 minutes
+TestAsyncRunner.perform_in(5.minutes, {
+  "email" => "new@new.com",
+  "password" => "123"
+}.to_json)
+
+# Schedule job at specific time
+TestAsyncRunner.perform_at(1.hour.from_now, {
+  "email" => "new@new.com",
+  "password" => "123"
+}.to_json)
 ```
+
+---
+
+## Running Sidekiq
+
+### Start Sidekiq (Foreground)
+
+```bash
+bundle exec sidekiq -C config/sidekiq.yml -r ./inits/sidekiq.rb
+```
+
+### Start Sidekiq (Background/Daemon)
+
+```bash
+# Start as daemon
+bundle exec sidekiq -d -C config/sidekiq.yml -r ./inits/sidekiq.rb
+
+# Stop daemon
+kill -TERM $(cat tmp/pids/sidekiq.pid)
+
+# View logs
+tail -f log/sidekiq.log
+```
+
+### Helper Scripts
+
+Create convenient management scripts:
+
+```bash
+# bin/sidekiq_start
+#!/bin/bash
+bundle exec sidekiq -d \
+  -C config/sidekiq.yml \
+  -r ./inits/sidekiq.rb \
+  -L log/sidekiq.log \
+  -P tmp/pids/sidekiq.pid
+
+echo "✓ Sidekiq started. PID: $(cat tmp/pids/sidekiq.pid)"
+```
+
+```bash
+# bin/sidekiq_stop
+#!/bin/bash
+if [ -f tmp/pids/sidekiq.pid ]; then
+  kill -TERM $(cat tmp/pids/sidekiq.pid)
+  rm tmp/pids/sidekiq.pid
+  echo "✓ Sidekiq stopped"
+else
+  echo "✗ Sidekiq is not running"
+fi
+```
+
+Make them executable:
+```bash
+chmod +x bin/sidekiq_start bin/sidekiq_stop
+```
+
+---
+
+## Sidekiq Web Dashboard
+
+### 1. Create Sidekiq middleware
+
+```ruby
+# inits/middlewares/sidekiq_middleware.rb
+require 'sidekiq/web'
+require 'rack/session'
+
+class SidekiqMiddleware
+  def initialize(app)
+    @app = app
+
+    # Get or generate session secret
+    session_secret = ENV.fetch('SESSION_SECRET') { generate_secret }
+
+    # Build Sidekiq Web app with authentication
+    @sidekiq_app = Rack::Builder.new do
+      # Session support (required for CSRF protection)
+      use Rack::Session::Cookie,
+          secret: session_secret,
+          same_site: true,
+          max_age: 86400
+
+      # Basic authentication
+      use Rack::Auth::Basic, "Sidekiq Dashboard" do |username, password|
+        username == ENV.fetch('SIDEKIQ_USERNAME', 'admin') &&
+        password == ENV.fetch('SIDEKIQ_PASSWORD', 'password')
+      end
+
+      run Sidekiq::Web
+    end
+  end
+
+  def call(env)
+    if env['PATH_INFO'].start_with?('/sidekiq')
+      # Route to Sidekiq Web UI
+      env['SCRIPT_NAME'] = '/sidekiq'
+      env['PATH_INFO'] = env['PATH_INFO'].sub(%r{^/sidekiq}, '') || '/'
+      @sidekiq_app.call(env)
+    else
+      # Pass through to main app
+      @app.call(env)
+    end
+  end
+
+  private
+
+  def generate_secret
+    secret_file = '.session.key'
+
+    if File.exist?(secret_file)
+      File.read(secret_file).strip
+    else
+      require 'securerandom'
+      secret = SecureRandom.hex(64)
+      File.write(secret_file, secret)
+      puts "Generated new session secret in #{secret_file}"
+      secret
+    end
+  end
+end
+```
+
+### 2. Set environment variables
+
+```bash
+# .env
+REDIS_URL=redis://localhost:6379/0
+SIDEKIQ_USERNAME=admin
+SIDEKIQ_PASSWORD=your_secure_password
+SESSION_SECRET=generate_with_securerandom_hex_64
+```
+
+Generate SESSION_SECRET:
+```bash
+ruby -e "require 'securerandom'; puts SecureRandom.hex(64)"
+```
+
+### 3. Access the dashboard
+
+Start your Rubee application and visit:
+```
+http://localhost:9292/sidekiq
+```
+
+Login with credentials from your `.env` file.
+
+---
+
+## Worker Examples
+
+### Simple Email Worker
+
+```ruby
+# app/workers/email_worker.rb
+class EmailWorker
+  include Rubee::Asyncable
+  include Sidekiq::Worker
+
+  sidekiq_options queue: :mailers, retry: 5
+
+  def perform(options)
+    options = parse_options(options)
+
+    Mailer.send_email(
+      to: options['email'],
+      subject: options['subject'],
+      body: options['body']
+    )
+  end
+
+  private
+
+  def parse_options(options)
+    return options unless options.is_a?(String)
+    JSON.parse(options) rescue options
+  end
+end
+
+# Usage
+EmailWorker.perform_async({
+  "email" => "user@example.com",
+  "subject" => "Welcome!",
+  "body" => "Hello..."
+}.to_json)
+```
+
+### Worker with Database Records
+
+```ruby
+# app/workers/booking_confirmation_worker.rb
+class BookingConfirmationWorker
+  include Rubee::Asyncable
+  include Sidekiq::Worker
+
+  sidekiq_options queue: :mailers, retry: 3
+
+  def perform(options)
+    options = parse_options(options)
+
+    # Fetch records from database
+    service = Service.find(options['service_id'])
+    time_slot = TimeSlot.find(options['time_slot_id'])
+
+    Mailer.booking_confirmation(
+      to: options['to'],
+      client_name: options['client_name'],
+      service: service,
+      time_slot: time_slot
+    )
+  end
+
+  private
+
+  def parse_options(options)
+    return options unless options.is_a?(String)
+    JSON.parse(options) rescue options
+  end
+end
+
+# Usage
+BookingConfirmationWorker.perform_async({
+  "to" => "client@example.com",
+  "client_name" => "John Doe",
+  "service_id" => 15,
+  "time_slot_id" => 91
+}.to_json)
+```
+
+---
+
+## Queue Priority
+
+Configure queue processing priority in `config/sidekiq.yml`:
+
+```yaml
+:queues:
+  - critical    # Processed first
+  - default
+  - mailers
+  - low         # Processed last
+```
+
+Or with weights (higher weight = more frequently processed):
+
+```yaml
+:queues:
+  - [critical, 7]
+  - [default, 5]
+  - [mailers, 3]
+  - [low, 1]
+```
+
+---
+
+## Monitoring & Troubleshooting
+
+### Check Sidekiq Status
+
+```bash
+# View running processes
+ps aux | grep sidekiq
+
+# Check Redis connection
+redis-cli ping
+
+# View queue sizes
+redis-cli LLEN queue:default
+```
+
+### View Logs
+
+```bash
+# Tail Sidekiq logs
+tail -f log/sidekiq.log
+
+# View last 100 lines
+tail -n 100 log/sidekiq.log
+```
+
+### Common Issues
+
+**Workers not processing:**
+- Ensure Redis is running: `redis-cli ping`
+- Check Sidekiq is started: `ps aux | grep sidekiq`
+- Verify queue names match in worker and config
+
+**Authentication errors on Web UI:**
+- Ensure `rack-session` gem is installed
+- Check SESSION_SECRET is at least 64 bytes
+- Verify SIDEKIQ_USERNAME and SIDEKIQ_PASSWORD are set
+
+**Jobs failing:**
+- Check `log/sidekiq.log` for errors
+- View failed jobs in Web UI at `/sidekiq/retries`
+- Verify environment variables are loaded in `inits/sidekiq.rb`
+
+---
+
+## Best Practices
+
+1. **Pass IDs, not objects** - Use `booking.id`, not `booking` itself
+2. **Keep jobs small** - One job should do one thing
+3. **Make jobs idempotent** - Safe to run multiple times
+4. **Set appropriate retries** - Critical: more retries, notifications: fewer
+5. **Use different queues** - Separate critical from low-priority jobs
+6. **Handle JSON properly** - Always parse options in `perform` method
+7. **Monitor your queues** - Use Web UI to watch for backlogs
+
+---
+
+## Additional Resources
+
+- [Sidekiq Official Docs](https://github.com/sidekiq/sidekiq/wiki)
+- [Best Practices](https://github.com/sidekiq/sidekiq/wiki/Best-Practices)
+- [Error Handling](https://github.com/sidekiq/sidekiq/wiki/Error-Handling)
 
 ### Default engine — ThreadAsync
 

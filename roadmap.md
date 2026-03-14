@@ -20,6 +20,8 @@ This document outlines the planned features and improvements for Rubee.
 - [ ] Home background engine, based on Redis
 - [ ] Model extend with dynamic methods {field}_changed?
 - [ ] Inline generator fully to all sequel types
+- [x] Add AI assistant
+- [] Add Sidekiq integration support that does not require additional middleware loaders
 
 ## Documentation & Community
 - [ ] Forum for Rubee doc site
