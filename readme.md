@@ -1240,7 +1240,12 @@ rubee test models/user_model_test.rb --line=12      # run a specific line
 
 ## Background jobs
 
-# Sidekiq Engine
+There are currently two ways to integrate background jobs into your application:
+
+- [Sidekiq](#sidekiq-engine)
+- [ThreadAsync](#threadasync-engine)
+
+## Sidekiq Engine
 
 ## Installation & Setup
 
@@ -1287,23 +1292,13 @@ redis-cli ping
 
 ```yaml
 # config/sidekiq.yml
-:concurrency: 5
-:queues:
-  - default
-  - mailers
-  - critical
-  - low
-
-# Redis connection
-:redis:
-  url: redis://localhost:6379/0
-
-# Optional: Logging
-:verbose: false
-:logfile: ./log/sidekiq.log
-
-# Optional: PID file for daemon mode
-:pidfile: ./tmp/pids/sidekiq.pid
+development:
+  redis: redis://localhost:6379/0
+  concurrency: 5
+  queues:
+    default:
+    low:
+    high:
 ```
 
 ### 6. Create Sidekiq boot file
@@ -1324,7 +1319,7 @@ end
 unless Object.const_defined?('Rubee')
   require 'rubee'
 
-  # Load environment variables
+  # Load environment variables from the Ruby file.
   require_relative 'dev.rb' if File.exist?(File.join(__dir__, 'dev.rb'))
 
   # Trigger Rubee autoload
@@ -1368,29 +1363,11 @@ end
 ### 8. Use it in your codebase
 
 ```ruby
-# Enqueue job to run asynchronously
-TestAsyncRunner.perform_async({
-  "email" => "new@new.com",
-  "password" => "123"
-}.to_json)
 
-# Or without JSON serialization
 TestAsyncRunner.perform_async(
   "email" => "new@new.com",
   "password" => "123"
 )
-
-# Schedule job to run in 5 minutes
-TestAsyncRunner.perform_in(5.minutes, {
-  "email" => "new@new.com",
-  "password" => "123"
-}.to_json)
-
-# Schedule job at specific time
-TestAsyncRunner.perform_at(1.hour.from_now, {
-  "email" => "new@new.com",
-  "password" => "123"
-}.to_json)
 ```
 
 ---
@@ -1426,10 +1403,6 @@ Create convenient management scripts:
 bundle exec sidekiq -d \
   -C config/sidekiq.yml \
   -r ./inits/sidekiq.rb \
-  -L log/sidekiq.log \
-  -P tmp/pids/sidekiq.pid
-
-echo "✓ Sidekiq started. PID: $(cat tmp/pids/sidekiq.pid)"
 ```
 
 ```bash
@@ -1451,7 +1424,7 @@ chmod +x bin/sidekiq_start bin/sidekiq_stop
 
 ---
 
-## Sidekiq Web Dashboard
+## Enable Sidekiq Web Dashboard
 
 ### 1. Create Sidekiq middleware
 
@@ -1515,69 +1488,18 @@ class SidekiqMiddleware
 end
 ```
 
-### 2. Set environment variables
+### 2. Access the dashboard
 
-```bash
-# .env
-REDIS_URL=redis://localhost:6379/0
-SIDEKIQ_USERNAME=admin
-SIDEKIQ_PASSWORD=your_secure_password
-SESSION_SECRET=generate_with_securerandom_hex_64
+Start your Rubee application and visit /sidekiq:
+```
+http://localhost:7000/sidekiq
 ```
 
-Generate SESSION_SECRET:
-```bash
-ruby -e "require 'securerandom'; puts SecureRandom.hex(64)"
-```
-
-### 3. Access the dashboard
-
-Start your Rubee application and visit:
-```
-http://localhost:9292/sidekiq
-```
-
-Login with credentials from your `.env` file.
+Login with credentials from your `/inits/dev.rb` file for developmet purposes.
 
 ---
 
 ## Worker Examples
-
-### Simple Email Worker
-
-```ruby
-# app/workers/email_worker.rb
-class EmailWorker
-  include Rubee::Asyncable
-  include Sidekiq::Worker
-
-  sidekiq_options queue: :mailers, retry: 5
-
-  def perform(options)
-    options = parse_options(options)
-
-    Mailer.send_email(
-      to: options['email'],
-      subject: options['subject'],
-      body: options['body']
-    )
-  end
-
-  private
-
-  def parse_options(options)
-    return options unless options.is_a?(String)
-    JSON.parse(options) rescue options
-  end
-end
-
-# Usage
-EmailWorker.perform_async({
-  "email" => "user@example.com",
-  "subject" => "Welcome!",
-  "body" => "Hello..."
-}.to_json)
-```
 
 ### Worker with Database Records
 
@@ -1613,40 +1535,15 @@ class BookingConfirmationWorker
 end
 
 # Usage
-BookingConfirmationWorker.perform_async({
+BookingConfirmationWorker.new.perform_async(options: {
   "to" => "client@example.com",
   "client_name" => "John Doe",
   "service_id" => 15,
   "time_slot_id" => 91
-}.to_json)
+})
 ```
 
 ---
-
-## Queue Priority
-
-Configure queue processing priority in `config/sidekiq.yml`:
-
-```yaml
-:queues:
-  - critical    # Processed first
-  - default
-  - mailers
-  - low         # Processed last
-```
-
-Or with weights (higher weight = more frequently processed):
-
-```yaml
-:queues:
-  - [critical, 7]
-  - [default, 5]
-  - [mailers, 3]
-  - [low, 1]
-```
-
----
-
 ## Monitoring & Troubleshooting
 
 ### Check Sidekiq Status
@@ -1660,16 +1557,6 @@ redis-cli ping
 
 # View queue sizes
 redis-cli LLEN queue:default
-```
-
-### View Logs
-
-```bash
-# Tail Sidekiq logs
-tail -f log/sidekiq.log
-
-# View last 100 lines
-tail -n 100 log/sidekiq.log
 ```
 
 ### Common Issues
@@ -1709,7 +1596,7 @@ tail -n 100 log/sidekiq.log
 - [Best Practices](https://github.com/sidekiq/sidekiq/wiki/Best-Practices)
 - [Error Handling](https://github.com/sidekiq/sidekiq/wiki/Error-Handling)
 
-### Default engine — ThreadAsync
+### ThreadAsync engine
 
 The default adapter is `ThreadAsync`. It is not yet recommended for production — use with caution.
 
