@@ -91,6 +91,8 @@ The comparison is based on generic and subjective information available on the i
 - [Rubee::Support](#rubee-support)
 - [Testing](#testing)
 - [Background jobs](#background-jobs)
+- [Sidekiq engine](#sidekiq-engine)
+- [ThreadAsync engine](#threadasync-engine)
 - [Modular application](#modular-application)
 - [Logger](#logger)
 - [WebSocket](#websocket)
