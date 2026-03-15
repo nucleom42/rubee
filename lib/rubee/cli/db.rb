@@ -39,7 +39,13 @@ module Rubee
 
         def drop_tables(_argv)
           out = Rubee::SequelObject::DB.tables.each { |table| Rubee::SequelObject::DB.drop_table(table, cascade: true) }
-          color_puts("These tables has been dropped for #{ENV['RACK_ENV']} env", color: :cyan)
+          color_puts("These tables have been dropped for the #{ENV['RACK_ENV']} env:", color: :cyan)
+          color_puts(out, color: :gray)
+        end
+
+        def truncate_tables(_argv)
+          out = Rubee::SequelObject::DB.tables.each { |table| Rubee::SequelObject::DB[table].truncate }
+          color_puts("These tables have been truncated for the #{ENV['RACK_ENV']} env:", color: :cyan)
           color_puts(out, color: :gray)
         end
 

@@ -265,8 +265,12 @@ rubee db run:all
   - user_id → users() on delete no_action on update no_action
 ```
 
-8. Dropping all tables can be handy during development. Be careful and make sure you pass the desired environment.
+8. Truncating or rropping all tables can be handy during development. Be careful and make sure you pass the desired environment.
 ```bash
+RACK_ENV=test rubee db truncate_tables
+These tables have been truncated for the test env:
+[:accounts, :addresses, :carrots, :clients, :comments, :users, :posts]
+
 RACK_ENV=test rubee db drop_tables
 These tables have been dropped for the test env:
 [:companies, :company_clients, :services]
