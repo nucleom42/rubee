@@ -100,9 +100,10 @@ module Rubee
     end
 
     def generate_db_file
+      timestamp = Time.now.strftime('%Y%m%d%H%M%S')
       prefix = @namespace == "" ? "" : "#{@app_name.snakeize}_"
       table_name = "#{prefix}#{@plural_name}"
-      db_file = File.join(Rubee::APP_ROOT, Rubee::LIB, "db/create_#{table_name}.rb")
+      db_file = File.join(Rubee::APP_ROOT, Rubee::LIB, "db/#{timestamp}_create_#{table_name}.rb")
       if File.exist?(db_file)
         puts "DB file for #{table_name} already exists. Remove it if you want to regenerate"
         return

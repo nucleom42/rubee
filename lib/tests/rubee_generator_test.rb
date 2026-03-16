@@ -4,8 +4,10 @@ describe 'Rubee::Generator' do
   describe 'generates Sequel schema lines' do
     after do
       File.delete('lib/app/models/apple.rb') if File.exist?('lib/app/models/apple.rb')
-      File.delete('lib/db/create_apples.rb') if File.exist?('lib/db/create_apples.rb')
+      # Delete any migration file with timestamp prefix
+      Dir.glob('lib/db/*_create_apples.rb').each { |f| File.delete(f) }
     end
+
     it 'for string with just name' do
       generator = Rubee::Generator.new(nil, nil, nil, nil)
 
@@ -30,23 +32,30 @@ describe 'Rubee::Generator' do
   describe 'generates Sequel file' do
     after do
       File.delete('lib/app/models/apple.rb') if File.exist?('lib/app/models/apple.rb')
-      File.delete('lib/db/create_apples.rb') if File.exist?('lib/db/create_apples.rb')
+      # Delete any migration file with timestamp prefix
+      Dir.glob('lib/db/*_create_apples.rb').each { |f| File.delete(f) }
     end
 
     it 'not without a model' do
       generator = Rubee::Generator.new(nil, nil, nil, nil)
       generator.call
 
-      _(File.exist?('lib/db/create_apples.rb')).must_equal(false)
+      # Check no migration files exist with any timestamp
+      _(Dir.glob('lib/db/*_create_apples.rb').empty?).must_equal(true)
     end
 
     it 'with a model only' do
       generator = Rubee::Generator.new('apple', nil, 'apples', nil)
       generator.call
 
-      _(File.exist?('lib/db/create_apples.rb')).must_equal(true)
+      # Find the migration file with timestamp prefix
+      migration_files = Dir.glob('lib/db/*_create_apples.rb')
+      _(migration_files.size).must_equal(1)
 
-      lines = File.readlines('lib/db/create_apples.rb').map(&:chomp).join("\n")
+      migration_file = migration_files.first
+      _(File.exist?(migration_file)).must_equal(true)
+
+      lines = File.readlines(migration_file).map(&:chomp).join("\n")
 
       _(lines.include?('class CreateApples')).must_equal(true)
       _(lines.include?('def call')).must_equal(true)
@@ -61,9 +70,11 @@ describe 'Rubee::Generator' do
 'apples', nil)
       generator.call
 
-      _(File.exist?('lib/db/create_apples.rb')).must_equal(true)
+      migration_files = Dir.glob('lib/db/*_create_apples.rb')
+      _(migration_files.size).must_equal(1)
 
-      lines = File.readlines('lib/db/create_apples.rb').map(&:chomp).join("\n")
+      migration_file = migration_files.first
+      lines = File.readlines(migration_file).map(&:chomp).join("\n")
 
       _(lines.include?('class CreateApples')).must_equal(true)
       _(lines.include?('def call')).must_equal(true)
@@ -79,9 +90,9 @@ describe 'Rubee::Generator' do
 [{ name: 'id', type: :bigint }, { name: 'colour', type: :string }, { name: 'weight', type: :integer }], 'apples', nil)
       generator.call
 
-      _(File.exist?('lib/db/create_apples.rb')).must_equal(true)
-
-      lines = File.readlines('lib/db/create_apples.rb').map(&:chomp).join("\n")
+      migration_files = Dir.glob('lib/db/*_create_apples.rb')
+      migration_file = migration_files.first
+      lines = File.readlines(migration_file).map(&:chomp).join("\n")
 
       _(lines.include?('class CreateApples')).must_equal(true)
       _(lines.include?('def call')).must_equal(true)
@@ -98,9 +109,9 @@ describe 'Rubee::Generator' do
 [{ name: ['blue_id', 'shoe_id'], type: :foreign_key, table: 'blue_and_shoe_join_tb' }], 'apples', nil)
       generator.call
 
-      _(File.exist?('lib/db/create_apples.rb')).must_equal(true)
-
-      lines = File.readlines('lib/db/create_apples.rb').map(&:chomp).join("\n")
+      migration_files = Dir.glob('lib/db/*_create_apples.rb')
+      migration_file = migration_files.first
+      lines = File.readlines(migration_file).map(&:chomp).join("\n")
 
       _(lines.include?('class CreateApples')).must_equal(true)
       _(lines.include?('def call')).must_equal(true)
@@ -115,9 +126,9 @@ describe 'Rubee::Generator' do
       generator = Rubee::Generator.new('apple', [{ name: 'blue_id', type: :foreign_key }], 'apples', nil)
       generator.call
 
-      _(File.exist?('lib/db/create_apples.rb')).must_equal(true)
-
-      lines = File.readlines('lib/db/create_apples.rb').map(&:chomp).join("\n")
+      migration_files = Dir.glob('lib/db/*_create_apples.rb')
+      migration_file = migration_files.first
+      lines = File.readlines(migration_file).map(&:chomp).join("\n")
 
       _(lines.include?('class CreateApples')).must_equal(true)
       _(lines.include?('def call')).must_equal(true)
@@ -126,12 +137,24 @@ describe 'Rubee::Generator' do
       _(lines.include?('foreign_key :blue_id')).must_equal(true)
       _(lines.include?('end')).must_equal(true)
     end
+
+    it 'generates migration file with timestamp prefix' do
+      generator = Rubee::Generator.new('apple', nil, 'apples', nil)
+      generator.call
+
+      migration_files = Dir.glob('lib/db/*_create_apples.rb')
+      _(migration_files.size).must_equal(1)
+
+      # Verify timestamp prefix format (YYYYMMDDHHMMSS_create_apples.rb)
+      filename = File.basename(migration_files.first)
+      _(filename).must_match(/^\d{14}_create_apples\.rb$/)
+    end
   end
 
   describe 'generates Model file' do
     after do
       File.delete('lib/app/models/apple.rb') if File.exist?('lib/app/models/apple.rb')
-      File.delete('lib/db/create_apples.rb') if File.exist?('lib/db/create_apples.rb')
+      Dir.glob('lib/db/*_create_apples.rb').each { |f| File.delete(f) }
     end
 
     it 'not without a model' do

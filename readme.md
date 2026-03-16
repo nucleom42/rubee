@@ -221,6 +221,12 @@ This will generate the following files:
 ```bash
 rubee db run:all
 ```
+For supporting ordering in migrations, while you create files manually,
+you would benefit by prefixing the migration file with a number.
+So that will ensure that the migration is run in the proper order and won't be interupted
+with related errors.
+In case you create migration file over `rubee generate /{get} {path}` command, the timestamp
+prefix will be added automatically.
 
 4. Fill the generated files with the logic you need and run the server again.
 
@@ -719,6 +725,9 @@ Generates:
 ```bash
 rubee db run:create_cabbages
 ```
+If you migration file prefixed with timestamp or mannually added number, you don't need to include It
+in the command `rubee db run:202603101300_create_cabbages`, just `rubee db run:create_cabbages` will be
+sufficient enough
 
 5. Fill the controller with content
 ```ruby
@@ -1037,6 +1046,15 @@ Available extensions:
 "TestMe".snakeize  # => "test_me"
 "test".singular?   # => true
 "test".plural?     # => false
+```
+
+In the code base, out of the box, you can check current environtment with:
+```ruby
+Rubee::Configuration.env
+# => :development
+
+Rubee::Configuration.development?
+# => true
 ```
 
 [Back to content](#content)

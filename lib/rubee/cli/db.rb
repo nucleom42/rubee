@@ -12,7 +12,7 @@ module Rubee
           _, file_name = argv[1]&.split(':')
           file_names = if file_name == 'all'
             lib = Rubee::PROJECT_NAME == 'rubee' ? '/lib' : ''
-            Dir.glob(".#{lib}/db/*.rb").map do |file|
+            Dir.glob(".#{lib}/db/*.rb").sort.map do |file|
               File.basename(file, '.rb')
             end.reject { |file| file == 'structure' }
           else
@@ -20,7 +20,7 @@ module Rubee
           end
           file_names.each do |file|
             color_puts("Run #{file} file for #{ENV['RACK_ENV']} env", color: :cyan)
-            Object.const_get(file.split('_').map(&:capitalize).join).new.call
+            Object.const_get(file.gsub(/^\d+_/, '').split('_').map(&:capitalize).join).new.call
           end
           color_puts("Migration for #{file_name} completed", color: :green)
           unless Rubee::PROJECT_NAME == 'rubee'

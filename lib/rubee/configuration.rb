@@ -17,6 +17,10 @@ module Rubee
     }
 
     class << self
+      def env
+        ENV['RACK_ENV']
+      end
+
       def setup(env, app = :app)
         unless @configuraiton[app.to_sym]
           @configuraiton[app.to_sym] = {
@@ -26,6 +30,14 @@ module Rubee
           }
           unless @configuraiton[app.to_sym][env.to_sym]
             @configuraiton[app.to_sym][env.to_sym] = {}
+          end
+        end
+
+        envs.each do |envi|
+          next if respond_to? "#{envi}?"
+
+          define_singleton_method "#{envi}?" do
+            envi.to_s == ENV['RACK_ENV']
           end
         end
 
@@ -129,8 +141,8 @@ module Rubee
           &.[](method_name.to_s.delete_prefix('get_').to_sym)
       end
 
-      def envs
-        @configuraiton.keys
+      def envs(app_name = :app)
+        @configuraiton[app_name.to_sym].keys
       end
     end
   end
