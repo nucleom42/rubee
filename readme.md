@@ -380,12 +380,12 @@ Get all records scoped by a field
 irb(main):005> User.where(email: "ok23@ok.com")
 => [#<User:0x000000010cfaa5c0 @email="ok23@ok.com", @id=2, @password="123">]
 ```
-Get the first record. It is a shortcut for `User.where(email: "ok23@ok.com").order(:id).limit(1).last`
+Get the first record, scoped by field. It is a shortcut for `User.where(email: "ok23@ok.com").order(:id).limit(1).last`
 ```ruby
 irb(main):006> User.find_first(email: "ok23@ok.com")
 => #<User:0x000000010cfaa5c0 @email="ok23@ok.com", @id=2, @password="123">
 ```
-Get the last record. It is a shortcut for `User.where(email: "ok23@ok.com").order(id: :desc).limit(1).last`
+Get the last record, scoped by field. It is a shortcut for `User.where(email: "ok23@ok.com").order(id: :desc).limit(1).last`
 ```ruby
 irb(main):007> User.find_last(email: "ok23@ok.com")
 => #<User:0x000000010cfaa5c0 @email="ok23@ok.com", @id=2, @password="123">
