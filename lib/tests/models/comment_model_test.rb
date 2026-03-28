@@ -119,6 +119,26 @@ describe 'Comment model' do
     end
   end
 
+  describe 'find_first' do
+    it 'finds first record' do
+      Comment.destroy_all
+      comment_1 = Comment.create(text: 'test123123')
+      comment_2 = Comment.create(text: 'test123123')
+      _(Comment.find_first(text: 'test123123').id).must_equal(comment_1.id)
+      Comment.destroy_all
+    end
+  end
+
+  describe 'find_last' do
+    it 'finds last record' do
+      Comment.destroy_all
+      comment_1 = Comment.create(text: 'test123123')
+      comment_2 = Comment.create(text: 'test123123')
+      _(Comment.find_last(text: 'test123123').id).must_equal(comment_2.id)
+      Comment.destroy_all
+    end
+  end
+
   describe 'method' do
     it 'updates existing model' do
       comment = Comment.new(text: 'test 1')

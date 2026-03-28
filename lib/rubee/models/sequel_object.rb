@@ -208,6 +208,14 @@ module Rubee
         ::Rubee::AssocArray.new([], self, query_dataset.where(**args))
       end
 
+      def find_first(args, options = {})
+        where(args, options).order(:id).limit(1).last
+      end
+
+      def find_last(args, options = {})
+        where(args, options).order(id: :desc).limit(1).last
+      end
+
       def order(args, options = {})
         query_dataset = options[:__query_dataset] || dataset
 
