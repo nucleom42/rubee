@@ -47,11 +47,11 @@ module Rubee
               if conditions_met?(options[:if], options[:unless])
                 if handler.respond_to?(:call)
                   result = nil
-                  safe_call(handler, [self, args]) do
+                  handler_result = safe_call(handler, [self, args]) do
                     result = super(*args, &block)
                   end
 
-                  result
+                  result || handler_result
                 else
                   send(handler) do
                     super(*args, &block)

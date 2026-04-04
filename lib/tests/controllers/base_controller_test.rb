@@ -1,11 +1,23 @@
 require_relative '../test_helper'
 
 class TestRedirectController < Rubee::BaseController
+  around :test_me, ->(controller, &test_method) do
+    if true # We wnat to make sure that origianl method is replaced
+      controller.response_with(type: :json, object: { hijacked: :yes })
+    else
+      test_method.call
+    end
+  end
+
   def index
     response_with(type: :redirect, to: '/test')
   end
 
   def test
+    response_with(type: :json, object: { ok: :ok })
+  end
+
+  def test_me
     response_with(type: :json, object: { ok: :ok })
   end
 end
@@ -21,6 +33,7 @@ class BaseControllerTest < Minitest::Test
     Rubee::Router.draw do |route|
       route.get('/test', to: 'test_redirect#test')
       route.get('/index', to: 'test_redirect#index')
+      route.get('/test_me', to: 'test_redirect#test_me')
     end
   end
 
@@ -44,5 +57,12 @@ class BaseControllerTest < Minitest::Test
     assert_equal(302, last_response.status)
     assert_equal('/test', last_response.headers['Location'])
     assert_equal('', last_response.body)
+  end
+
+  def test_hijacked_test_by_around
+    get('/test_me')
+
+    assert_equal(200, last_response.status)
+    assert_equal({ "hijacked" => "yes" }, JSON.parse(last_response.body))
   end
 end

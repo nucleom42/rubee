@@ -940,11 +940,31 @@ class AnyClass
   end
 end
 ```
+The "around" hook can be used to hijack origianl method execution:
+```ruby
+class AnyClass
+  include Rubee::Hookable
+  around :print_world, ->(this_instance, &target_method) do
+    if condition_that_return_false
+      target_method.call
+    else
+      this_instance.print_hello
+    end
+  end
 
-Output:
+  def print_world
+    puts "world!"
+  end
+
+  def print_hello
+    puts "hello!"
+  end
+end
+```
+
+This will replace origianl method execution with `print_hello` if `condition_that_return_false` returns false.
 ```bash
 hello!
-world!
 ```
 
 [Back to content](#content)
