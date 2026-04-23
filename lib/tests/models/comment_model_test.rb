@@ -124,7 +124,7 @@ describe 'Comment model' do
       Comment.destroy_all
       comment_1 = Comment.create(text: 'test123123')
       comment_2 = Comment.create(text: 'test123123')
-      _(Comment.find_first(text: 'test123123').id).must_equal(comment_1.id)
+      _(Comment.where(text: 'test123123').find_first(text: 'test123123').id).must_equal(comment_1.id)
       Comment.destroy_all
     end
   end
@@ -134,7 +134,7 @@ describe 'Comment model' do
       Comment.destroy_all
       comment_1 = Comment.create(text: 'test123123')
       comment_2 = Comment.create(text: 'test123123')
-      _(Comment.find_last(text: 'test123123').id).must_equal(comment_2.id)
+      _(Comment.where(text: 'test123123').find_last(text: 'test123123').id).must_equal(comment_2.id)
       Comment.destroy_all
     end
   end

@@ -22,6 +22,14 @@ module Rubee
       @__model.where(*args, __query_dataset: @__query_dataset)
     end
 
+    def find_first(*args)
+      @__model.find_first(*args, __query_dataset: @__query_dataset)
+    end
+
+    def find_last(*args)
+      @__model.find_last(*args, __query_dataset: @__query_dataset)
+    end
+
     def order(*args)
       @__model.order(*args, __query_dataset: @__query_dataset)
     end
