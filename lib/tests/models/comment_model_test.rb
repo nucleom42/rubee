@@ -346,5 +346,15 @@ describe 'Comment model' do
         _(comment.errors[:text]).must_equal({ message: "Text length must be greater than 4" })
       end
     end
+
+    describe 'when validate required' do
+      describe 'when empty string' do
+        it 'is valid' do
+          Comment.validate { attribute(:text).required }
+          comment = Comment.new(text: '')
+          _(comment.valid?).must_equal(true)
+        end
+      end
+    end
   end
 end

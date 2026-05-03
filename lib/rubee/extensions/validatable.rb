@@ -35,7 +35,7 @@ module Rubee
         value = @instance.send(@attribute)
 
         error_hash = assemble_error_hash(error_message, :required, attribute: @attribute)
-        if value.nil? || (value.respond_to?(:empty?) && value.empty?)
+        if value.nil? # If there is any value empty string or empty array, we'r still good to go.
           @state.add_error(@attribute, error_hash)
         end
 
