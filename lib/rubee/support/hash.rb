@@ -38,6 +38,8 @@ module Rubee
         private
 
         def wrap(value)
+          return value if value.frozen?
+
           value.is_a?(::Hash) ? value.extend(Rubee::Support::Hash::InstanceMethods) : value
         end
 

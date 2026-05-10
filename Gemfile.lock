@@ -29,7 +29,7 @@ GEM
       prism (>= 1.3.0)
       rdoc (>= 4.0.0)
       reline (>= 0.4.2)
-    json (2.19.4)
+    json (2.19.5)
     jwt (3.1.2)
       base64
     language_server-protocol (3.17.0.5)
@@ -82,7 +82,7 @@ GEM
       tsort
     redis (5.4.1)
       redis-client (>= 0.22.0)
-    redis-client (0.28.0)
+    redis-client (0.29.0)
       connection_pool
     regexp_parser (2.12.0)
     reline (0.6.3)
@@ -112,16 +112,16 @@ GEM
       simplecov_json_formatter (~> 0.1)
     simplecov-html (0.13.2)
     simplecov_json_formatter (0.1.4)
-    sqlite3 (2.9.3-aarch64-linux-gnu)
-    sqlite3 (2.9.3-aarch64-linux-musl)
-    sqlite3 (2.9.3-arm-linux-gnu)
-    sqlite3 (2.9.3-arm-linux-musl)
-    sqlite3 (2.9.3-arm64-darwin)
-    sqlite3 (2.9.3-x86-linux-gnu)
-    sqlite3 (2.9.3-x86-linux-musl)
-    sqlite3 (2.9.3-x86_64-darwin)
-    sqlite3 (2.9.3-x86_64-linux-gnu)
-    sqlite3 (2.9.3-x86_64-linux-musl)
+    sqlite3 (2.9.4-aarch64-linux-gnu)
+    sqlite3 (2.9.4-aarch64-linux-musl)
+    sqlite3 (2.9.4-arm-linux-gnu)
+    sqlite3 (2.9.4-arm-linux-musl)
+    sqlite3 (2.9.4-arm64-darwin)
+    sqlite3 (2.9.4-x86-linux-gnu)
+    sqlite3 (2.9.4-x86-linux-musl)
+    sqlite3 (2.9.4-x86_64-darwin)
+    sqlite3 (2.9.4-x86_64-linux-gnu)
+    sqlite3 (2.9.4-x86_64-linux-musl)
     stringio (3.2.0)
     tsort (0.2.0)
     unicode-display_width (3.2.0)
@@ -189,7 +189,7 @@ CHECKSUMS
   fileutils (1.8.0) sha256=8c6b1df54e2540bdb2f39258f08af78853aa70bad52b4d394bbc6424593c6e02
   io-console (0.8.2) sha256=d6e3ae7a7cc7574f4b8893b4fca2162e57a825b223a177b7afa236c5ef9814cc
   irb (1.18.0) sha256=de9454a0703a54704b9811a5ef31a60c86949fbf4013fcf244fabc7c775248e3
-  json (2.19.4) sha256=670a7d333fb3b18ca5b29cb255eb7bef099e40d88c02c80bd42a3f30fe5239ac
+  json (2.19.5) sha256=218a18553e4801d579ca7e0f5bc72bafd776d7397238a1fb4e74db5b0a812c59
   jwt (3.1.2) sha256=af6991f19a6bb4060d618d9add7a66f0eeb005ac0bc017cd01f63b42e122d535
   language_server-protocol (3.17.0.5) sha256=fd1e39a51a28bf3eec959379985a72e296e9f9acfce46f6a79d31ca8760803cc
   lint_roller (1.1.0) sha256=2c0c845b632a7d172cb849cc90c1bce937a28c5c8ccccb50dfd46a485003cc87
@@ -218,7 +218,7 @@ CHECKSUMS
   rb-inotify (0.11.1) sha256=a0a700441239b0ff18eb65e3866236cd78613d6b9f78fea1f9ac47a85e47be6e
   rdoc (7.2.0) sha256=8650f76cd4009c3b54955eb5d7e3a075c60a57276766ebf36f9085e8c9f23192
   redis (5.4.1) sha256=b5e675b57ad22b15c9bcc765d5ac26f60b675408af916d31527af9bd5a81faae
-  redis-client (0.28.0) sha256=888892f9cd8787a41c0ece00bdf5f556dfff7770326ce40bb2bc11f1bfec824b
+  redis-client (0.29.0) sha256=0c65bf1f8f6dca22063ddb085c0bb2054feef6f03a84869f4161b18a9a15bea3
   regexp_parser (2.12.0) sha256=35a916a1d63190ab5c9009457136ae5f3c0c7512d60291d0d1378ba18ce08ebb
   reline (0.6.3) sha256=1198b04973565b36ec0f11542ab3f5cfeeec34823f4e54cebde90968092b1835
   rerun (0.14.0) sha256=996a5af2b2b34dcb30146c6c728addab9113e07c119003370daa9bf27feb88fd
@@ -229,16 +229,16 @@ CHECKSUMS
   simplecov (0.22.0) sha256=fe2622c7834ff23b98066bb0a854284b2729a569ac659f82621fc22ef36213a5
   simplecov-html (0.13.2) sha256=bd0b8e54e7c2d7685927e8d6286466359b6f16b18cb0df47b508e8d73c777246
   simplecov_json_formatter (0.1.4) sha256=529418fbe8de1713ac2b2d612aa3daa56d316975d307244399fa4838c601b428
-  sqlite3 (2.9.3-aarch64-linux-gnu) sha256=ca6dd1cf6c037ccc8d3e5837190cc61ef15466092014951235641b5c4c8ab4ee
-  sqlite3 (2.9.3-aarch64-linux-musl) sha256=ff017a36c463d02e9f0be7a6224521371128024e6a05ed16994afa5c037afbba
-  sqlite3 (2.9.3-arm-linux-gnu) sha256=fd8b74337a66bdaf746b97d65e6c9a2faff803c8f72d6b107fb880972815d072
-  sqlite3 (2.9.3-arm-linux-musl) sha256=792ae9a786bb37dbdc4c443c527bc91df423aac10e472f76d5cf5a9ac6d51980
-  sqlite3 (2.9.3-arm64-darwin) sha256=76b265d3d57362d3e38338f24f50a0c9cd47a4599c9cfbb578fac125d2299906
-  sqlite3 (2.9.3-x86-linux-gnu) sha256=ceb2417f01563a2800836fbbc6d59aa0ca591882c99f6c50fdc0c8090da7a03b
-  sqlite3 (2.9.3-x86-linux-musl) sha256=1688e37da36a4513a1a1d6e9abb643f68723599abbe564cb1a1bf496c9ae8dca
-  sqlite3 (2.9.3-x86_64-darwin) sha256=087e7cc4efc73d83e76354f028c4d1dc14552a05acc74f60e77a55f1bee6ef22
-  sqlite3 (2.9.3-x86_64-linux-gnu) sha256=85200a10c6cf5c60085fcca411a3168c5fba8fda3e2b1b0109ec277d7c226d46
-  sqlite3 (2.9.3-x86_64-linux-musl) sha256=b6d0437046d9180335dea1aa0592802e65c4f7b57409d63f14408211bf28536b
+  sqlite3 (2.9.4-aarch64-linux-gnu) sha256=ecabed721e6eaad54601d2685f09029d90025efc8d931040dc89cb3f8a2080ec
+  sqlite3 (2.9.4-aarch64-linux-musl) sha256=ffb4255947fb54c8c3eeca97460c9702b40de91ce390455ef7367ca6a3929a31
+  sqlite3 (2.9.4-arm-linux-gnu) sha256=9ee2008b9fbec984c3c165b0d7eedd2bd2a415100b761bfa3a4c6fbec9208bf6
+  sqlite3 (2.9.4-arm-linux-musl) sha256=8dc1fe4da6977992cd62decf4a93ccf6cc2e124a5e6a340160d52092f70e837a
+  sqlite3 (2.9.4-arm64-darwin) sha256=1d5aad413a815d236e96d43f05a1acc600b6cd086800770342a3f9c2877499ff
+  sqlite3 (2.9.4-x86-linux-gnu) sha256=5cab40ea734796802853501bd23b6162eec391dc37f3bf04bc2ffbda9c8bf93d
+  sqlite3 (2.9.4-x86-linux-musl) sha256=936e2d4a428887fac15f55e26a18671fbb4e522bffaa43969fadf7b40ab25214
+  sqlite3 (2.9.4-x86_64-darwin) sha256=f280c476e360b73e86165a5e59b72801385b4a6c3a47f8af5ecefb9d90bec17f
+  sqlite3 (2.9.4-x86_64-linux-gnu) sha256=537a3eda71b1df1336d0055cbebe55a7317c34870c192c7b6b9d8d0be6871847
+  sqlite3 (2.9.4-x86_64-linux-musl) sha256=3fc5e865b4be9a85d998203ef8d0c0fdcb92f20acf34a254346ff8a19088efec
   stringio (3.2.0) sha256=c37cb2e58b4ffbd33fe5cd948c05934af997b36e0b6ca6fdf43afa234cf222e1
   tsort (0.2.0) sha256=9650a793f6859a43b6641671278f79cfead60ac714148aabe4e3f0060480089f
   unicode-display_width (3.2.0) sha256=0cdd96b5681a5949cdbc2c55e7b420facae74c4aaf9a9815eee1087cb1853c42
