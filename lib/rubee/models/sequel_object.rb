@@ -54,7 +54,7 @@ module Rubee
 
     def update(args = {})
       assign_attributes(args)
-      args.merge!(updated:)
+      args = args.merge(updated:)
       found_hash = self.class.dataset.where(id:)
       return self.class.find(id) if Rubee::DBTools.with_retry { found_hash&.update(**args) }
 
@@ -179,12 +179,12 @@ module Rubee
       end
 
       def dataset
-        @dataset = DB[pluralize_class_name.to_sym]
+        DB[pluralize_class_name.to_sym]
       rescue Exception => e
         reconnect!
-        @__reconnect_count ||= 0
-        @__reconnect_count += 1
-        if @__reconnect_count > 3
+        __reconnect_count ||= 0
+        __reconnect_count += 1
+        if __reconnect_count > 3
           raise e
         end
         sleep(0.1)
@@ -259,7 +259,7 @@ module Rubee
 
       def create(attrs)
         if dataset.columns.include?(:created) && dataset.columns.include?(:updated)
-          attrs.merge!(created: Time.now, updated: Time.now)
+          attrs = attrs.merge(created: Time.now, updated: Time.now)
         end
         instance = new(**attrs)
         Rubee::DBTools.with_retry { instance.save }
