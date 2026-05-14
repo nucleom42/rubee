@@ -179,7 +179,7 @@ module Rubee
       end
 
       def dataset
-        @dataset ||= DB[pluralize_class_name.to_sym]
+        @dataset = DB[pluralize_class_name.to_sym]
       rescue Exception => e
         reconnect!
         @__reconnect_count ||= 0
