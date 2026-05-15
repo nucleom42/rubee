@@ -174,17 +174,32 @@ module Rubee
         false
       end
 
+      def force_disconnect!
+        return unless db_set?
+
+        DB.disconnect
+        remove_const(:DB)
+      end
+
+      def force_reconnect!
+        force_disconnect!
+        const_set(:DB, Sequel.connect(Rubee::Configuration.get_database_url))
+      end
+
       def db_set?
         defined?(DB) && !DB.nil?
       end
 
       def dataset
-        DB[pluralize_class_name.to_sym]
+        @dataset ||= DB[pluralize_class_name.to_sym]
+        reconnect_count = 0
+
+        @dataset
       rescue Exception => e
         reconnect!
-        __reconnect_count ||= 0
-        __reconnect_count += 1
-        if __reconnect_count > 3
+        reconnect_count ||= 0
+        reconnect_count += 1
+        if reconnect_count > 3
           raise e
         end
         sleep(0.1)
