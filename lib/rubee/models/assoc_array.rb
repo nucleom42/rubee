@@ -50,9 +50,10 @@ module Rubee
       @__model.owns_many(*args, __query_dataset: @__query_dataset)
     end
 
-    def paginate(*args)
+    def paginate(*args, **kwargs)
       total_count = @__query_dataset.count
-      current_page, per_page = args
+      current_page = kwargs[:page] || args[0]
+      per_page     = kwargs[:per_page] || args[1]
       total_pages = per_page.to_i > 0 ? (total_count / per_page.to_f).ceil : 1
       current_page = current_page.to_i > 0 ? current_page.to_i : 1
       per_page = per_page.to_i > 0 ? per_page.to_i : 10
@@ -66,7 +67,7 @@ module Rubee
         next: current_page < total_pages ? current_page + 1 : nil,
       }
 
-      @__model.paginate(*args, __query_dataset: @__query_dataset, __pagination_meta:)
+      @__model.paginate(*args, **kwargs, __query_dataset: @__query_dataset, __pagination_meta:)
     end
 
     def pagination_meta

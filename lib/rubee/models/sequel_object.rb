@@ -264,14 +264,16 @@ module Rubee
         ::Rubee::AssocArray.new([], self, query_dataset.offset(*args))
       end
 
-      def paginate(page = 1, per_page = 10, options = {})
-        query_dataset = options[:__query_dataset] || dataset
+      def paginate(*args, **kwargs)
+        page = kwargs[:page] || args[0]
+        per_page = kwargs[:per_page] || args[1]
+        query_dataset = kwargs[:__query_dataset] || dataset
         page = page.to_i > 0 ? page.to_i : 1
         per_page = per_page.to_i > 0 ? per_page.to_i : 10
         offset = (page - 1) * per_page
 
         ::Rubee::AssocArray.new([], self, query_dataset.offset(offset).limit(per_page),
-                       pagination_meta: options[:__pagination_meta])
+                       pagination_meta: kwargs[:__pagination_meta])
       end
 
       def create(attrs)
