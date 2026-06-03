@@ -53,14 +53,17 @@ module Rubee
     def paginate(*args)
       total_count = @__query_dataset.count
       current_page, per_page = args
+      total_pages = per_page.to_i > 0 ? (total_count / per_page.to_f).ceil : 1
+      current_page = current_page.to_i > 0 ? current_page.to_i : 1
+      per_page = per_page.to_i > 0 ? per_page.to_i : 10
       __pagination_meta = {
         current_page:,
         per_page:,
         total_count:,
         first_page: current_page == 1,
-        last_page: current_page == (total_count / per_page.to_f).ceil,
+        last_page: current_page == total_pages,
         prev: current_page > 1 ? current_page - 1 : nil,
-        next: current_page < (total_count / per_page.to_f).ceil ? current_page + 1 : nil,
+        next: current_page < total_pages ? current_page + 1 : nil,
       }
 
       @__model.paginate(*args, __query_dataset: @__query_dataset, __pagination_meta:)

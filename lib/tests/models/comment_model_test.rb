@@ -116,6 +116,27 @@ describe 'Comment model' do
         )
         Comment.destroy_all
       end
+
+      describe 'when pass page number as zero' do
+        it 'returns target records' do
+          Comment.destroy_all cascade: true
+          10.times do |n|
+            Comment.new(text: "test_#{n}").save
+          end
+          comments = Comment.all.paginate(0, 5)
+          _(comments.count).must_equal(5)
+          _(comments.pagination_meta).must_equal(
+            current_page: 1,
+            per_page: 5,
+            total_count: 10,
+            first_page: true,
+            last_page: false,
+            prev: nil,
+            next: 2
+          )
+          Comment.destroy_all
+        end
+      end
     end
   end
 
