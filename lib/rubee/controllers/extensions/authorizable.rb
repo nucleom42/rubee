@@ -11,7 +11,7 @@ module Rubee
         user = authentificated_user(user_model: model)
         return false unless user
         return false unless model.const_get(:ROLES).keys.map(&:to_sym).include?(role.to_sym)
-        
+
         model.const_get(:ROLES).key(user.send(role_field)).to_sym == role.to_sym
       end
     end
