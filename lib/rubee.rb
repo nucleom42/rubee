@@ -66,7 +66,7 @@ module Rubee
     end
 
     def middlewares
-      Rubee::Configuration.middlewares
+      ([Rubee::CookieSamesiteMiddleware] + Rubee::Configuration.middlewares).uniq
     end
 
     private

@@ -38,7 +38,7 @@ module Rubee
         end
 
         def drop_tables(_argv)
-          out = Rubee::SequelObject::DB.tables.each { |table| Rubee::SequelObject::DB.drop_table(table, cascade: true) }
+          out = Rubee::SequelObject::DB.tables.each { |table| Rubee::SequelObject::DB.drop_table(table) }
           color_puts("These tables have been dropped for the #{ENV['RACK_ENV']} env:", color: :cyan)
           color_puts(out, color: :gray)
         end

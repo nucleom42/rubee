@@ -1,6 +1,8 @@
 module Rubee
   class BaseController
     include Hookable
+    include ::Rubee::AuthTokenable
+    include ::Rubee::Authorizable
     using ChargedString
 
     def initialize(request, route)

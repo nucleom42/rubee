@@ -12,6 +12,14 @@ module Rubee
       base.extend(ClassMethods)
 
       base.attach('Rubee::AuthTokenMiddleware')
+      base.extend(SubclassHook)
+    end
+
+    module SubclassHook
+      def inherited(subclass)
+        super
+        subclass.attach('Rubee::AuthTokenMiddleware')
+      end
     end
 
     module InstanceMethods

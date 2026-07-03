@@ -4,12 +4,15 @@ module Rubee
     class << self
       def call(black_list = [], **options)
         load_whitelisted(options[:white_list_dirs]) && return if options[:white_list_dirs]
-        # autoload all rbs
+        # Autoload all rbs
         root_directory = File.join(Rubee::ROOT_PATH, '/lib')
+
+        load_middlewares(root_directory, black_list)
+
         priority_order_require(root_directory, black_list)
 
         load_inits(root_directory, black_list)
-        # ensure sequel object is connected
+        # Ensure sequel object is connected
         Rubee::SequelObject.reconnect!
         Dir.glob(File.join(Rubee::APP_ROOT, '**', '*.rb')).sort.each do |file|
           base_name = File.basename(file)
@@ -17,6 +20,12 @@ module Rubee
           unless base_name.end_with?('_test.rb') || (black_list + BLACKLIST).include?(base_name)
             require_relative file
           end
+        end
+      end
+
+      def load_middlewares(root_directory, black_list)
+        Dir[File.join(root_directory, 'middlewares/**', '*.rb')].each do |file|
+          require_relative file unless black_list.include?("#{file}.rb")
         end
       end
 
@@ -45,6 +54,17 @@ module Rubee
         end
       end
 
+      def load_envs!(prefix = ENV['RACK_ENV'], root_directory)
+        env_file_name = "#{root_directory}/.#{prefix}.env"
+        File.foreach(env_file_name) do |line|
+          line = line.strip
+          next if line.empty? || line.start_with?('#')
+          key, value = line.split('=', 2)
+          ENV[key] = value
+        end
+      rescue => _
+      end
+
       def priority_order_require(root_directory, black_list)
         # rubee pub sub
         Dir[File.join(root_directory, 'rubee/pubsub/**', '*.rb')].each do |file|
@@ -59,10 +79,11 @@ module Rubee
           require_relative file unless black_list.include?("#{file}.rb")
         end
         load_support(root_directory, black_list)
+
+        load_envs!(ENV['RACK_ENV'], root_directory)
         # app config and routes
         unless black_list.include?('base_configuration.rb')
-          require_relative File.join(Rubee::APP_ROOT, Rubee::LIB,
-                                     'config/base_configuration')
+          require_relative File.join(Rubee::APP_ROOT, Rubee::LIB, 'config/base_configuration')
         end
         require_relative File.join(Rubee::APP_ROOT, Rubee::LIB, 'config/routes') unless black_list.include?('routes.rb')
         # rubee extensions

@@ -9,6 +9,7 @@ class CreateUsers
       String(:email)
       String(:password)
       index(:email)
+      Integer(:role) 
       # timestamps
       datetime(:created)
       datetime(:updated)
