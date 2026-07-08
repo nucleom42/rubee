@@ -11,6 +11,9 @@ Gem::Specification.new do |spec|
   # Define the Ruby version requirement
   spec.required_ruby_version = '>= 3.4.1'
 
+  # irb is no longer default in Ruby 4+
+  spec.add_dependency 'irb'
+
   # Specify which files to include
   spec.files         = Dir['lib/**/*', 'README.md', 'LICENSE', 'bin/*']
   spec.bindir        = 'bin'

@@ -107,6 +107,7 @@ module Rubee
             gem 'puma'
             gem 'json'
             gem 'jwt'
+            gem 'irb'
 
             # Websocket is required to use integrated websocket feature
             gem 'websocket'
