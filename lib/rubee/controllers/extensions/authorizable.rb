@@ -19,15 +19,16 @@ module Rubee
     module ClassMethods
       def authorize(model: nil, response_hash: nil, role_field: :role, **roles)
         @__authorizations ||= {}
-        symbolyzed_model_name = model.to_s
-        @__authorizations[symbolyzed_model_name] ||= {}
-        @__authorizations[symbolyzed_model_name].merge! roles
+        stringified_model_name = model.to_s
+        @__authorizations[stringified_model_name] ||= {}
+        @__authorizations[stringified_model_name].merge! roles
+        model_klass = Object.const_get stringified_model_name.capitalize
 
-        @__authorizations[symbolyzed_model_name].each do |role, methods|
+        @__authorizations[stringified_model_name].each do |role, methods|
           methods = methods.is_a?(Array) ? methods : [methods]
           methods.each do |method|
             around method, ->(controller, &original_action) do
-              if controller.send(:authorized?, role, model: model, role_field:)
+              if controller.send(:authorized?, role, model: model_klass, role_field:)
                 original_action.call
               else
                 response_object_hash = response_hash || { object: { error: 'Unauthorized' }, type: :json, status: 403 }

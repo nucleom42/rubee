@@ -42,7 +42,7 @@ end
 
 group :development do
   # code reloading
-  gem "rerun"
+  gem 'rerun'
   # linting
   gem 'rubocop', require: false
 end

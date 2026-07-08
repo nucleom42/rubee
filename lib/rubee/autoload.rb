@@ -14,16 +14,22 @@ module Rubee
         load_inits(root_directory, black_list)
         # Ensure sequel object is connected
         Rubee::SequelObject.reconnect!
-        Dir.glob(File.join(Rubee::APP_ROOT, '**', '*.rb')).sort.each do |file|
-          base_name = File.basename(file)
-
-          unless base_name.end_with?('_test.rb') || (black_list + BLACKLIST).include?(base_name)
-            require_relative file
+        Dir.glob(File.join(Rubee::APP_ROOT, '**', '*.rb'))
+          .sort_by { |file| file.include?('/models/') ? 0 : 1 }
+          .each do |file|
+            base_name = File.basename(file)
+            unless base_name.end_with?('_test.rb') || (black_list + BLACKLIST).include?(base_name)
+              require_relative file
+            end
           end
-        end
       end
 
       def load_middlewares(root_directory, black_list)
+        # rubee middlewares
+        Dir[File.join(Rubee::ROOT_PATH, '/lib', '/rubee/internal_middlewares/**', '*.rb')].each do |file|
+          require_relative file unless black_list.include?("#{file}.rb")
+        end
+        # project middlewares
         Dir[File.join(root_directory, 'middlewares/**', '*.rb')].each do |file|
           require_relative file unless black_list.include?("#{file}.rb")
         end

@@ -2,7 +2,7 @@ require_relative '../test_helper'
 
 class AuthzController < Rubee::BaseController
   auth_methods(:admin_only, :user_only)
-  authorize(admin: [:admin_only], model: User, role_field: :role)
+  authorize(admin: [:admin_only], model: :user, role_field: :role)
 
   # POST /authz/login
   def login

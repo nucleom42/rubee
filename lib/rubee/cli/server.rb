@@ -46,8 +46,8 @@ LOGO
 
           print_logo
           color_puts("Starting takeoff of ruBee server on port #{port} in dev mode...", color: :yellow)
-
-          command = "rerun -- #{jit_prefix(jit)}rackup --port #{port} #{rackup_file}"
+          patch_path = File.join(__dir__, '../patches/io_ready.rb')
+          command = "ruby -r '#{patch_path}' #{`which rerun`.strip} -- #{jit_prefix(jit)}rackup --port #{port} #{rackup_file}"
           color_puts(command, color: :gray)
           exec(command)
         end

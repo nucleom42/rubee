@@ -7,7 +7,7 @@ module Rubee
         end
 
         def version(_argv)
-          color_puts("ruBee v#{Rubee::VERSION}", color: :yellow)
+          color_puts("ru.Bee #{Rubee::VERSION}", color: :yellow)
         end
       end
     end
