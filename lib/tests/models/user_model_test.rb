@@ -284,15 +284,13 @@ describe 'User model' do
   end
 
   describe '.order' do
-    before do
-      User.destroy_all(cascade: true)
-    end
     after do
       User.destroy_all(cascade: true)
     end
 
     describe 'when there are records' do
       it 'returns ordered records' do
+        User.destroy_all(cascade: true)
         user = User.new(email: 'abc@test.com', password: '123')
         user2 = User.new(email: 'defg@test.com', password: '123')
         user.save
