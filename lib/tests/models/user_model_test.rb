@@ -284,6 +284,9 @@ describe 'User model' do
   end
 
   describe '.order' do
+    before do
+      User.destroy_all(cascade: true)
+    end
     after do
       User.destroy_all(cascade: true)
     end
