@@ -27,6 +27,7 @@ jobs:
           --health-retries 5
     env:
       REDIS_URL: redis://localhost:6379
+      DATABASE_URL: sqlite3://db/test.db
 
     steps:
       - name: Checkout code
