@@ -65,8 +65,8 @@ jobs:
 
       - name: Run all migrations for the dummy project
         working-directory: my_project
-        run: RACK_ENV=test bin/rubee db run:all
+        run: RACK_ENV=test rubee db run:all
 
       - name: Run Minitests for the dummy project
         working-directory: my_project
-        run: RACK_ENV=test bin/rubee test
+        run: RACK_ENV=test rubee test
