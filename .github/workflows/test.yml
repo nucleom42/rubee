@@ -50,7 +50,7 @@ jobs:
       - name: Build and install gem for dummy project
         run: |
           gem build rubee.gemspec
-          gem install ru.Bee-*.gem
+          gem install ru.Bee-*.gem --force
 
       - name: Create dummy project
         run: rm -rf my_project && RACK_ENV=test rubee project my_project
