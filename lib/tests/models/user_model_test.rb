@@ -209,6 +209,8 @@ describe 'User model' do
 
     describe 'when there is no record' do
       it 'returns nil' do
+        User.destroy_all
+          
         assert_nil User.find(1)
       end
     end
