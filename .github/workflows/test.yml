@@ -65,11 +65,11 @@ jobs:
 
       - name: Run db init for the dummy project
         working-directory: my_project
-        run: RACK_ENV=test rubee db run:create_users && RACK_ENV=test rubee db run:all
+        run: RACK_ENV=test rubee db init
 
       - name: Run all migrations for the dummy project
         working-directory: my_project
-        run: RACK_ENV=test rubee db run:all
+        run: RACK_ENV=test rubee db run:create_users && RACK_ENV=test rubee db run:all
 
       - name: Run Minitests for the dummy project
         working-directory: my_project
