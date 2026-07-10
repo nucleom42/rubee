@@ -38,9 +38,39 @@ module Rubee
         end
 
         def drop_tables(_argv)
-          out = Rubee::SequelObject::DB.tables.each { |table| Rubee::SequelObject::DB.drop_table(table, cascade: true) }
+          adapter = Rubee::SequelObject::DB.adapter_scheme.to_s
+          tables = Rubee::SequelObject::DB.tables
+
+          case adapter
+          when /postgres/
+            tables.each { |table| Rubee::SequelObject::DB.drop_table(table, cascade: true) }
+          when /mysql/
+            Rubee::SequelObject::DB.run("SET FOREIGN_KEY_CHECKS = 0")
+            tables.each { |table| Rubee::SequelObject::DB.drop_table(table) }
+            Rubee::SequelObject::DB.run("SET FOREIGN_KEY_CHECKS = 1")
+          when /sqlite/
+            Rubee::SequelObject::DB.run("PRAGMA foreign_keys = OFF")
+            tables.each { |table| Rubee::SequelObject::DB.drop_table(table) }
+            Rubee::SequelObject::DB.run("PRAGMA foreign_keys = ON")
+          else
+            # Fallback — try topological drop order by retrying failures
+            remaining = tables.dup
+            max_attempts = tables.size
+            attempts = 0
+            while remaining.any? && attempts < max_attempts
+              failed = []
+              remaining.each do |table|
+                Rubee::SequelObject::DB.drop_table(table)
+              rescue StandardError
+                failed << table
+              end
+              remaining = failed
+              attempts += 1
+            end
+          end
+
           color_puts("These tables have been dropped for the #{ENV['RACK_ENV']} env:", color: :cyan)
-          color_puts(out, color: :gray)
+          color_puts(tables, color: :gray)
         end
 
         def truncate_tables(_argv)

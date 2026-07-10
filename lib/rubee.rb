@@ -20,7 +20,7 @@ module Rubee
     RUBEE_SUPPORT = { "Rubee::Support::Hash" => Hash, "Rubee::Support::String" => String }
   end
 
-  VERSION = '2.7.19'
+  VERSION = '3.0.0'
 
   require_relative 'rubee/router'
   require_relative 'rubee/logger'
@@ -66,7 +66,7 @@ module Rubee
     end
 
     def middlewares
-      Rubee::Configuration.middlewares
+      ([Rubee::CookieSamesiteMiddleware] + Rubee::Configuration.middlewares).uniq
     end
 
     private

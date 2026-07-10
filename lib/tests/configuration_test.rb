@@ -20,4 +20,11 @@ describe 'Configuration' do
       _("apples".plural?).must_equal(true)
     end
   end
+
+  describe 'when ENV["RACK_ENV"] eq test' do
+    it 'laods env var to ENV' do
+      _(ENV['RACK_ENV']).must_equal('test')
+      _(ENV['SUPER_PASSWORD']).must_equal('test_password')
+    end
+  end
 end

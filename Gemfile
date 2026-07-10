@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
-
-ruby '3.4.1'
+# ruby
+ruby '4.0.5'
 
 # web server
 gem 'puma'
@@ -42,7 +42,7 @@ end
 
 group :development do
   # code reloading
-  gem "rerun"
+  gem 'rerun'
   # linting
   gem 'rubocop', require: false
 end

@@ -1,6 +1,6 @@
 Gem::Specification.new do |spec|
   spec.name          = 'ru.Bee'
-  spec.version       = '2.7.19'
+  spec.version       = '3.0.0'
   spec.authors       = ['Oleg Saltykov']
   spec.email         = ['oleg.saltykov@gmail.com']
   spec.summary       = 'Fast and lightweight Ruby application server designed for minimalism and flexibility'
@@ -10,6 +10,9 @@ Gem::Specification.new do |spec|
 
   # Define the Ruby version requirement
   spec.required_ruby_version = '>= 3.4.1'
+
+  # irb is no longer default in Ruby 4+
+  spec.add_dependency 'irb'
 
   # Specify which files to include
   spec.files         = Dir['lib/**/*', 'README.md', 'LICENSE', 'bin/*']

@@ -11,5 +11,5 @@ lib/js/app.js.map
 coverage/
 
 # db files
-lib/db/test.db
+# lib/db/test.db
 lib/db/development.db

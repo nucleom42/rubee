@@ -1,7 +1,6 @@
 require_relative '../test_helper'
 
 class TestController < Rubee::BaseController
-  include(Rubee::AuthTokenable)
   auth_methods(:show)
   def show
     response_with(type: :json, object: { ok: :ok })
@@ -27,7 +26,6 @@ class TestController < Rubee::BaseController
 end
 
 class TesttwoController < Rubee::BaseController
-  include(Rubee::AuthTokenable)
   auth_methods(:show)
   def show
     response_with(type: :json, object: { ok: :ok })
@@ -71,13 +69,13 @@ class AuthTokenableTest < Minitest::Test
     Client.create(name: '9o@example.com', digest_password: '123456')
   end
 
-  def test_test_controller_included_auth_tokenable
+  def test_test_controller_auth_tokenable
     get('/test/show')
 
     assert_equal(last_response.status, 401)
   end
 
-  def test_test_controller_included_auth_tokenable_authenticated
+  def test_test_controller_tokenable_authenticated
     post('/test/login', { email: '9oU8S@example.com', password: '123456' })
     rack_mock_session.cookie_jar["jwt"] = last_response.cookies["jwt"].value.last
     get('/test/show')
@@ -91,7 +89,7 @@ class AuthTokenableTest < Minitest::Test
     assert_equal(last_response.status, 401)
   end
 
-  def test_test_controller_included_auth_tokenable_authenticated_custom_model
+  def test_test_controller_authenticated_custom_model
     post('/testtwo/login', { name: '9o@example.com', digest_password: '123456' })
     rack_mock_session.cookie_jar["jwt"] = last_response.cookies["jwt"].value.last
     get('/testtwo/show')
