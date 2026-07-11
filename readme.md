@@ -25,7 +25,7 @@ Starting from ru.Bee 2.0.0, ru.Bee supports WebSocket, which allows you to build
 
 ## Production ready
 
-Take a look at the ru.Bee demo site with full documentation: https://rubee.dedyn.io/
+Take a look at the ru.Bee demo site with full documentation: https://rubee.dedyn.io/ (site is currently under maintenance)
 Want to explore how it was built? https://github.com/nucleom42/rubee-site
 
 ## Stress tested
@@ -83,12 +83,15 @@ The comparison is based on generic and subjective information available on the i
 - [Object hooks](#object-hooks)
 - [Validations](#validations)
 - [JWT based authentication](#jwt-based-authentication)
+- [Authorizable](#authorizable)
 - [OAuth authentication](#oauth-authentication)
 - [ru.Bee commands](#rubee-commands)
 - [Generate commands](#generate-commands)
 - [Migration commands](#migration-commands)
 - [ru.Bee console](#rubee-console)
 - [Rubee::Support](#rubee-support)
+- [Time Extensions](#time-extensions)
+- [Environment Configuration](#environment-configuration)
 - [Testing](#testing)
 - [Background jobs](#background-jobs)
 - [Sidekiq engine](#sidekiq-engine)
@@ -97,7 +100,7 @@ The comparison is based on generic and subjective information available on the i
 - [Logger](#logger)
 - [WebSocket](#websocket)
 - [Bee assistant](#bee-assistant)
-- [Middleware integration](#middleware-integration)
+- [Middleware integration](#middleware-integration))
 
 
 You can read the full docs on the demo site: [rubee.dedyn.io](https://rubee.dedyn.io/)
@@ -125,6 +128,12 @@ Bundlable – Charge your ru.Bee app with any gem you need. Update effortlessly 
 ORM-agnostic – Models are native ORM objects, but you can use them as blueprints for any data source.
 <br>
 Authenticatable – Easily add JWT authentication to any controller action.
+<br>
+Authorizable – Declarative role-based authorization for controller actions. (New in 3.0.0)
+<br>
+Time Extensions – Comprehensive helper methods for date and time manipulation. (New in 3.0.0)
+<br>
+Environment Configuration – Load environment variables from .env files per environment. (New in 3.0.0)
 <br>
 Hooks – Add logic before, after, or around any controller action.
 <br>
@@ -1088,6 +1097,58 @@ Rubee::Configuration.development?
 
 [Back to content](#content)
 
+## Time Extensions
+
+The Time class includes a comprehensive set of helper methods for common date and time manipulations. (New in 3.0.0)
+
+### Instance Methods
+
+| Method | Description | Example |
+| :--- | :--- | :--- |
+| `days_seconds` | Returns the total number of seconds elapsed since midnight. | `Time.now.days_seconds` |
+| `beginning_of_day` | Returns a new `Time` object set to the start of the day (00:00:00). | `Time.now.beginning_of_day` |
+| `end_of_day` | Returns a new `Time` object set to the end of the day (23:59:59). | `Time.now.end_of_day` |
+| `at(hour, min, sec)` | Returns a new `Time` object for the same date but with the specified time. | `Time.now.at(10, 30, 0)` |
+| `all_day` | Returns a `Range` from the beginning to the end of the day. | `Time.now.all_day` |
+| `add_days(n)` | Returns a new `Time` object `n` days in the future. | `Time.now.add_days(5)` |
+| `subtract_days(n)` | Returns a new `Time` object `n` days in the past. | `Time.now.subtract_days(5)` |
+| `closest_future_working_day` | Returns the next working day (Monday–Friday). | `Time.now.closest_future_working_day` |
+| `with_current_time` | Returns a new `Time` object with the same date but the current time of day. | `Time.now.with_current_time` |
+
+### Class Methods
+
+| Method | Description |
+| :--- | :--- |
+| `Time.today` | Returns the current `Time` object for today. |
+| `Time.tomorrow` | Returns a `Time` object for tomorrow. |
+| `Time.yesterday` | Returns a `Time` object for yesterday. |
+| `Time.beginning_of_today` | Returns a `Time` object for the start of today (00:00:00). |
+| `Time.end_of_today` | Returns a `Time` object for the end of today (23:59:59). |
+| `Time.start_of_today` | Alias for `Time.beginning_of_today`. |
+
+[Back to content](#content)
+
+## Environment Configuration
+
+Starting from version 3.0.0, ru.Bee supports loading environment-specific variables from `.env` files, providing a more secure and organized way to manage configuration.
+
+The system automatically loads files based on the `RACK_ENV` environment variable:
+- `.development.env` - loaded when `RACK_ENV=development`
+- `.test.env` - loaded when `RACK_ENV=test`
+- `.production.env` - loaded when `RACK_ENV=production`
+
+### Example `.env` file
+
+```bash
+# .development.env
+DATABASE_URL=postgres://localhost:5432/myapp_development
+SECRET_KEY_BASE=your_secret_key_here
+API_KEY=abc123
+```
+Place your .env files in the root of your project. The variables will be automatically loaded when the application starts and will be available via ENV
+
+[Back to content](#content)
+
 ## JWT based authentication
 
 Include the `AuthTokenable` module in your controller and authenticate any action you need.
@@ -1142,6 +1203,41 @@ To use a custom model instead of the default `User`, pass arguments to `authenti
 if authenticate! user_model: Client, login: :name, password: :digest_password
   response_with type: :redirect, to: "/clients", headers: @token_header
 end
+```
+
+[Back to content](#content)
+
+## Authorizable
+
+Starting from version 3.0.0, ru.Bee includes a declarative authorization system for controller actions. The `Authorizable` module is now part of `Rubee::BaseController` and allows you to restrict access based on user roles.
+
+### Basic Usage
+
+```ruby
+class AdminController < Rubee::BaseController
+  authorize(admin: [:dashboard, :manage_users], model: :user, role_field: :role)
+
+  def dashboard
+    response_with object: { message: "Admin dashboard" }, type: :json
+  end
+
+  def manage_users
+    response_with object: User.all, type: :json
+  end
+end
+```
+Parameters
+
+role - The role required to access the actions (e.g., :admin, :user)
+model - The model class to check roles against (default: :user)
+role_field - The field in the model that stores the role (default: :role)
+response_hash - Custom response hash for unauthorized access (optional)
+
+```ruby
+class AdminController < Rubee::BaseController
+  authorize(admin: [:dashboard], 
+          model: :user, 
+          response_hash: { object: { error: "Access denied" }, status: 403 })
 ```
 
 [Back to content](#content)
