@@ -20,7 +20,7 @@ module Rubee
     RUBEE_SUPPORT = { "Rubee::Support::Hash" => Hash, "Rubee::Support::String" => String }
   end
 
-  VERSION = '3.0.0'
+  VERSION = '3.0.1'
 
   require_relative 'rubee/router'
   require_relative 'rubee/logger'

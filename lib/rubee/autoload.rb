@@ -3,6 +3,8 @@ module Rubee
     BLACKLIST = ['rubee.rb', 'test_helper.rb', 'puma.rb']
     class << self
       def call(black_list = [], **options)
+        load_envs!
+
         load_whitelisted(options[:white_list_dirs]) && return if options[:white_list_dirs]
         # Autoload all rbs
         root_directory = File.join(Rubee::ROOT_PATH, '/lib')
@@ -60,7 +62,7 @@ module Rubee
         end
       end
 
-      def load_envs!(prefix = ENV['RACK_ENV'], root_directory)
+      def load_envs!(prefix = ENV['RACK_ENV'], root_directory = File.join(Rubee::APP_ROOT, Rubee::LIB))
         env_file_name = "#{root_directory}/.#{prefix}.env"
         File.foreach(env_file_name) do |line|
           line = line.strip
@@ -86,7 +88,6 @@ module Rubee
         end
         load_support(root_directory, black_list)
 
-        load_envs!(ENV['RACK_ENV'], root_directory)
         # app config and routes
         unless black_list.include?('base_configuration.rb')
           require_relative File.join(Rubee::APP_ROOT, Rubee::LIB, 'config/base_configuration')
