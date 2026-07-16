@@ -49,11 +49,14 @@ jobs:
 
       - name: Build and install gem for dummy project
         run: |
-          rm ru.Bee*
-          bundle install --redownload
+          gem build rubee.gemspec
+          gem install ru.Bee-*.gem --force
 
       - name: Create dummy project
-        run: rm -rf my_project && RACK_ENV=test rubee project my_project && cd my_project
+        run: |
+          export PATH="$(gem env home)/../../bin:$PATH"
+          rm -rf my_project
+          RACK_ENV=test rubee project my_project
 
       - name: Run bundle for the dummy project
         working-directory: my_project
