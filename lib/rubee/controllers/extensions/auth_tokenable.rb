@@ -1,8 +1,4 @@
 require_relative File.join(__dir__, 'middlewarable')
-require 'date'
-require 'time'
-require 'securerandom'
-require 'digest'
 
 module Rubee
   module AuthTokenable
@@ -19,22 +15,7 @@ module Rubee
     end
 
     def self.ensure_refresh_tokens_table!
-      db = Rubee::SequelObject::DB
-      return if db.tables.include?(:refresh_tokens)
-
-      db.create_table(:refresh_tokens) do
-        primary_key(:id)
-        String(:token_hash, null: false, unique: true)
-        String(:user_class, null: false)
-        String(:login_field, null: false)
-        String(:login_value, null: false)
-        DateTime(:expires_at, null: false)
-        DateTime(:revoked_at)
-        DateTime(:created)
-        DateTime(:updated)
-        index(:token_hash)
-        index(:user_class)
-      end
+      CreateRefreshTokens.new.call
     end
 
     def self.included(base)
@@ -76,7 +57,7 @@ module Rubee
 
         if params[login] && params[password]
           query_params = { login => params[login], password => params[password] }
-          @authentificated_user = user_model.where(query_params).first
+          @authentificated_user = user_model.find_first(query_params)
           return @authentificated_user
         end
 
@@ -87,7 +68,7 @@ module Rubee
             token = @request.cookies['jwt']
             hash = ::JWT.decode(token, Rubee::AuthTokenable::KEY, true, { algorithm: 'HS256' })
             login_value = hash[0]["login"][login.to_s]
-            @authentificated_user = user_model.where(login => login_value).first if login_value
+            @authentificated_user = user_model.find_first(login => login_value).first if login_value
             return @authentificated_user if @authentificated_user
           rescue StandardError
             nil
@@ -97,13 +78,14 @@ module Rubee
         # Fallback: resolve from valid refresh token (e.g. after seamless refresh)
         begin
           ensure_refresh_tokens_table!
-          raw = @request.cookies[REFRESH_COOKIE]
-          if raw
-            row = Rubee::SequelObject::DB[:refresh_tokens].where(token_hash: refresh_token_hash(raw)).first
-            if row && row[:revoked_at].nil? && (row[:expires_at].nil? || Time.parse(row[:expires_at].to_s) >= Time.now)
-              klass = row[:user_class].to_s.split('::').inject(Object) { |o, c| o.const_get(c) }
-              field = (row[:login_field] || login).to_sym
-              @authentificated_user = klass.where(field => row[:login_value]).first
+          if (refresh_token_string = @request.cookies[REFRESH_COOKIE])
+            refresh_token_record = Rubee::SequelObject::DB[:refresh_tokens]
+              .where(token_hash: refresh_token_hash(refresh_token_string)).first || {}
+            if refresh_token_record[:revoked_at].nil? &&
+                (refresh_token_record[:expires_at].nil? || Time.parse(refresh_token_record[:expires_at].to_s) >= Time.now)
+              klass = refresh_token_record[:user_class].to_s.split('::').inject(Object) { |o, c| o.const_get(c) }
+              field = (refresh_token_record[:login_field] || login).to_sym
+              @authentificated_user = klass.where(field => refresh_token_record[:login_value]).first
             end
           end
         rescue StandardError
@@ -243,7 +225,7 @@ module Rubee
         expired = 'thu, 01 jan 1970 00:00:00 gmt'
         cookies = [
           "jwt=; path=/; httponly; secure; expires=#{expired}",
-          "#{REFRESH_COOKIE}=; path=/; httponly; secure; expires=#{expired}"
+          "#{REFRESH_COOKIE}=; path=/; httponly; secure; expires=#{expired}",
         ]
         @zeroed_token_header = {
           'Set-Cookie' => cookies,
