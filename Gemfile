@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 # ruby
-ruby '4.0.5'
+ruby '4.0.10'
 
 # web server
 gem 'puma'
