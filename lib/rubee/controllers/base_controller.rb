@@ -43,6 +43,8 @@ module Rubee
 
     def response_with type: nil, object: nil, status: 200, mime_type: nil, render_view: nil, headers: {}, to: nil,
       file: nil, filename: nil, **options
+      headers = merge_refreshed_auth_cookies(headers)
+
       case type&.to_sym
       in :json
         rendered_json = object.is_a?(Array) ? object&.map(&:to_h).to_json : object.to_json
@@ -147,6 +149,30 @@ module Rubee
 
     def websocket_connections
       Rubee::WebSocketConnections.instance
+    end
+
+    def merge_refreshed_auth_cookies(headers)
+      refreshed = @request&.env&.[]('rubee.auth_refreshed_set_cookie')
+      return headers unless refreshed
+
+      existing = headers['Set-Cookie'] || headers['set-cookie']
+      merged = []
+      [existing, refreshed].each do |value|
+        case value
+        when Array
+          merged.concat(value.compact)
+        when String
+          merged.concat(value.split("\n").compact)
+        when nil
+        else
+          merged << value.to_s
+        end
+      end
+      merged.reject! { |v| v.nil? || v == '' }
+      headers = headers.dup
+      headers.delete('set-cookie')
+      headers['Set-Cookie'] = merged.length <= 1 ? merged.first : merged
+      headers
     end
 
     def extract_params(path, pattern)
