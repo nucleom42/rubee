@@ -1,5 +1,3 @@
-# Refresh token storage for Rubee::AuthTokenable
-# Required for default DB-backed refresh token flow (enabled by default).
 class CreateRefreshTokens
   def call
     return if Rubee::SequelObject::DB.tables.include?(:refresh_tokens)

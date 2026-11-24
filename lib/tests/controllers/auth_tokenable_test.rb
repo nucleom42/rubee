@@ -206,13 +206,13 @@ class AuthTokenableTest < Minitest::Test
     refute_nil(refresh_cookie)
 
     # Access token is short-lived (original token lifetime), refresh token lasts much longer.
-    access_payload = JWT.decode(original_access, Rubee::AuthTokenable::KEY, true, { algorithm: 'HS256' }).first
+    access_payload = JWT.decode(original_access, Rubee::AuthTokenable.key, true, { algorithm: 'HS256' }).first
     access_ttl = access_payload['exp'].to_i - Time.now.to_i
     refresh_row = Rubee::SequelObject::DB[:refresh_tokens].order(:id).last
     refresh_ttl = Time.parse(refresh_row[:expires_at].to_s).to_i - Time.now.to_i
 
-    assert_operator(access_ttl, :<=, Rubee::AuthTokenable::EXPIRE)
-    assert_operator(refresh_ttl, :>, Rubee::AuthTokenable::EXPIRE)
+    assert_operator(access_ttl, :<=, Rubee::AuthTokenable.expire)
+    assert_operator(refresh_ttl, :>, Rubee::AuthTokenable.expire)
     assert_operator(refresh_ttl, :>, access_ttl)
 
     # Simulate original access token expiration: protected controller action should still succeed
@@ -281,6 +281,6 @@ class AuthTokenableTest < Minitest::Test
   def expired_jwt_for(email: nil, klass: 'User', login_field: :email, login_value: nil)
     value = login_value || email
     payload = { login: { login_field => value }, klass: klass, exp: Time.now.to_i - 3600 }
-    JWT.encode(payload, Rubee::AuthTokenable::KEY, 'HS256')
+    JWT.encode(payload, Rubee::AuthTokenable.key, 'HS256')
   end
 end

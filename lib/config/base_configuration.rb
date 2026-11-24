@@ -11,6 +11,10 @@ Rubee::Configuration.setup(env = :development) do |config|
   ## configure logger
   # config.logger = { logger: MyLogger, env: }
 
+  ## configure JWT auth (all keys are optional; defaults come from Rubee::AuthTokenable)
+  # config.auth = { key: "secret#{ENV['JWT_KEY']}", expire: 3600, refresh_expire: 2_592_000,
+  #                 refresh_cookie: 'rubee_refresh', refresh_salt: "secret#{ENV['JWT_KEY']}refresh", env: }
+
   ## configure db write retries
   # config.db_max_retries = { env:, value: 3 }
   # config.db_retry_delay = { env:, value: 0.1 }
@@ -30,6 +34,10 @@ Rubee::Configuration.setup(env = :test) do |config|
   ## configure logger
   # config.logger = { logger: MyLogger, env: }
 
+  ## configure JWT auth (all keys are optional; defaults come from Rubee::AuthTokenable)
+  # config.auth = { key: "secret#{ENV['JWT_KEY']}", expire: 3600, refresh_expire: 2_592_000,
+  #                 refresh_cookie: 'rubee_refresh', refresh_salt: "secret#{ENV['JWT_KEY']}refresh", env: }
+
   ## configure db write retries
   # config.db_max_retries = { env:, value: 3 }
   # config.db_retry_delay = { env:, value: 0.1 }
@@ -48,6 +56,10 @@ Rubee::Configuration.setup(env = :production) do |config|
 
   ## configure logger
   # config.logger = { logger: MyLogger, env: }
+
+  ## configure JWT auth (all keys are optional; defaults come from Rubee::AuthTokenable)
+  # config.auth = { key: "secret#{ENV['JWT_KEY']}", expire: 3600, refresh_expire: 2_592_000,
+  #                 refresh_cookie: 'rubee_refresh', refresh_salt: "secret#{ENV['JWT_KEY']}refresh", env: }
 
   ## configure db write retries
   # config.db_max_retries = { env:, value: 3 }

@@ -49,7 +49,7 @@ module Rubee
 
     def decode_jwt(token)
       decoded_array = begin
-        ::JWT.decode(token, AuthTokenable::KEY, true, { algorithm: 'HS256' })
+        ::JWT.decode(token, AuthTokenable.key, true, { algorithm: 'HS256' })
       rescue StandardError
         []
       end
@@ -58,7 +58,7 @@ module Rubee
 
     def try_refresh(env)
       req = Rack::Request.new(env)
-      raw = req.cookies[AuthTokenable::REFRESH_COOKIE] || @req.cookies[AuthTokenable::REFRESH_COOKIE]
+      raw = req.cookies[AuthTokenable.refresh_cookie] || @req.cookies[AuthTokenable.refresh_cookie]
       return nil unless raw
 
       AuthTokenable.ensure_refresh_tokens_table!
@@ -75,8 +75,8 @@ module Rubee
 
       # Rotate refresh token and issue new access token
       Rubee::SequelObject::DB[:refresh_tokens].where(id: row[:id]).update(revoked_at: Time.now, updated: Time.now)
-      payload = { login: { login_field => login_value }, klass: user_model.name, exp: Time.now.to_i + AuthTokenable::EXPIRE }
-      access = ::JWT.encode(payload, AuthTokenable::KEY, 'HS256')
+      payload = { login: { login_field => login_value }, klass: user_model.name, exp: Time.now.to_i + AuthTokenable.expire }
+      access = ::JWT.encode(payload, AuthTokenable.key, 'HS256')
       new_refresh = SecureRandom.hex(32)
       now = Time.now
       Rubee::SequelObject::DB[:refresh_tokens].insert(
@@ -84,7 +84,7 @@ module Rubee
         user_class: user_model.name,
         login_field: login_field.to_s,
         login_value: login_value.to_s,
-        expires_at: now + AuthTokenable::REFRESH_EXPIRE,
+        expires_at: now + AuthTokenable.refresh_expire,
         revoked_at: nil,
         created: now,
         updated: now
@@ -96,7 +96,7 @@ module Rubee
       {
         'Set-Cookie' => [
           "jwt=#{access}; path=/; httponly; secure",
-          "#{AuthTokenable::REFRESH_COOKIE}=#{new_refresh}; path=/; httponly; secure"
+          "#{AuthTokenable.refresh_cookie}=#{new_refresh}; path=/; httponly; secure"
         ]
       }
     rescue StandardError
