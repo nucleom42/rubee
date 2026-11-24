@@ -102,6 +102,18 @@ module Rubee
         @configuraiton[args[:app].to_sym][args[:env].to_sym][:logger] = args[:logger]
       end
 
+      def auth=(args)
+        args[:app] ||= :app
+        args[:env] ||= ENV['RACK_ENV']&.to_sym || :development
+        @configuraiton[args[:app].to_sym][args[:env].to_sym][:auth] =
+          args.reject { |key, _| %i[app env].include?(key) }.transform_keys(&:to_sym)
+      end
+
+      def auth(**args)
+        args[:app] ||= :app
+        @configuraiton[args[:app].to_sym][ENV['RACK_ENV']&.to_sym || :development][:auth] || {}
+      end
+
       def react=(args)
         args[:app] ||= :app
         @configuraiton[args[:app].to_sym][args[:env].to_sym][:react] ||= { on: false }

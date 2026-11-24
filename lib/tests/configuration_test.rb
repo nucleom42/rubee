@@ -27,4 +27,40 @@ describe 'Configuration' do
       _(ENV['SUPER_PASSWORD']).must_equal('test_password')
     end
   end
+
+  describe 'auth' do
+    it 'falls back to AuthTokenable defaults when not configured' do
+      _(Rubee::AuthTokenable.key).must_equal(Rubee::AuthTokenable::KEY)
+      _(Rubee::AuthTokenable.expire).must_equal(Rubee::AuthTokenable::EXPIRE)
+      _(Rubee::AuthTokenable.refresh_expire).must_equal(Rubee::AuthTokenable::REFRESH_EXPIRE)
+      _(Rubee::AuthTokenable.refresh_cookie).must_equal(Rubee::AuthTokenable::REFRESH_COOKIE)
+      _(Rubee::AuthTokenable.refresh_salt).must_equal(Rubee::AuthTokenable::REFRESH_SALT)
+    end
+
+    it 'allows overriding auth settings per env' do
+      original = Rubee::Configuration.auth.dup
+      begin
+        Rubee::Configuration.setup(env = :test) do |config|
+          config.auth = {
+            key: 'custom-key',
+            expire: 60,
+            refresh_expire: 120,
+            refresh_cookie: 'custom_refresh',
+            refresh_salt: 'custom_salt',
+            env:,
+          }
+        end
+
+        _(Rubee::AuthTokenable.key).must_equal('custom-key')
+        _(Rubee::AuthTokenable.expire).must_equal(60)
+        _(Rubee::AuthTokenable.refresh_expire).must_equal(120)
+        _(Rubee::AuthTokenable.refresh_cookie).must_equal('custom_refresh')
+        _(Rubee::AuthTokenable.refresh_salt).must_equal('custom_salt')
+      ensure
+        Rubee::Configuration.setup(env = :test) do |config|
+          config.auth = original.merge(env:)
+        end
+      end
+    end
+  end
 end

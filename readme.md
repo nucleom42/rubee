@@ -1160,6 +1160,12 @@ rubee db run:create_users
 
 This creates the `users` table and seeds it with demo credentials — email `ok@ok.com`, password `password`. Customize `/db/create_users.rb` before running the migration if needed.
 
+For DB-backed refresh tokens (enabled by default in the current ru.Bee version), run the refresh token migration:
+```bash
+rubee db run:create_refresh_tokens
+```
+The framework will also auto-create the `refresh_tokens` table on demand if it is missing.
+
 ```ruby
 class UsersController < Rubee::BaseController
   include Rubee::AuthTokenable
@@ -1172,7 +1178,7 @@ class UsersController < Rubee::BaseController
 
   # POST /users/login
   def login
-    if authenticate!  # initializes @token_header
+    if authenticate!  # initializes @token_header (access + refresh cookies)
       response_with type: :redirect, to: "/users", headers: @token_header
     else
       @error = "Wrong email or password"
@@ -1204,6 +1210,25 @@ if authenticate! user_model: Client, login: :name, password: :digest_password
   response_with type: :redirect, to: "/clients", headers: @token_header
 end
 ```
+
+All auth settings are configurable per environment via `config.auth` in `config/base_configuration.rb`:
+
+```ruby
+Rubee::Configuration.setup(env = :development) do |config|
+  config.auth = {
+    key: "secret#{ENV['JWT_KEY']}",                # access token signing key
+    expire: 3600,                                  # access token TTL in seconds
+    refresh_expire: 2_592_000,                     # refresh token TTL in seconds (30 days)
+    refresh_cookie: 'rubee_refresh',               # refresh token cookie name
+    refresh_salt: "secret#{ENV['JWT_KEY']}refresh", # refresh token hash salt
+    env:,
+  }
+end
+```
+
+Every key is optional — omitted keys fall back to the defaults defined in `Rubee::AuthTokenable`.
+
+**Refresh tokens (default):** `authenticate!` issues a short-lived access token cookie (`jwt`) and a DB-backed rotating refresh token cookie (`rubee_refresh`). When the access token expires, `AuthTokenMiddleware` can transparently refresh and rotate tokens on the next request (if a valid refresh token is present), keeping the existing controller/API shape unchanged. `unauthenticate!` revokes the presented refresh token and clears both cookies. No additional configuration is required. The refresh token mechanism reuses the base auth secret material with a refresh-specific extension for token hashing/storage.
 
 [Back to content](#content)
 
