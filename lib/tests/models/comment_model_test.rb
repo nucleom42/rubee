@@ -105,7 +105,7 @@ describe 'Comment model' do
         end
         comments = Comment.all.paginate(1, 5)
         _(comments.count).must_equal(5)
-        _(comments.pagination_meta).must_equal(
+        _(comments.pagination_meta).must_equal({
           current_page: 1,
           per_page: 5,
           total_count: 10,
@@ -113,7 +113,7 @@ describe 'Comment model' do
           last_page: false,
           prev: nil,
           next: 2
-        )
+        })
         Comment.destroy_all
       end
 
@@ -125,7 +125,7 @@ describe 'Comment model' do
           end
           comments = Comment.all.paginate(0, 5)
           _(comments.count).must_equal(5)
-          _(comments.pagination_meta).must_equal(
+          _(comments.pagination_meta).must_equal({
             current_page: 1,
             per_page: 5,
             total_count: 10,
@@ -133,7 +133,7 @@ describe 'Comment model' do
             last_page: false,
             prev: nil,
             next: 2
-          )
+          })
           Comment.destroy_all
         end
       end
@@ -146,7 +146,7 @@ describe 'Comment model' do
           end
           comments = Comment.all.paginate(page: 1, per_page: 5)
           _(comments.count).must_equal(5)
-          _(comments.pagination_meta).must_equal(
+          _(comments.pagination_meta).must_equal({
             current_page: 1,
             per_page: 5,
             total_count: 10,
@@ -154,7 +154,7 @@ describe 'Comment model' do
             last_page: false,
             prev: nil,
             next: 2
-          )
+          })
           Comment.destroy_all
         end
       end
